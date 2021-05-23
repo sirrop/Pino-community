@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-final class AppConfig {
+public final class AppConfig {
     private AppConfig() {}
 
     public static final double USE_PREF_SIZE = -1;
@@ -87,6 +87,12 @@ final class AppConfig {
     public double getDrawRate() {
         String value = properties.getProperty("canvas.drawRate");
         if (value == null || !value.matches("\\d+(\\.\\d+)?")) return 150;
+        return Double.parseDouble(value);
+    }
+
+    public double getZoomRate() {
+        String value = properties.getProperty("canvas.zoom");
+        if (value == null || !value.matches("\\s+(\\.\\d+)?")) return 0.0025;
         return Double.parseDouble(value);
     }
 }

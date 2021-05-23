@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.SplitPane?>
-
-<?import com.branc.pino.ui.Layer?>
 
 <?import com.branc.pino.ui.editor.EditorGroup?>
-
 <?import com.branc.pino.ui.editor.LayerEditor?>
-
+<?import com.branc.pino.ui.Layer?>
+<?import com.branc.pino.ui.PinoButton?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.branc.pino.ui.Root" prefHeight="400.0" prefWidth="600.0">
     <!-- メニューバーは、data/MenuConfig.xmlからロードされます -->
     <MenuBar fx:id="menuBar"/>
+    <ToolBar fx:id="toolBar">
+        <PinoButton text="ブラシ" />
+        <PinoButton text="移動" />
+    </ToolBar>
     <HBox fx:id="contentPane" VBox.vgrow="ALWAYS">
         <SplitPane HBox.hgrow="ALWAYS" dividerPositions="0.8">
             <Pane fx:id="canvasPane">
@@ -28,7 +29,6 @@
                 </EditorGroup>
                 <Layer fx:id="layer"/>
             </SplitPane>
-
         </SplitPane>
     </HBox>
 </VBox>

@@ -42,21 +42,19 @@ class FxHandler implements DrawEventHandler<MouseEvent> {
                 if (e != null) {
                     if (e.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
                         brush = FxHandler.this.brush.get();
-                        if (brush == null) {
-                            return;
-                        }
+                        if (brush == null) return;
                         brush.first(e.getX(), e.getY());
                     } else if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
+                        if (brush == null) return;
                         brush.main(e.getX(), e.getY());
                     } else if (e.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
+                        if (brush == null) return;
                         brush.last(e.getX(), e.getY());
                         brush.dispose();
-                        log.atInfo().log("finish process: %s", this);
                     }
                 }
             }
         };
-        log.atInfo().log("start process: %s", task);
         executor.scheduleAtFixedRate(task, 0, 1, TimeUnit.NANOSECONDS);
     }
 

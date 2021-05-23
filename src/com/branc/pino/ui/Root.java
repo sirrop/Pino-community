@@ -15,6 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MultipleSelectionModel;
+import javafx.scene.control.ToolBar;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
@@ -22,6 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class Root implements Disposable {
+    @FXML
+    private ToolBar toolBar;
     @FXML
     private EditorGroup editorGroup;
 
@@ -62,7 +65,7 @@ public class Root implements Disposable {
     private void initialize() {
         background = CanvasBackground.bind(canvas);
         canvasPane.getChildren().add(canvasPane.getChildren().indexOf(canvas), (Node) background);
-        MenuBarLoader.initialize(menuBar);
+        MenuBarInitializer.initialize(menuBar);
         ProjectManager.getInstance().addListener((oldValue, newValue) -> {
             if (newValue != null) {
                 ((ObservableList<LayerObject>) newValue.getLayer()).addListener((Observable obs) -> layer.getItems().setAll(newValue.getLayer()));
@@ -103,6 +106,10 @@ public class Root implements Disposable {
         return canvas;
     }
 
+    public Pane getCanvasPane() {
+        return canvasPane;
+    }
+
     public Layer getLayer() {
         return layer;
     }
@@ -113,6 +120,10 @@ public class Root implements Disposable {
 
     public LayerEditor getLayerEditor() {
         return layerEditor;
+    }
+
+    public ToolBar getToolBar() {
+        return toolBar;
     }
 
     @Override

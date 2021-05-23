@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MenuBarLoader extends DefaultHandler2 {
+public class MenuBarInitializer extends DefaultHandler2 {
     public static final String DEFAULT_FILE = "data/MenuConfig.xml";
 
     private final MenuBar menuBar;
@@ -29,7 +29,7 @@ public class MenuBarLoader extends DefaultHandler2 {
 
     private final List<Stacktrace> stacktraces = new ArrayList<>();
 
-    public MenuBarLoader(MenuBar menuBar) {
+    public MenuBarInitializer(MenuBar menuBar) {
         this.menuBar = menuBar;
     }
 
@@ -79,7 +79,6 @@ public class MenuBarLoader extends DefaultHandler2 {
             menuItem.setText(attr.getValue(ATTR_TEXT));
             Action action = ActionRegistry.getInstance().find(attr.getValue(ATTR_ACTION_ID));
             menuItem.setOnAction(e -> action.performed(new ActionEvent(menuItem)));
-
             return menuItem;
         }
     }
@@ -98,7 +97,7 @@ public class MenuBarLoader extends DefaultHandler2 {
     }
 
     public static void initialize(MenuBar menuBar, String configFile) {
-        MenuBarLoader loader = new MenuBarLoader(menuBar);
+        MenuBarInitializer loader = new MenuBarInitializer(menuBar);
         SAXParserFactory factory = SAXParserFactory.newInstance();
         try {
             SAXParser parser = factory.newSAXParser();

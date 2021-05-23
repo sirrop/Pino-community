@@ -3,7 +3,6 @@ package com.branc.pino.application;
 import com.branc.pino.core.util.Disposable;
 import com.branc.pino.core.util.Disposer;
 import com.branc.pino.paint.brush.BrushManager;
-import com.branc.pino.paint.brush.Brush_NoOp;
 import com.branc.pino.paint.layer.Drawable;
 import com.branc.pino.paint.layer.LayerObject;
 import com.branc.pino.project.ProjectManager;
@@ -36,7 +35,7 @@ public class Pino extends Application implements Disposable, ServiceContainer {
     private final MutableServiceContainer serviceContainer = new SimpleServiceContainer();
     private AppConfig appConfig;
     private AutoRepaint autoRepaint;
-    private DrawEventHandler<MouseEvent> drawEventHandler;
+    private EventDistributor distributor;
 
     @Override
     public void start(Stage s) throws Exception {
@@ -48,25 +47,13 @@ public class Pino extends Application implements Disposable, ServiceContainer {
         }
         root = loader.getController();
         autoRepaint = AutoRepaint.create(root.getCanvas(), () -> ProjectRenderer.render(ProjectManager.getInstance().getProject(), ProjectRenderer.RenderingOption.IGNORE_INVISIBLE));
-        drawEventHandler = DrawEventHandler.createFxHandler(() -> {
-            LayerObject object = root.getLayer().getSelectionModel().getSelectedItem();
-            if (object instanceof Drawable) {
-                return BrushManager.getInstance().getSelectedBrush().createBrush(((Drawable) object).createGraphics());
-            } else {
-                return Brush_NoOp.getInstance();
-            }
-        });
-        var canvas = root.getCanvas();
-        canvas.setOnMousePressed(drawEventHandler::enqueue);
-        canvas.setOnMouseDragged(drawEventHandler::enqueue);
-        canvas.setOnMouseReleased(drawEventHandler::enqueue);
-        drawEventHandler.setRate(appConfig.getDrawRate());
+
+        distributor = new EventDistributor();
         autoRepaint.setFps(appConfig.getCanvasFps());
         Disposer.registerDisposable(lastDisposable, root);
         Disposer.registerDisposable(lastDisposable, autoRepaint);
-        Disposer.registerDisposable(lastDisposable, drawEventHandler);
+        Disposer.registerDisposable(lastDisposable, distributor);
         autoRepaint.start();
-        drawEventHandler.start();
         double w = appConfig.getStageWidth();
         double h = appConfig.getStageHeight();
         Scene scene;
@@ -84,6 +71,14 @@ public class Pino extends Application implements Disposable, ServiceContainer {
         s.setScene(scene);
         s.setTitle("Pino  ver 0.1.0");
         s.show();
+    }
+
+    public AppConfig getAppConfig() {
+        return appConfig;
+    }
+
+    public EventDistributor getEventDistributor() {
+        return distributor;
     }
 
     @Override
