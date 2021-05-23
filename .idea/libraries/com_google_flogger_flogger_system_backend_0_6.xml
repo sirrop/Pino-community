@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.google.flogger:flogger-system-backend:0.6" type="repository">
+    <properties maven-id="com.google.flogger:flogger-system-backend:0.6" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/flogger/flogger-system-backend/0.6/flogger-system-backend-0.6.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/flogger/flogger/0.6/flogger-0.6.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/checkerframework/checker-compat-qual/2.5.3/checker-compat-qual-2.5.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

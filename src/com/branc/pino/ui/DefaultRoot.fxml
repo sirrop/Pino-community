@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.SplitPane?>
+
+<?import com.branc.pino.ui.Layer?>
+
+<?import com.branc.pino.ui.editor.EditorGroup?>
+
+<?import com.branc.pino.ui.editor.LayerEditor?>
+
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.branc.pino.ui.Root" prefHeight="400.0" prefWidth="600.0">
+    <!-- メニューバーは、data/MenuConfig.xmlからロードされます -->
+    <MenuBar fx:id="menuBar"/>
+    <HBox fx:id="contentPane" VBox.vgrow="ALWAYS">
+        <SplitPane HBox.hgrow="ALWAYS" dividerPositions="0.8">
+            <Pane fx:id="canvasPane">
+                <Canvas fx:id="canvas" />
+            </Pane>
+            <SplitPane orientation="VERTICAL" dividerPositions="0.4">
+                <EditorGroup fx:id="editorGroup">
+                    <LayerEditor fx:id="layerEditor"/>
+                </EditorGroup>
+                <Layer fx:id="layer"/>
+            </SplitPane>
+
+        </SplitPane>
+    </HBox>
+</VBox>
