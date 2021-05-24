@@ -1,22 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import com.branc.pino.ui.editor.EditorGroup?>
 <?import com.branc.pino.ui.editor.LayerEditor?>
 <?import com.branc.pino.ui.Layer?>
-<?import com.branc.pino.ui.PinoButton?>
+<?import com.branc.pino.ui.actionSystem.ActionableButton?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Menu?>
+<?import com.branc.pino.ui.actionSystem.ActionableMenuItem?>
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.branc.pino.ui.Root" prefHeight="400.0" prefWidth="600.0">
-    <!-- メニューバーは、data/MenuConfig.xmlからロードされます -->
-    <MenuBar fx:id="menuBar"/>
+    <MenuBar fx:id="menuBar">
+        <Menu text="ファイル">
+            <ActionableMenuItem text="新規プロジェクトを作成" actionId="pino:create-project" />
+            <ActionableMenuItem text="プロジェクトを開く" actionId="pino:open-project" />
+            <ActionableMenuItem text="閉じる" actionId="pino:close-project" />
+            <ActionableMenuItem text="名前をつけて保存" actionId="pino:save-project-as" />
+            <ActionableMenuItem text="保存" actionId="pino:save-project" />
+            <ActionableMenuItem text="出力" actionId="pino:output-project" />
+            <ActionableMenuItem text="環境設定" actionId="pino:show-env-config" />
+            <ActionableMenuItem text="印刷設定" actionId="pino:show-copy-config" />
+            <ActionableMenuItem text="印刷" actionId="pino:copy" />
+            <ActionableMenuItem text="終了" actionId="pino:exit-app" />
+        </Menu>
+        <Menu text="編集">
+            <ActionableMenuItem text="ひとつ戻る" actionId="pino:undo" />
+            <ActionableMenuItem text="ひとつ進む" actionId="pino:redo" />
+        </Menu>
+    </MenuBar>
     <ToolBar fx:id="toolBar">
-        <PinoButton text="ブラシ" />
-        <PinoButton text="移動" />
+        <ActionableButton text="ブラシ" actionId="pino:tools:activate-draw-tool" />
+        <ActionableButton text="移動" actionId="pino:tools:activate-hand-tool"/>
     </ToolBar>
     <HBox fx:id="contentPane" VBox.vgrow="ALWAYS">
         <SplitPane HBox.hgrow="ALWAYS" dividerPositions="0.8">

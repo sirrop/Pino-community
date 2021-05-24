@@ -65,7 +65,6 @@ public class Root implements Disposable {
     private void initialize() {
         background = CanvasBackground.bind(canvas);
         canvasPane.getChildren().add(canvasPane.getChildren().indexOf(canvas), (Node) background);
-        MenuBarInitializer.initialize(menuBar);
         ProjectManager.getInstance().addListener((oldValue, newValue) -> {
             if (newValue != null) {
                 ((ObservableList<LayerObject>) newValue.getLayer()).addListener((Observable obs) -> layer.getItems().setAll(newValue.getLayer()));

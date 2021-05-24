@@ -1,22 +1,19 @@
-package com.branc.pino.ui;
+package com.branc.pino.ui.actionSystem;
 
-import com.branc.pino.ui.actionSystem.ActionEvent;
-import com.branc.pino.ui.actionSystem.ActionNotFoundException;
-import com.branc.pino.ui.actionSystem.ActionRegistry;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Button;
 
-public class PinoButton extends Button {
-    public PinoButton() {
+public class ActionableButton extends Button {
+    public ActionableButton() {
         actionIdProperty().addListener((obs, old, newAction) -> {
-            setOnAction(e -> {
-                try {
-                    ActionRegistry.getInstance().find(newAction).performed(new ActionEvent(PinoButton.this));
-                } catch (ActionNotFoundException ignored) {
-                    ;
-                }
-            });
+            try {
+                Action action = ActionRegistry.getInstance().find(newAction);
+                setOnAction(e -> action.performed(new ActionEvent(this)));
+            } catch (ActionNotFoundException ignored) {
+
+            }
+
         });
     }
 
