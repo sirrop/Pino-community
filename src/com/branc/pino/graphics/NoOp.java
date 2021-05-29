@@ -11,12 +11,12 @@ class NoOp implements PinoGraphics {
     }
 
     @Override
-    public void setAntialias(Antialias antialias) {
+    public void setAntialiasing(Antialiasing antialiasing) {
 
     }
 
     @Override
-    public Antialias getAntialias() {
+    public Antialiasing getAntialiasing() {
         return null;
     }
 
@@ -155,12 +155,12 @@ class NoOp implements PinoGraphics {
         }
 
         @Override
-        public void setAntialias(Antialias antialias) {
+        public void setAntialiasing(Antialiasing antialiasing) {
 
         }
 
         @Override
-        public Antialias getAntialias() {
+        public Antialiasing getAntialiasing() {
             return null;
         }
 

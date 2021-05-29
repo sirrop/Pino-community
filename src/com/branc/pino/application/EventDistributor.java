@@ -5,6 +5,7 @@ import com.branc.pino.core.util.Disposer;
 import com.branc.pino.tool.DrawTool;
 import com.branc.pino.tool.HandTool;
 import com.branc.pino.tool.Tool;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
@@ -12,7 +13,7 @@ import java.util.Objects;
 
 public class EventDistributor implements Disposable {
     private final Disposable lastDispose = Disposer.newDisposable();
-
+    private final Canvas canvas;
     private final Tool drawTool;
     private final Tool handTool;
 
@@ -20,20 +21,12 @@ public class EventDistributor implements Disposable {
     private Object lockKey;
 
     EventDistributor() {
-        var canvas = ApplicationManager.getApp().getRoot().getCanvas();
+        canvas = ApplicationManager.getApp().getRoot().getCanvas();
         var pane = ApplicationManager.getApp().getRoot().getCanvasPane();
         drawTool = new DrawTool();
         handTool = new HandTool();
         activeTool = drawTool;
         Disposer.registerDisposable(lastDispose, drawTool);
-
-        canvas.setOnMouseClicked(this::mouseClicked);
-        canvas.setOnMousePressed(this::mousePressed);
-        canvas.setOnMouseDragged(this::mouseDragged);
-        canvas.setOnMouseReleased(this::mouseReleased);
-        canvas.setOnScroll(this::scroll);
-        canvas.setOnScrollStarted(this::scrollStarted);
-        canvas.setOnScrollFinished(this::scrollFinished);
 
         pane.setOnMouseClicked(this::mouseClicked);
         pane.setOnMousePressed(this::mousePressed);
@@ -70,31 +63,31 @@ public class EventDistributor implements Disposable {
     }
 
     private void mouseClicked(MouseEvent e) {
-        activeTool.mouseClicked(e);
+        activeTool.mouseClicked(e.copyFor(canvas, canvas));
     }
 
     private void mousePressed(MouseEvent e) {
-        activeTool.mousePressed(e);
+        activeTool.mousePressed(e.copyFor(canvas, canvas));
     }
 
     private void mouseDragged(MouseEvent e) {
-        activeTool.mouseDragged(e);
+        activeTool.mouseDragged(e.copyFor(canvas, canvas));
     }
 
     private void mouseReleased(MouseEvent e) {
-        activeTool.mouseReleased(e);
+        activeTool.mouseReleased(e.copyFor(canvas, canvas));
     }
 
     private void scroll(ScrollEvent e) {
-        activeTool.scroll(e);
+        activeTool.scroll(e.copyFor(canvas, canvas));
     }
 
     private void scrollStarted(ScrollEvent e) {
-        activeTool.scrollStart(e);
+        activeTool.scrollStart(e.copyFor(canvas, canvas));
     }
 
     private void scrollFinished(ScrollEvent e) {
-        activeTool.scrollFinished(e);
+        activeTool.scrollFinished(e.copyFor(canvas, canvas));
     }
 
     public void dispose() {

@@ -38,8 +38,8 @@ public interface PinoGraphics extends GraphicState {
         return NO_OP;
     }
 
-    void setAntialias(Antialias antialias);
-    Antialias getAntialias();
+    void setAntialiasing(Antialiasing antialiasing);
+    Antialiasing getAntialiasing();
 
     void setInterpolation(Interpolation interpolation);
     Interpolation getInterpolation();

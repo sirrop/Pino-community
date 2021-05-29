@@ -12,8 +12,6 @@ public interface DrawEventHandler<E> extends Disposable {
     void resume();
     void shutdown();
     void enqueue(E e);
-    void setRate(double rate);
-    double getRate();
 
     static DrawEventHandler<MouseEvent> createFxHandler(Supplier<Brush<?>> supplier) {
         return new FxHandler(supplier);

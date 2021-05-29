@@ -24,6 +24,8 @@ public class EditorGroupSkin extends SkinBase<EditorGroup> {
             List<Tab> tabs = editors.stream().map(it -> new Tab(it.getLabel(), it)).collect(Collectors.toList());
             tabPane.getTabs().setAll(tabs);
         });
+        tabPane.getTabs().setAll(editors.stream().map(it -> new Tab(it.getLabel(), it)).collect(Collectors.toList()));
+
         getChildren().add(tabPane);
     }
 }

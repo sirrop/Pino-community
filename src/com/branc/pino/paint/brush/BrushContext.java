@@ -4,6 +4,7 @@ import com.branc.pino.application.ApplicationError;
 import com.branc.pino.core.util.Disposable;
 import com.branc.pino.core.util.Disposer;
 import com.branc.pino.graphics.PinoGraphics;
+import com.branc.pino.ui.attr.NumberAttribute;
 import com.branc.pino.ui.editor.EditorTarget;
 
 import java.awt.*;
@@ -19,14 +20,24 @@ import java.util.NoSuchElementException;
 public abstract class BrushContext implements Disposable, EditorTarget {
     public BrushContext() {
         try {
+            define(NAME, "getName", "setName");
             define(COLOR, "getColor", "setColor").setDisplayName("色");
-            define(WIDTH, "getWidth", "setWidth").setDisplayName("幅");
-            define(OPACITY, "getOpacity", "setOpacity").setDisplayName("不透明度");
+            PropertyDescriptor width = define(WIDTH, "getWidth", "setWidth");
+            width.setDisplayName("幅");
+            width.setValue(NumberAttribute.MIN.getAttributeName(), 0.0);
+            width.setValue(NumberAttribute.MAX.getAttributeName(), 200.0);
+            width.setValue(NumberAttribute.BLOCK_INCREMENT.getAttributeName(), 1.0);
+            PropertyDescriptor opacity = define(OPACITY, "getOpacity", "setOpacity");
+            opacity.setDisplayName("不透明度");
+            opacity.setValue(NumberAttribute.MIN.getAttributeName(), 0.0);
+            opacity.setValue(NumberAttribute.MAX.getAttributeName(), 100.0);
+            opacity.setValue(NumberAttribute.BLOCK_INCREMENT.getAttributeName(), 1.0);
         } catch (IntrospectionException e) {
             throw new ApplicationError(e);
         }
     }
 
+    public static final String NAME = "name";
     public static final String COLOR = "color";
     public static final String WIDTH = "width";
     public static final String OPACITY = "opacity";
@@ -74,8 +85,13 @@ public abstract class BrushContext implements Disposable, EditorTarget {
 
 
 
-
-
+    private String name = getClass().getSimpleName();
+    public final void setName(String name) {
+        this.name = name;
+    }
+    public final String getName() {
+        return name;
+    }
 
     private float width = 5;
 

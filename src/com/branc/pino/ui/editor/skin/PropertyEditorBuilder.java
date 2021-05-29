@@ -46,7 +46,7 @@ public final class PropertyEditorBuilder {
     }
 
     private Node slider(PropertyDescriptor desc, EditorTarget target, Disposable parent) {
-        javafx.scene.control.Label label = new javafx.scene.control.Label(desc.getName());
+        javafx.scene.control.Label label = new javafx.scene.control.Label(desc.getDisplayName());
         Slider slider = new Slider();
         slider.setMin((double) desc.getValue(NumberAttribute.MIN.getAttributeName()));
         slider.setMax(((double) desc.getValue(NumberAttribute.MAX.getAttributeName())));
@@ -68,7 +68,17 @@ public final class PropertyEditorBuilder {
         target.addListener(propertyChangeListener, parent);
         slider.valueProperty().addListener((obs, old, newValue) -> {
             try {
-                desc.getWriteMethod().invoke(target, newValue);
+                var type = desc.getPropertyType();
+                if (type == int.class) {
+                    desc.getWriteMethod().invoke(target, newValue.intValue());
+                } else if (type == long.class) {
+                    desc.getWriteMethod().invoke(target, newValue.longValue());
+                } else if (type == float.class) {
+                    desc.getWriteMethod().invoke(target, newValue.floatValue());
+                } else if (type == double.class) {
+                    desc.getWriteMethod().invoke(target, newValue.doubleValue());
+                }
+
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new InvocationException(e);
             }
@@ -82,7 +92,7 @@ public final class PropertyEditorBuilder {
             Label label = new Label(desc.getDisplayName());
             String regexp = (String) Objects.requireNonNullElse(desc.getValue(StringAttribute.REGEXP.getAttributeName()), ".*");
             TextField field = new TextField();
-            field.setText((String) desc.getReadMethod().invoke(target));
+            field.setText(desc.getReadMethod().invoke(target).toString());
             TextFormatter<?> formatter = new TextFormatter<>(c -> {
                 if (c.getControlNewText().matches(regexp)) {
                     return c;
@@ -94,6 +104,7 @@ public final class PropertyEditorBuilder {
             formatter.valueProperty().addListener((obs, old, newValue) -> {
                 try {
                     desc.getWriteMethod().invoke(target, newValue);
+                    System.out.printf("Value set: %s\n", newValue);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new InvocationException(e);
                 }
@@ -155,6 +166,11 @@ public final class PropertyEditorBuilder {
                 throw new InvocationException(e);
             }
         });
+        try {
+            picker.setValue(toFX((Color) desc.getReadMethod().invoke(target)));
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new InvocationException(e);
+        }
         return new HBox(label, picker);
     }
 

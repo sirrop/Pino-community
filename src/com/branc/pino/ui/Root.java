@@ -2,9 +2,11 @@ package com.branc.pino.ui;
 
 import com.branc.pino.core.util.Disposable;
 import com.branc.pino.core.util.Disposer;
+import com.branc.pino.paint.brush.BrushManager;
 import com.branc.pino.paint.layer.LayerObject;
 import com.branc.pino.project.ProjectManager;
 import com.branc.pino.ui.canvas.CanvasBackground;
+import com.branc.pino.ui.editor.BrushEditor;
 import com.branc.pino.ui.editor.EditorGroup;
 import com.branc.pino.ui.editor.LayerEditor;
 import javafx.beans.Observable;
@@ -24,9 +26,9 @@ import java.nio.file.Path;
 
 public class Root implements Disposable {
     @FXML
-    private ToolBar toolBar;
+    private BrushEditor brushEditor;
     @FXML
-    private EditorGroup editorGroup;
+    private ToolBar toolBar;
 
     @FXML
     private LayerEditor layerEditor;
@@ -68,9 +70,17 @@ public class Root implements Disposable {
         ProjectManager.getInstance().addListener((oldValue, newValue) -> {
             if (newValue != null) {
                 ((ObservableList<LayerObject>) newValue.getLayer()).addListener((Observable obs) -> layer.getItems().setAll(newValue.getLayer()));
+                layer.getItems().setAll(newValue.getLayer());
                 layer.getSelectionModel().selectFirst();
             } else {
                 layer.getItems().clear();
+                canvas.setWidth(0);
+                canvas.setHeight(0);
+                canvas.setTranslateX(0);
+                canvas.setTranslateY(0);
+                canvas.setScaleX(1);
+                canvas.setScaleY(1);
+                canvas.setRotate(0);
             }
         }, lastDisposable);
         layer.selectionModelProperty().addListener((obs, old, newValue) -> {
@@ -82,6 +92,10 @@ public class Root implements Disposable {
         if (selectionModel != null) {
             selectionModel.selectedItemProperty().addListener((obs, old, newValue) -> updateEditor(newValue));
         }
+
+        BrushManager brushManager = BrushManager.getInstance();
+        brushManager.addSelectedBrushChangeListener(e -> brushEditor.setTarget(e.getNewBrush()));
+        brushEditor.setTarget(brushManager.getSelectedBrush());
     }
 
     private void updateEditor(LayerObject object) {
@@ -113,12 +127,12 @@ public class Root implements Disposable {
         return layer;
     }
 
-    public EditorGroup getEditorGroup() {
-        return editorGroup;
-    }
-
     public LayerEditor getLayerEditor() {
         return layerEditor;
+    }
+
+    public BrushEditor getBrushEditor() {
+        return brushEditor;
     }
 
     public ToolBar getToolBar() {

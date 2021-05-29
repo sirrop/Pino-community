@@ -2,22 +2,18 @@ package com.branc.pino.application;
 
 import com.branc.pino.core.util.Disposable;
 import com.branc.pino.core.util.Disposer;
-import com.branc.pino.paint.brush.BrushManager;
-import com.branc.pino.paint.layer.Drawable;
-import com.branc.pino.paint.layer.LayerObject;
 import com.branc.pino.project.ProjectManager;
+import com.branc.pino.project.ProjectRenderer;
 import com.branc.pino.service.MutableServiceContainer;
 import com.branc.pino.service.ServiceContainer;
 import com.branc.pino.service.SimpleServiceContainer;
 import com.branc.pino.ui.Root;
 import com.branc.pino.ui.canvas.AutoRepaint;
-import com.branc.pino.ui.canvas.DrawEventHandler;
 import com.google.common.flogger.FluentLogger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.nio.file.Paths;
@@ -68,6 +64,7 @@ public class Pino extends Application implements Disposable, ServiceContainer {
         } else {
             scene = new Scene(loader.getRoot(), w, h);
         }
+        scene.getStylesheets().add(Paths.get(System.getProperty("appDir", "."), "data", "style.css").toUri().toURL().toExternalForm());
         s.setScene(scene);
         s.setTitle("Pino  ver 0.1.0");
         s.show();
@@ -89,7 +86,7 @@ public class Pino extends Application implements Disposable, ServiceContainer {
 
     @Override
     public void init() {
-        appConfig = AppConfig.loadConfig();
+        appConfig = AppConfig.loadConfig(System.getProperty("appDir", "."));
         ApplicationManager.setApplication(this);
         CoreServices.load(serviceContainer);
     }

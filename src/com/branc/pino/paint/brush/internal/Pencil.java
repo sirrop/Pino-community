@@ -14,6 +14,7 @@ public class Pencil extends Brush<PencilContext> {
         float width = context.getWidth();
         fill.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         fill.setPaint(context.getColor());
+        fill.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,  context.getOpacity() / 100));
     }
 
     @Override

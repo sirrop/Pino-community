@@ -4,7 +4,6 @@ import com.branc.pino.application.ApplicationError;
 import com.branc.pino.core.util.Disposable;
 import com.branc.pino.core.util.Disposer;
 import com.branc.pino.ui.attr.NumberAttribute;
-import com.branc.pino.ui.attr.ViewType;
 import com.branc.pino.ui.editor.EditorTarget;
 
 import java.awt.image.BufferedImage;
@@ -12,14 +11,17 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyDescriptor;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public abstract class LayerObject implements Disposable, EditorTarget {
-    private final List<PropertyDescriptor> descriptors = new ArrayList<>();
-    protected final PropertyChangeSupport support = new PropertyChangeSupport(this);
+public abstract class LayerObject implements Disposable, EditorTarget, Serializable {
+    private static final long serialVersionUID = 42L;
+
+    private transient List<PropertyDescriptor> descriptors;
+    protected transient PropertyChangeSupport support;
 
     public static final String NAME = "pino:layer-object:name";
     public static final String OPACITY = "pino:layer-object:opacity";
@@ -27,8 +29,14 @@ public abstract class LayerObject implements Disposable, EditorTarget {
     public static final String ROUGH = "pino:layer-object:rough";
 
     public LayerObject() {
+        init();
+    }
+    private void init() {
         try {
+            descriptors = new ArrayList<>();
+            support = new PropertyChangeSupport(this);
             define(NAME, "getName", "setName");
+
             PropertyDescriptor opacity = define(OPACITY, "getOpacity", "setOpacity");
             opacity.setDisplayName("不透明度");
             opacity.setValue(NumberAttribute.MIN.getAttributeName(), 0.0);
@@ -102,7 +110,7 @@ public abstract class LayerObject implements Disposable, EditorTarget {
 
     public final void setOpacity(float value) {
         if (value < 0 || 100 < value) {
-            throw new IllegalArgumentException("value must be between 0 and 1.");
+            throw new IllegalArgumentException("value must be between 0 and 100.");
         }
         if (value != opacity) {
             var old = opacity;
@@ -147,4 +155,26 @@ public abstract class LayerObject implements Disposable, EditorTarget {
 
     @Override
     public void dispose() {}
+
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        init();
+        ois.defaultReadObject();
+        String name = (String) ois.readObject();
+        float opacity = ois.readFloat();
+        boolean isVisible = ois.readBoolean();
+        boolean isRough = ois.readBoolean();
+        if (opacity < 0 || 100 < opacity) throw new InvalidObjectException("opacity must be between 0 and 100.");
+        setName(name);
+        setOpacity(opacity);
+        setVisible(isVisible);
+        setRough(isRough);
+    }
+
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+        oos.writeObject(name);
+        oos.writeFloat(opacity);
+        oos.writeBoolean(isVisible);
+        oos.writeBoolean(isRough);
+    }
 }

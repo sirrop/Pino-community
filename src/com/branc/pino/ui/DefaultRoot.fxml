@@ -12,6 +12,8 @@
 <?import javafx.scene.control.Menu?>
 <?import com.branc.pino.ui.actionSystem.ActionableMenuItem?>
 
+<?import com.branc.pino.ui.editor.BrushEditor?>
+<?import com.branc.pino.ui.actionSystem.ActionableButton?>
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.branc.pino.ui.Root" prefHeight="400.0" prefWidth="600.0">
     <MenuBar fx:id="menuBar">
         <Menu text="ファイル">
@@ -29,6 +31,7 @@
         <Menu text="編集">
             <ActionableMenuItem text="ひとつ戻る" actionId="pino:undo" />
             <ActionableMenuItem text="ひとつ進む" actionId="pino:redo" />
+            <ActionableMenuItem text="レイヤーを追加" actionId="pino:add-layer" />
         </Menu>
     </MenuBar>
     <ToolBar fx:id="toolBar">
@@ -40,11 +43,14 @@
             <Pane fx:id="canvasPane">
                 <Canvas fx:id="canvas" />
             </Pane>
-            <SplitPane orientation="VERTICAL" dividerPositions="0.4">
-                <EditorGroup fx:id="editorGroup">
-                    <LayerEditor fx:id="layerEditor"/>
+            <SplitPane orientation="VERTICAL" dividerPositions="0.4" >
+                <EditorGroup>
+                    <LayerEditor fx:id="layerEditor" />
+                    <BrushEditor fx:id="brushEditor" />
                 </EditorGroup>
-                <Layer fx:id="layer"/>
+                <Layer fx:id="layer">
+                    <ActionableButton text="追加" actionId="pino:add-layer"/>
+                </Layer>
             </SplitPane>
         </SplitPane>
     </HBox>

@@ -15,6 +15,7 @@ import javafx.scene.control.TextFormatter
 import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.util.converter.NumberStringConverter
+import org.codehaus.groovy.runtime.InvokerHelper
 
 import java.awt.color.ColorSpace
 import java.awt.color.ICC_Profile
@@ -47,6 +48,11 @@ dialog.showAndWait().filter {
     canvas.width = widthFormatter.value.doubleValue()
     canvas.height = heightFormatter.value.doubleValue()
     def project = Project.create(canvas.width, canvas.height, ICC_Profile.getInstance(ColorSpace.CS_sRGB))
+    canvas.setTranslateX(0)
+    canvas.setTranslateY(0)
+    canvas.setScaleX(1)
+    canvas.setScaleY(1)
+    canvas.setRotate(0)
     ProjectManager.getInstance().project = project
     project.layer.add(new FullColorBitmapLayer())
 }

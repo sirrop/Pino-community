@@ -5,7 +5,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 
 abstract class GraphicStateBase implements GraphicState {
-    private Antialias antialias;
+    private Antialiasing antialiasing;
     private Interpolation interpolation;
     private Composite composite;
     private Paint paint;
@@ -16,7 +16,7 @@ abstract class GraphicStateBase implements GraphicState {
     private Font font;
 
     protected GraphicStateBase(
-            Antialias antialias,
+            Antialiasing antialiasing,
             Interpolation interpolation,
             Composite composite,
             Paint paint,
@@ -26,7 +26,7 @@ abstract class GraphicStateBase implements GraphicState {
             Shape clip,
             Font font
     ) {
-        this.antialias = antialias;
+        this.antialiasing = antialiasing;
         this.interpolation = interpolation;
         this.composite = composite;
         this.paint = paint;
@@ -50,7 +50,7 @@ abstract class GraphicStateBase implements GraphicState {
 
     private RenderingHints getRenderingHints() {
         RenderingHints hints;
-        if (antialias == Antialias.NONE) {
+        if (antialiasing == Antialiasing.NONE) {
             hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         } else {
             hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
@@ -67,13 +67,13 @@ abstract class GraphicStateBase implements GraphicState {
     }
 
     @Override
-    public Antialias getAntialias() {
-        return antialias;
+    public Antialiasing getAntialiasing() {
+        return antialiasing;
     }
 
     @Override
-    public void setAntialias(Antialias antialias) {
-        this.antialias = antialias;
+    public void setAntialiasing(Antialiasing antialiasing) {
+        this.antialiasing = antialiasing;
     }
 
     @Override

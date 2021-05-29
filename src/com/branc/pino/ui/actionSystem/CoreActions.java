@@ -1,10 +1,27 @@
 package com.branc.pino.ui.actionSystem;
 
+import com.branc.pino.application.ApplicationError;
+import com.branc.pino.application.ApplicationManager;
+import com.branc.pino.io.ProjectIO;
+import com.branc.pino.io.SaveState;
+import com.branc.pino.paint.layer.LayerObject;
+import com.branc.pino.paint.layer.internal.FullColorBitmapLayer;
+import com.branc.pino.project.Project;
+import com.branc.pino.project.ProjectManager;
+import com.branc.pino.project.ProjectRenderer;
 import com.branc.pino.ui.actionSystem.scripts.create_project;
 import com.branc.pino.ui.actionSystem.scripts.not_implemented;
+import com.branc.pino.ui.actionSystem.scripts.open_project;
 import groovy.lang.Script;
+import javafx.scene.control.SelectionModel;
+import javafx.stage.FileChooser;
 import org.codehaus.groovy.runtime.InvokerHelper;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 final class CoreActions {
@@ -23,7 +40,8 @@ final class CoreActions {
                 Copy.class,
                 ExitApp.class,
                 Undo.class,
-                Redo.class
+                Redo.class,
+                AddLayer.class
         );
     }
 
@@ -55,7 +73,7 @@ final class CoreActions {
 
         @Override
         public void performed(ActionEvent e) {
-            run(not_implemented.class);
+            run(open_project.class);
         }
     }
 
@@ -69,7 +87,7 @@ final class CoreActions {
 
         @Override
         public void performed(ActionEvent e) {
-            run(not_implemented.class);
+            ProjectManager.getInstance().setProject(null);
         }
     }
 
@@ -83,7 +101,16 @@ final class CoreActions {
 
         @Override
         public void performed(ActionEvent e) {
-            run(not_implemented.class);
+            FileChooser fc = new FileChooser();
+            fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("プロジェクト", "*.pino"));
+            File file = fc.showSaveDialog(null);
+            if (file != null) {
+                try {
+                    ProjectIO.write(ProjectManager.getInstance().getProject(), file.toPath());
+                } catch (IOException ioException) {
+                    throw new RuntimeException(ioException);
+                }
+            }
         }
     }
 
@@ -97,7 +124,21 @@ final class CoreActions {
 
         @Override
         public void performed(ActionEvent e) {
-            run(not_implemented.class);
+            Project prj = ProjectManager.getInstance().getProject();
+            Path lastSaved = prj.getService(SaveState.class).getLastSavedPath();
+            if (lastSaved == null) {
+                try {
+                    ActionRegistry.getInstance().find(SaveProjectAs.ACTION_ID).performed(e);
+                } catch (ActionNotFoundException actionNotFoundException) {
+                    throw new ApplicationError(actionNotFoundException);
+                }
+            } else {
+                try {
+                    ProjectIO.write(prj, lastSaved);
+                } catch (IOException ioException) {
+                    throw new RuntimeException(ioException);
+                }
+            }
         }
     }
 
@@ -111,7 +152,23 @@ final class CoreActions {
 
         @Override
         public void performed(ActionEvent e) {
-            run(not_implemented.class);
+            BufferedImage img = ProjectRenderer.renderBufImg(ProjectManager.getInstance().getProject(), ProjectRenderer.RenderingOption.IGNORE_ROUGH, ProjectRenderer.RenderingOption.IGNORE_INVISIBLE);
+            FileChooser fc = new FileChooser();
+            fc.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("PNG", "*.png")
+            );
+            File file = fc.showSaveDialog(null);
+            if (file != null) {
+                try {
+                    if (file.toString().matches(".+\\.png")) {
+                        ImageIO.write(img, "png", file);
+                    } else {
+                        throw new RuntimeException("不明な拡張子です ファイル名：" + file.getName());
+                    }
+                } catch (IOException ioException) {
+                    throw new RuntimeException(ioException);
+                }
+            }
         }
     }
 
@@ -167,7 +224,7 @@ final class CoreActions {
 
         @Override
         public void performed(ActionEvent e) {
-            run(not_implemented.class);
+            ApplicationManager.getApp().exit();
         }
     }
 
@@ -197,6 +254,29 @@ final class CoreActions {
         @Override
         public void performed(ActionEvent e) {
             run(not_implemented.class);
+        }
+    }
+
+    public static class AddLayer extends Action {
+        public static final String ACTION_ID = "pino:add-layer";
+        public static final String DESCRIPTION = "レイヤーを選択しているレイヤーの上に追加します";
+
+        public AddLayer() {
+            super(ACTION_ID, DESCRIPTION);
+        }
+
+        @Override
+        public void performed(ActionEvent e) {
+            SelectionModel<LayerObject> selectionModel = ApplicationManager.getApp().getRoot().getLayer().getSelectionModel();
+            if (selectionModel == null) return;
+            int index = selectionModel.getSelectedIndex();
+            if (index == -1) {
+                ProjectManager.getInstance().getProject().getLayer().add(0, new FullColorBitmapLayer());
+                selectionModel.selectFirst();
+            } else {
+                ProjectManager.getInstance().getProject().getLayer().add(index, new FullColorBitmapLayer());
+                selectionModel.select(index);
+            }
         }
     }
 }

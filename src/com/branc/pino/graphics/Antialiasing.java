@@ -1,5 +1,5 @@
 package com.branc.pino.graphics;
 
-public enum Antialias {
+public enum Antialiasing {
     NONE, AUTO
 }

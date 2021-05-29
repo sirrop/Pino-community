@@ -31,6 +31,8 @@ public class LayerEditorSkin extends SkinBase<LayerEditor> {
         };
         getSkinnable().targetProperty().addListener(lis);
         Disposer.registerDisposable(disposable, () -> getSkinnable().targetProperty().removeListener(lis));
+        LayerObject target = getSkinnable().getTarget();
+        if (target != null) update(target);
     }
 
     @Override
@@ -46,7 +48,6 @@ public class LayerEditorSkin extends SkinBase<LayerEditor> {
             Disposer.dispose(uiDisposable);
         }
         uiDisposable = Disposer.newDisposable();
-        System.out.println(object);
 
         Text layerName = new Text(object.getName());
 

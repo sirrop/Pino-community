@@ -3,9 +3,9 @@ package com.branc.pino.ui.canvas;
 import com.branc.pino.paint.brush.Brush;
 import com.google.common.flogger.FluentLogger;
 import javafx.scene.input.MouseEvent;
+import org.apache.commons.lang3.time.StopWatch;
 
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 class FxHandler implements DrawEventHandler<MouseEvent> {
@@ -14,17 +14,12 @@ class FxHandler implements DrawEventHandler<MouseEvent> {
     private final Supplier<Brush<?>> brush;
     private final BlockingQueue<MouseEvent> queue;
     private final ScheduledExecutorService executor;
-    private final ScheduledExecutorService paceMaker;
-    private ScheduledFuture<?> paceMakerFuture;
-    private double rate = 20;
 
 
     public FxHandler(Supplier<Brush<?>> brush) {
         this.brush = brush;
         this.queue = new ArrayBlockingQueue<>(1024);
         executor = Executors.newScheduledThreadPool(1);
-        paceMaker = Executors.newScheduledThreadPool(1);
-        paceMakerFuture = paceMaker.scheduleAtFixedRate(this::allowEnqueue, 0, (long) (1000 / rate), TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -74,43 +69,13 @@ class FxHandler implements DrawEventHandler<MouseEvent> {
     public void shutdown() {
         log.atInfo().log();
         executor.shutdownNow();
-        paceMaker.shutdown();
     }
 
     private boolean pausing = false;
 
-    private void allowEnqueue() {
-        if (!pausing) {
-            isAllowedEnqueue.set(true);
-        }
-    }
-
-    private final AtomicBoolean isAllowedEnqueue = new AtomicBoolean(true);
-
     @Override
     public void enqueue(MouseEvent mouseEvent) {
-        if (mouseEvent.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
-            queue.add(mouseEvent);
-            return;
-        }
-        if (isAllowedEnqueue.get()) {
-            queue.add(mouseEvent);
-            isAllowedEnqueue.set(false);
-        }
-    }
-
-    @Override
-    public void setRate(double rate) {
-        paceMakerFuture.cancel(false);
-        if (Double.isFinite(rate) && rate > 0) {
-            this.rate = rate;
-            paceMakerFuture = paceMaker.scheduleAtFixedRate(this::allowEnqueue, 0, (long) (1000 / rate), TimeUnit.MILLISECONDS);
-        }
-    }
-
-    @Override
-    public double getRate() {
-        return rate;
+        if (!pausing) queue.add(mouseEvent);
     }
 
     @Override

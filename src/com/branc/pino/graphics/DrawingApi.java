@@ -7,8 +7,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 
 public interface DrawingApi extends GraphicState {
-    void setAntialias(Antialias antialias);
-    Antialias getAntialias();
+    void setAntialiasing(Antialiasing antialiasing);
+    Antialiasing getAntialiasing();
 
     void setInterpolation(Interpolation interpolation);
     Interpolation getInterpolation();

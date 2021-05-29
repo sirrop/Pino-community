@@ -35,13 +35,13 @@ class FxCanvasBackground extends Rectangle implements CanvasBackground {
         } else {
             this.pattern = pattern;
         }
-        DoubleBinding width = target.widthProperty().multiply(target.scaleXProperty());
-        DoubleBinding height = target.heightProperty().multiply(target.scaleYProperty());
-        widthProperty().bind(width);
-        heightProperty().bind(height);
+        widthProperty().bind(target.widthProperty());
+        heightProperty().bind(target.heightProperty());
         rotateProperty().bind(target.rotateProperty());
         translateXProperty().bind(target.translateXProperty());
         translateYProperty().bind(target.translateYProperty());
+        scaleXProperty().bind(target.scaleXProperty());
+        scaleYProperty().bind(target.scaleYProperty());
         updateBackground();
     }
 

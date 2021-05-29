@@ -1,7 +1,7 @@
 package com.branc.pino.paint.brush;
 
 import com.branc.pino.core.util.Disposable;
-import com.branc.pino.graphics.Antialias;
+import com.branc.pino.graphics.Antialiasing;
 import com.branc.pino.graphics.DrawingApi;
 import com.branc.pino.graphics.Interpolation;
 import com.branc.pino.graphics.PinoGraphics;
@@ -13,13 +13,13 @@ public abstract class Brush<T extends BrushContext> implements Disposable, PinoG
 
 
     @Override
-    public void setAntialias(Antialias antialias) {
-        g.setAntialias(antialias);
+    public void setAntialiasing(Antialiasing antialiasing) {
+        g.setAntialiasing(antialiasing);
     }
 
     @Override
-    public Antialias getAntialias() {
-        return g.getAntialias();
+    public Antialiasing getAntialiasing() {
+        return g.getAntialiasing();
     }
 
     @Override

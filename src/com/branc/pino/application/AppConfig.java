@@ -19,11 +19,11 @@ public final class AppConfig {
 
     private Properties properties;
 
-    public static AppConfig loadConfig() {
+    public static AppConfig loadConfig(String appDir) {
         var res = new AppConfig();
         res.properties = new Properties();
         try {
-            Path path = Paths.get("data", "config.properties");
+            Path path = Paths.get(appDir, "data", "config.properties");
             if (Files.isReadable(path)) {
                 res.properties.load(Files.newBufferedReader(path, StandardCharsets.UTF_8));
             }
@@ -81,12 +81,6 @@ public final class AppConfig {
         if (value == null || !value.matches("\\d+(\\.\\d+)?")) {
             return 60;
         }
-        return Double.parseDouble(value);
-    }
-
-    public double getDrawRate() {
-        String value = properties.getProperty("canvas.drawRate");
-        if (value == null || !value.matches("\\d+(\\.\\d+)?")) return 150;
         return Double.parseDouble(value);
     }
 

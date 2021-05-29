@@ -7,18 +7,31 @@ import com.branc.pino.ui.Layer;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
+import javafx.embed.swing.SwingNode;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SkinBase;
+import javafx.scene.control.ToolBar;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelFormat;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritablePixelFormat;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 public class LayerSkin extends SkinBase<Layer> {
     private final Disposable disposable = Disposer.newDisposable();
@@ -29,7 +42,12 @@ public class LayerSkin extends SkinBase<Layer> {
     }
 
     private void initialize() {
+        ToolBar toolBar = new ToolBar();
+        toolBar.getItems().setAll(getSkinnable().getButtons());
+        getSkinnable().getButtons().addListener((Observable obs) -> toolBar.getItems().setAll(getSkinnable().getButtons()));
+
         ListView<LayerObject> view = new ListView<>();
+        VBox.setVgrow(view, Priority.ALWAYS);
         getSkinnable().selectionModelProperty().bindBidirectional(view.selectionModelProperty());
         getSkinnable().focusModelProperty().bindBidirectional(view.focusModelProperty());
         getSkinnable().placeholderProperty().bindBidirectional(view.placeholderProperty());
@@ -46,7 +64,7 @@ public class LayerSkin extends SkinBase<Layer> {
             }
         };
         getSkinnable().cellFactoryProperty().addListener(changeListener);
-        getChildren().setAll(view);
+        getChildren().setAll(new VBox(toolBar, view));
 
         Disposer.registerDisposable(disposable, () -> {
             getSkinnable().selectionModelProperty().unbindBidirectional(view.selectionModelProperty());
@@ -59,7 +77,6 @@ public class LayerSkin extends SkinBase<Layer> {
 
     private static class DefaultCell extends ListCell<LayerObject> implements PropertyChangeListener {
         private final Node graphic;
-        private final ImageView image = new ImageView();
         private final Text label = new Text();
         private final Text opacity = new Text();
         private final Text visible = new Text();
@@ -67,9 +84,8 @@ public class LayerSkin extends SkinBase<Layer> {
 
         public DefaultCell() {
             var parent = new HBox();
-            image.setFitHeight(40);
             var hbox = new HBox(opacity, visible, rough);
-            parent.getChildren().addAll(image, new VBox(label, hbox));
+            parent.getChildren().addAll(new VBox(label, hbox));
             graphic = parent;
         }
 

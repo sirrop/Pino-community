@@ -3,6 +3,7 @@ package com.branc.pino.ui;
 import com.branc.pino.paint.layer.LayerObject;
 import com.branc.pino.project.Project;
 import com.branc.pino.ui.skin.LayerSkin;
+import javafx.beans.DefaultProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -13,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.util.Callback;
 
+@DefaultProperty("buttons")
 public class Layer extends Control {
 
     public Layer() {
@@ -103,5 +105,12 @@ public class Layer extends Control {
     @Override
     protected Skin<?> createDefaultSkin() {
         return new LayerSkin(this);
+    }
+
+
+    private final ObservableList<Button> buttons = FXCollections.observableArrayList();
+
+    public final ObservableList<Button> getButtons() {
+        return buttons;
     }
 }

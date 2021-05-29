@@ -4,8 +4,8 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 interface GraphicState {
-    void setAntialias(Antialias antialias);
-    Antialias getAntialias();
+    void setAntialiasing(Antialiasing antialiasing);
+    Antialiasing getAntialiasing();
 
     void setInterpolation(Interpolation interpolation);
     Interpolation getInterpolation();

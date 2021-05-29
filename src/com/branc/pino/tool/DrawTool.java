@@ -27,7 +27,6 @@ public class DrawTool implements Tool {
                 return null;
             }
         });
-        handler.setRate(ApplicationManager.getApp().getAppConfig().getDrawRate());
         Disposer.registerDisposable(lastDisposable, handler);
         handler.start();
     }
@@ -47,7 +46,6 @@ public class DrawTool implements Tool {
     public void mouseReleased(MouseEvent e) {
         handler.enqueue(e);
         ApplicationManager.getApp().getEventDistributor().requestUnlockActiveTool(lock);
-
     }
 
     @Override
