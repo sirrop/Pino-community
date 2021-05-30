@@ -1,6 +1,8 @@
 package com.branc.pino.project;
 
+import com.branc.pino.core.history.MementoException;
 import com.branc.pino.core.util.Disposable;
+import com.branc.pino.core.util.UpdateListener;
 import com.branc.pino.io.SaveState;
 import com.branc.pino.io.SimpleSaveState;
 import com.branc.pino.paint.layer.LayerObject;
@@ -9,6 +11,7 @@ import com.branc.pino.service.MutableServiceContainer;
 import com.branc.pino.service.ServiceContainer;
 import com.branc.pino.service.SimpleServiceContainer;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import java.awt.color.ICC_Profile;
@@ -21,6 +24,22 @@ public interface Project extends ServiceContainer, Disposable {
         Project res = new SimpleProject(width, height, profile, serviceContainer, layer);
 
         serviceContainer.register(SaveState.class, new SimpleSaveState());
+        LayerHistory history = new LayerHistory(100);
+        serviceContainer.register(LayerHistory.class, history);
+        UpdateListener<LayerObject> updateListener = it -> {
+            try {
+                history.add(it.createMemento());
+            } catch (MementoException e) {
+                throw new RuntimeException(e);
+            }
+        };
+        layer.addListener((ListChangeListener<? super LayerObject>) c -> {
+            while (c.next()) {
+                if (c.wasAdded()) {
+                    c.getAddedSubList().forEach(it -> it.addHistoryListener(updateListener));
+                }
+            }
+        });
 
         return res;
     }

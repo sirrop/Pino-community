@@ -2,10 +2,12 @@ package com.branc.pino.ui.actionSystem;
 
 import com.branc.pino.application.ApplicationError;
 import com.branc.pino.application.ApplicationManager;
+import com.branc.pino.core.history.MementoException;
 import com.branc.pino.io.ProjectIO;
 import com.branc.pino.io.SaveState;
 import com.branc.pino.paint.layer.LayerObject;
 import com.branc.pino.paint.layer.internal.FullColorBitmapLayer;
+import com.branc.pino.project.LayerHistory;
 import com.branc.pino.project.Project;
 import com.branc.pino.project.ProjectManager;
 import com.branc.pino.project.ProjectRenderer;
@@ -24,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 final class CoreActions {
     private CoreActions() {}
@@ -244,7 +247,16 @@ final class CoreActions {
 
         @Override
         public void performed(ActionEvent e) {
-            run(not_implemented.class, ACTION_ID);
+            Optional.ofNullable(ProjectManager.getInstance().getProject())
+                    .flatMap(it -> it.getService(LayerHistory.class).undoIfCan())
+                    .ifPresent(it -> {
+                        try {
+                            it.getParent().restore(it);
+                        } catch (MementoException mementoException) {
+                            throw new RuntimeException(mementoException);
+                        }
+                    });
+
         }
     }
 
@@ -258,7 +270,15 @@ final class CoreActions {
 
         @Override
         public void performed(ActionEvent e) {
-            run(not_implemented.class, ACTION_ID);
+            Optional.ofNullable(ProjectManager.getInstance().getProject())
+                    .flatMap(it -> it.getService(LayerHistory.class).redoIfCan())
+                    .ifPresent(it -> {
+                        try {
+                            it.getParent().restore(it);
+                        } catch (MementoException mementoException) {
+                            throw new RuntimeException(mementoException);
+                        }
+                    });
         }
     }
 

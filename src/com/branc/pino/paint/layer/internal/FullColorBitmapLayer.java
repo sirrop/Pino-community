@@ -1,5 +1,7 @@
 package com.branc.pino.paint.layer.internal;
 
+import com.branc.pino.core.history.Memento;
+import com.branc.pino.core.history.MementoException;
 import com.branc.pino.graphics.PinoGraphics;
 import com.branc.pino.paint.layer.Drawable;
 import com.branc.pino.paint.layer.LayerObject;
@@ -67,5 +69,18 @@ public class FullColorBitmapLayer extends LayerObject implements Drawable {
         }
         img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         img.setRGB(0, 0, width, height, data, 0, width);
+    }
+
+    @Override
+    public Memento<LayerObject> createMemento() throws MementoException {
+        Memento<LayerObject> memento = super.createMemento();
+        memento.put("pino:full-color-bitmap-layer:image", img.getRGB(0, 0, img.getWidth(), img.getHeight(), null, 0, img.getWidth()));
+        return memento;
+    }
+
+    @Override
+    public void restore(Memento<LayerObject> memento) throws MementoException {
+        super.restore(memento);
+        img.setRGB(0, 0, img.getWidth(), img.getHeight(), (int[]) memento.get("pino:full-color-bitmap-layer:image"), 0, img.getWidth());
     }
 }
