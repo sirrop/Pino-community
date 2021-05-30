@@ -2,21 +2,34 @@ package com.branc.pino.application;
 
 import com.branc.pino.core.util.Disposable;
 import com.branc.pino.core.util.Disposer;
+import com.branc.pino.notification.Notification;
+import com.branc.pino.notification.NotificationCenter;
+import com.branc.pino.notification.NotificationType;
+import com.branc.pino.notification.Publisher;
 import com.branc.pino.project.ProjectManager;
 import com.branc.pino.project.ProjectRenderer;
 import com.branc.pino.service.MutableServiceContainer;
 import com.branc.pino.service.ServiceContainer;
 import com.branc.pino.service.SimpleServiceContainer;
+import com.branc.pino.ui.KeyMap;
 import com.branc.pino.ui.Root;
+import com.branc.pino.ui.actionSystem.ActionEvent;
+import com.branc.pino.ui.actionSystem.ActionNotFoundException;
+import com.branc.pino.ui.actionSystem.ActionRegistry;
 import com.branc.pino.ui.canvas.AutoRepaint;
 import com.google.common.flogger.FluentLogger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 
 public class Pino extends Application implements Disposable, ServiceContainer {
@@ -64,10 +77,29 @@ public class Pino extends Application implements Disposable, ServiceContainer {
         } else {
             scene = new Scene(loader.getRoot(), w, h);
         }
+        scene.setOnKeyPressed(this::searchAndPerform);
+        scene.setOnKeyTyped(this::searchAndPerform);
         scene.getStylesheets().add(Paths.get(System.getProperty("appDir", "."), "data", "style.css").toUri().toURL().toExternalForm());
         s.setScene(scene);
-        s.setTitle("Pino  ver 0.1.0");
+        s.setTitle("Pino  ver 0.2.0");
         s.show();
+    }
+
+    private void searchAndPerform(KeyEvent e) {
+        getService(KeyMap.class).searchFor(e).ifPresent(it -> {
+            try {
+                ActionRegistry.getInstance().find(it).performed(new ActionEvent(e.getSource()));
+            } catch (ActionNotFoundException ex) {
+                Notification notification = new Notification(
+                        "アクションが見つかりませんでした",
+                        String.format("アクション[id=%s]は見つかりませんでした。", it),
+                        "",
+                        NotificationType.ERROR,
+                        Collections.emptyList()
+                );
+                getService(NotificationCenter.class).notify(notification);
+            }
+        });
     }
 
     public AppConfig getAppConfig() {
@@ -80,6 +112,23 @@ public class Pino extends Application implements Disposable, ServiceContainer {
 
     @Override
     public void stop() {
+        try {
+            appConfig.save();
+            KeyMapWriter keyMapWriter = new KeyMapWriter();
+            keyMapWriter.store(getService(KeyMap.class), Paths.get(System.getProperty("appDir", "."), "data", "KeyMap.xml"));
+        } catch (IOException ioException) {
+            StringWriter out = new StringWriter();
+            PrintWriter writer = new PrintWriter(out);
+            ioException.printStackTrace(writer);
+            Notification notification = new Notification(
+                    "エラー",
+                    "設定の保存時にエラーが発生しました。",
+                    out.getBuffer().toString(),
+                    NotificationType.ERROR,
+                    null
+            );
+            getService(NotificationCenter.class).notify(notification);
+        }
         Disposer.dispose(this);
         Disposer.dispose(lastDisposable);
     }

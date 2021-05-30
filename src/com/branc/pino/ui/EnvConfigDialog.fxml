@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.branc.pino.ui.EnvConfigDialogController"
+            prefHeight="400.0" prefWidth="600.0">
+    <SplitPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" dividerPositions="0.3">
+        <VBox>
+            <Button text="スタイル" onAction="#style" textOverrun="CLIP" />
+            <Button text="メニュー" onAction="#menu" textOverrun="CLIP" />
+            <Button text="ショートカットキー" onAction="#shotCutKey" textOverrun="CLIP" />
+            <Button text="カーソル" onAction="#cursor" textOverrun="CLIP" />
+            <Button text="キャンバス" onAction="#canvas" textOverrun="CLIP" />
+        </VBox>
+        <AnchorPane fx:id="main" />
+    </SplitPane>
+</AnchorPane>

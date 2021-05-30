@@ -6,10 +6,9 @@ import com.branc.pino.notification.NotificationCenter
 import com.branc.pino.notification.NotificationType
 import groovy.transform.Field
 
-@Field
 def notification = new Notification(
-        "未実装",
-        "このアクションは未実装です",
+        "未実装のアクション",
+        "アクション[id=${args[0]}]は未実装です",
         "",
         NotificationType.INFO,
         List.of()

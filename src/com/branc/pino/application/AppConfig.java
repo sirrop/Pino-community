@@ -1,6 +1,8 @@
 package com.branc.pino.application;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,7 +20,6 @@ public final class AppConfig {
     private static final String REGEXP_STAGE_SIZE = "(\\s*compute-max-size\\s*)|(\\s*full-screen\\s*)|(\\s*use-pref-size\\s*)|(\\s*[1-9][0-9]*(\\.[0-9]+)?\\s*,\\s*[1-9][0-9]*(\\.[0-9]+)?\\s*)";
 
     private Properties properties;
-
     public static AppConfig loadConfig(String appDir) {
         var res = new AppConfig();
         res.properties = new Properties();
@@ -31,6 +32,53 @@ public final class AppConfig {
             throw new RuntimeException(e);
         }
         return res;
+    }
+
+    public void save() throws IOException {
+        File file = new File(System.getProperty("appDir", ".") + "/data/config.properties");
+        if (!file.exists()) file.createNewFile();
+        properties.store(new PrintWriter(file), "");
+    }
+
+    private void set(String key, String value) {
+        properties.setProperty(key, value);
+    }
+
+    private void set(String key, int value) {
+        set(key, String.valueOf(value));
+    }
+
+    private void set(String key, long value) {
+        set(key, String.valueOf(value));
+    }
+
+    private void set(String key, float value) {
+        set(key, String.valueOf(value));
+    }
+
+    private void set(String key, double value) {
+        set(key, String.valueOf(value));
+    }
+
+    private void set(String key, boolean value) {
+        set(key, String.valueOf(value));
+    }
+
+    public void setStageSize(double preset) {
+        if (preset == USE_PREF_SIZE) {
+            set("scene.size", "use-pref-size");
+        } else if (preset == FULL_SCREEN) {
+            set("scene.size", "full-screen");
+        } else if (preset == COMPUTE_MAX_SIZE) {
+            set("scene.size", "compute-max-size");
+        } else {
+            throw new IllegalArgumentException("Unknown size type");
+        }
+    }
+
+    public void setStateSize(double w, double h) {
+        if (w < 0 || h < 0) throw new IllegalArgumentException();
+        set("scene.size", w + "," + h);
     }
 
     public double getStageWidth() {
@@ -84,9 +132,25 @@ public final class AppConfig {
         return Double.parseDouble(value);
     }
 
+    public void setCanvasFps(double value) {
+        if (value > 0 && Double.isFinite(value)) {
+            set("canvas.fps", String.valueOf(value));
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
     public double getZoomRate() {
         String value = properties.getProperty("canvas.zoom");
         if (value == null || !value.matches("\\s+(\\.\\d+)?")) return 0.0025;
         return Double.parseDouble(value);
+    }
+
+    public void setZoomRate(double rate) {
+        if (rate > 0 && Double.isFinite(rate)) {
+            set("canvas.zoom", rate);
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 }

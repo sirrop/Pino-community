@@ -16,21 +16,21 @@
 <?import com.branc.pino.ui.actionSystem.ActionableButton?>
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.branc.pino.ui.Root" prefHeight="400.0" prefWidth="600.0">
     <MenuBar fx:id="menuBar">
-        <Menu text="ファイル">
-            <ActionableMenuItem text="新規プロジェクトを作成" actionId="pino:create-project" />
-            <ActionableMenuItem text="プロジェクトを開く" actionId="pino:open-project" />
-            <ActionableMenuItem text="閉じる" actionId="pino:close-project" />
+        <Menu text="ファイル(_F)">
+            <ActionableMenuItem text="新規プロジェクトを作成(_N)" actionId="pino:create-project" />
+            <ActionableMenuItem text="プロジェクトを開く(_O)" actionId="pino:open-project" />
+            <ActionableMenuItem text="閉じる(_J)" actionId="pino:close-project" />
             <ActionableMenuItem text="名前をつけて保存" actionId="pino:save-project-as" />
-            <ActionableMenuItem text="保存" actionId="pino:save-project" />
+            <ActionableMenuItem text="保存(_S)" actionId="pino:save-project" />
             <ActionableMenuItem text="出力" actionId="pino:output-project" />
-            <ActionableMenuItem text="環境設定" actionId="pino:show-env-config" />
+            <ActionableMenuItem text="環境設定(_T)" actionId="pino:show-env-config" />
             <ActionableMenuItem text="印刷設定" actionId="pino:show-copy-config" />
             <ActionableMenuItem text="印刷" actionId="pino:copy" />
-            <ActionableMenuItem text="終了" actionId="pino:exit-app" />
+            <ActionableMenuItem text="終了(_X)" actionId="pino:exit-app" />
         </Menu>
-        <Menu text="編集">
-            <ActionableMenuItem text="ひとつ戻る" actionId="pino:undo" />
-            <ActionableMenuItem text="ひとつ進む" actionId="pino:redo" />
+        <Menu text="編集(_E)">
+            <ActionableMenuItem text="ひとつ戻る(_U)" actionId="pino:undo" />
+            <ActionableMenuItem text="ひとつ進む(_R)" actionId="pino:redo" />
             <ActionableMenuItem text="レイヤーを追加" actionId="pino:add-layer" />
         </Menu>
     </MenuBar>

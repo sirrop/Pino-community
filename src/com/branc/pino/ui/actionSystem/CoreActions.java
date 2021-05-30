@@ -12,6 +12,7 @@ import com.branc.pino.project.ProjectRenderer;
 import com.branc.pino.ui.actionSystem.scripts.create_project;
 import com.branc.pino.ui.actionSystem.scripts.not_implemented;
 import com.branc.pino.ui.actionSystem.scripts.open_project;
+import com.branc.pino.ui.actionSystem.scripts.show_env_config;
 import groovy.lang.Script;
 import javafx.scene.control.SelectionModel;
 import javafx.stage.FileChooser;
@@ -47,6 +48,10 @@ final class CoreActions {
 
     private static void run(Class<? extends Script> scriptClass) {
         InvokerHelper.runScript(scriptClass, new String[0]);
+    }
+
+    private static void run(Class<? extends Script> scriptClass, String... args) {
+        InvokerHelper.runScript(scriptClass, args);
     }
 
     public static class CreateProject extends Action {
@@ -182,7 +187,7 @@ final class CoreActions {
 
         @Override
         public void performed(ActionEvent e) {
-            run(not_implemented.class);
+            run(show_env_config.class);
         }
     }
 
@@ -196,7 +201,7 @@ final class CoreActions {
 
         @Override
         public void performed(ActionEvent e) {
-            run(not_implemented.class);
+            run(not_implemented.class, ACTION_ID);
         }
     }
 
@@ -210,7 +215,7 @@ final class CoreActions {
 
         @Override
         public void performed(ActionEvent e) {
-            run(not_implemented.class);
+            run(not_implemented.class, ACTION_ID);
         }
     }
 
@@ -239,7 +244,7 @@ final class CoreActions {
 
         @Override
         public void performed(ActionEvent e) {
-            run(not_implemented.class);
+            run(not_implemented.class, ACTION_ID);
         }
     }
 
@@ -253,7 +258,7 @@ final class CoreActions {
 
         @Override
         public void performed(ActionEvent e) {
-            run(not_implemented.class);
+            run(not_implemented.class, ACTION_ID);
         }
     }
 

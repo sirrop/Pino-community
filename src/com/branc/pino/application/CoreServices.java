@@ -10,12 +10,16 @@ import com.branc.pino.paint.layer.LayerRegistry;
 import com.branc.pino.paint.layer.internal.FullColorBitmapLayer;
 import com.branc.pino.project.ProjectManager;
 import com.branc.pino.service.MutableServiceContainer;
+import com.branc.pino.ui.KeyMap;
 import com.branc.pino.ui.actionSystem.ActionRegistry;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javafx.collections.FXCollections;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 final class CoreServices {
@@ -28,5 +32,16 @@ final class CoreServices {
         serviceContainer.register(BrushRegistry.class, new BrushRegistry());
         serviceContainer.register(BrushManager.class, new BrushManager(FXCollections.observableArrayList()));
         serviceContainer.register(NotificationCenter.class, new NotificationCenter());
+        serviceContainer.register(KeyMap.class, loadKeyMap());
+    }
+
+    private static KeyMap loadKeyMap() {
+        Path path = Paths.get(System.getProperty("appDir", "."), "data", "KeyMap.xml");
+        KeyMapLoader loader = new KeyMapLoader();
+        try {
+            return loader.load(path);
+        } catch (IOException ioException) {
+            throw new RuntimeException(ioException);
+        }
     }
 }
