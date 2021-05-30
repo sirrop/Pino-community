@@ -5,4 +5,3 @@
 	<shortcut action="pino:show-env-config" key-combination="Ctrl+Alt+S" />
 	<shortcut action="pino:undo" key-combination="Ctrl+Z" />
 </keymap>
-

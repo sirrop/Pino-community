@@ -1,6 +1,7 @@
 package com.branc.pino.ui.actionSystem.scripts
 
-import com.branc.pino.ui.EnvConfigDialogController
+import com.branc.pino.ui.config.EnvConfigDialogController
+import javafx.event.ActionEvent
 import javafx.fxml.FXMLLoader
 import javafx.scene.Node
 import javafx.scene.control.ButtonType
@@ -13,8 +14,12 @@ EnvConfigDialogController controller = loader.controller
 def dialog = new Dialog()
 dialog.dialogPane.buttonTypes.addAll ButtonType.APPLY, ButtonType.CANCEL, ButtonType.OK
 dialog.dialogPane.content = parent as Node
+dialog.dialogPane.lookupButton(ButtonType.APPLY).addEventFilter(ActionEvent.ACTION) {
+    controller.applyChange()
+    it.consume()
+}
 dialog.showAndWait().filter {
-    it == ButtonType.APPLY || it == ButtonType.OK
+    it == ButtonType.OK
 }.ifPresent {
     controller.applyChange()
 }
