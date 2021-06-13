@@ -1,6 +1,7 @@
 /out/
 /build/
 /log/
+/javadoc/
 *.class
 *.jar
 *.log

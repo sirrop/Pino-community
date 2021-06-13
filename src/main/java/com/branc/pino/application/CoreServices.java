@@ -1,0 +1,40 @@
+package com.branc.pino.application;
+
+import com.branc.pino.brush.BrushManager;
+import com.branc.pino.brush.BrushRegistry;
+import com.branc.pino.layer.LayerRegistry;
+import com.branc.pino.notification.NotificationCenter;
+import com.branc.pino.project.ProjectManager;
+import com.branc.pino.service.MutableServiceContainer;
+import com.branc.pino.ui.KeyMap;
+import com.branc.pino.ui.actionSystem.ActionRegistry;
+import javafx.collections.FXCollections;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+final class CoreServices {
+    public CoreServices() {
+    }
+
+    public static void load(MutableServiceContainer serviceContainer) {
+        serviceContainer.register(ActionRegistry.class, new ActionRegistry());
+        serviceContainer.register(ProjectManager.class, new ProjectManager());
+        serviceContainer.register(LayerRegistry.class, new LayerRegistry());
+        serviceContainer.register(BrushRegistry.class, new BrushRegistry());
+        serviceContainer.register(BrushManager.class, new BrushManager(FXCollections.observableArrayList()));
+        serviceContainer.register(NotificationCenter.class, new NotificationCenter());
+        serviceContainer.register(KeyMap.class, loadKeyMap());
+    }
+
+    private static KeyMap loadKeyMap() {
+        Path path = Paths.get(System.getProperty("appDir", "."), "data", "KeyMap.xml");
+        KeyMapLoader loader = new KeyMapLoader();
+        try {
+            return loader.load(path);
+        } catch (IOException ioException) {
+            throw new RuntimeException(ioException);
+        }
+    }
+}
