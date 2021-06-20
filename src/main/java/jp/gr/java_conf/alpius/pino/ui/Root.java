@@ -19,6 +19,7 @@ import jp.gr.java_conf.alpius.pino.project.ProjectManager;
 import jp.gr.java_conf.alpius.pino.ui.canvas.CanvasBackground;
 import jp.gr.java_conf.alpius.pino.ui.editor.BrushEditor;
 import jp.gr.java_conf.alpius.pino.ui.editor.LayerEditor;
+import org.controlsfx.control.StatusBar;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -48,6 +49,10 @@ public class Root implements Disposable {
 
     @FXML
     private Canvas canvas;
+
+    @FXML
+    private StatusBar statusBar;
+
 
     private CanvasBackground background;
     private final Disposable lastDisposable = Disposer.newDisposable();
@@ -103,7 +108,6 @@ public class Root implements Disposable {
         layerEditor.setTarget(object);
     }
 
-
     public MenuBar getMenuBar() {
         return menuBar;
     }
@@ -143,5 +147,9 @@ public class Root implements Disposable {
     @Override
     public void dispose() {
         Disposer.dispose(lastDisposable);
+    }
+
+    public StatusBar getStatusBar() {
+        return statusBar;
     }
 }

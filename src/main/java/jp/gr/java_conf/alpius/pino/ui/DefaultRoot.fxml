@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import jp.gr.java_conf.alpius.pino.ui.actionSystem.*?>
+<?import jp.gr.java_conf.alpius.pino.ui.editor.BrushEditor?>
 <?import jp.gr.java_conf.alpius.pino.ui.editor.EditorGroup?>
 <?import jp.gr.java_conf.alpius.pino.ui.editor.LayerEditor?>
 <?import jp.gr.java_conf.alpius.pino.ui.Layer?>
-<?import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionableButton?>
-<?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.Menu?>
-<?import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionableMenuItem?>
+<?import org.controlsfx.control.StatusBar?>
 
-<?import jp.gr.java_conf.alpius.pino.ui.editor.BrushEditor?>
-<?import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionableButton?>
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="jp.gr.java_conf.alpius.pino.ui.Root"
       prefHeight="400.0" prefWidth="600.0">
     <MenuBar fx:id="menuBar">
@@ -57,4 +53,5 @@
             </SplitPane>
         </SplitPane>
     </HBox>
+    <StatusBar fx:id="statusBar" text=""/>
 </VBox>

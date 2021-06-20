@@ -9,6 +9,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import jp.gr.java_conf.alpius.pino.core.util.Disposable;
 import jp.gr.java_conf.alpius.pino.core.util.Disposer;
+import jp.gr.java_conf.alpius.pino.internal.application.ApplicationHelper;
 import jp.gr.java_conf.alpius.pino.internal.graphics.Renderer;
 import jp.gr.java_conf.alpius.pino.notification.Notification;
 import jp.gr.java_conf.alpius.pino.notification.NotificationCenter;
@@ -32,12 +33,41 @@ import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 
 public class Pino extends Application implements Disposable, ServiceContainer {
+    private ApplicationHelper helper;
+
+    static {
+        ApplicationHelper.setAccessor(new ApplicationHelper.ApplicationAccessor() {
+            @Override
+            public void setHelper(Pino app, ApplicationHelper helper) {
+                app.helper = helper;
+            }
+
+            @Override
+            public ApplicationHelper getHelper(Pino app) {
+                return app.helper;
+            }
+
+            @Override
+            public Stage getStage(Pino app) {
+                return app.stage;
+            }
+
+            @Override
+            public Scene getScene(Pino app) {
+                return app.scene;
+            }
+        });
+    }
+
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
     public static void main(String[] args) {
         launch(args);
     }
 
     private final Disposable lastDisposable = Disposer.newDisposable();
+
+    private Stage stage;
+    private Scene scene;
 
     private Root root;
     private final MutableServiceContainer serviceContainer = new SimpleServiceContainer();
@@ -47,6 +77,8 @@ public class Pino extends Application implements Disposable, ServiceContainer {
 
     @Override
     public void start(Stage s) throws Exception {
+        this.stage = s;
+
         FXMLLoader loader;
         if (appConfig.getRootFXML().equals(AppConfig.ROOT_DEFAULT)) {
             loader = Root.load();
@@ -79,8 +111,10 @@ public class Pino extends Application implements Disposable, ServiceContainer {
         scene.setOnKeyPressed(this::searchAndPerform);
         scene.setOnKeyTyped(this::searchAndPerform);
         scene.getStylesheets().add(Paths.get(System.getProperty("appDir", "."), "data", "style.css").toUri().toURL().toExternalForm());
+        this.scene = scene;
+
         s.setScene(scene);
-        s.setTitle("Pino  ver 0.2.0");
+        s.setTitle("Pino  ver 0.3.0");
         s.show();
     }
 
