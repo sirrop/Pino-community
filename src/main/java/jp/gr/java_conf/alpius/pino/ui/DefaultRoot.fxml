@@ -10,17 +10,27 @@
 <?import jp.gr.java_conf.alpius.pino.ui.Layer?>
 <?import org.controlsfx.control.StatusBar?>
 
+<?import org.controlsfx.control.NotificationPane?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="jp.gr.java_conf.alpius.pino.ui.Root"
       prefHeight="400.0" prefWidth="600.0">
     <MenuBar fx:id="menuBar">
         <Menu text="ファイル(_F)">
             <ActionableMenuItem text="新規プロジェクトを作成(_N)" actionId="pino:create-project"/>
-            <ActionableMenuItem text="プロジェクトを開く(_O)" actionId="pino:open-project"/>
+            <ActionableMenuItem text="プロジェクトを開く(_O)" actionId="pino:open-project">
+                <graphic>
+                    <FontIcon iconLiteral="mdi2f-folder-open"/>
+                </graphic>
+            </ActionableMenuItem>
             <ActionableMenuItem text="閉じる(_J)" actionId="pino:close-project"/>
             <ActionableMenuItem text="名前をつけて保存" actionId="pino:save-project-as"/>
             <ActionableMenuItem text="保存(_S)" actionId="pino:save-project"/>
             <ActionableMenuItem text="出力" actionId="pino:output-project"/>
-            <ActionableMenuItem text="環境設定(_T)" actionId="pino:show-env-config"/>
+            <ActionableMenuItem text="環境設定(_T)" actionId="pino:show-env-config">
+                <graphic>
+                    <FontIcon iconLiteral="mdi2c-cog"/>
+                </graphic>
+            </ActionableMenuItem>
             <ActionableMenuItem text="印刷設定" actionId="pino:show-copy-config"/>
             <ActionableMenuItem text="印刷" actionId="pino:copy"/>
             <ActionableMenuItem text="終了(_X)" actionId="pino:exit-app"/>
@@ -32,8 +42,16 @@
         </Menu>
     </MenuBar>
     <ToolBar fx:id="toolBar">
-        <ActionableButton text="ブラシ" actionId="pino:tools:activate-draw-tool"/>
-        <ActionableButton text="移動" actionId="pino:tools:activate-hand-tool"/>
+        <ActionableButton actionId="pino:tools:activate-draw-tool">
+            <graphic>
+                <FontIcon iconLiteral="mdi2p-pencil" />
+            </graphic>
+        </ActionableButton>
+        <ActionableButton actionId="pino:tools:activate-hand-tool">
+            <graphic>
+                <FontIcon iconLiteral="mdi2a-arrow-all"/>
+            </graphic>
+        </ActionableButton>
         <ActionableButton text="ひとつ戻る" actionId="pino:undo"/>
         <ActionableButton text="ひとつ進む" actionId="pino:redo"/>
     </ToolBar>

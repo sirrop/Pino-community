@@ -25,5 +25,7 @@
     <orderEntry type="library" name="ImageFX" level="project" />
     <orderEntry type="library" name="Juno1.0.1" level="project" />
     <orderEntry type="library" name="org.controlsfx:controlsfx:11.1.0" level="project" />
+    <orderEntry type="library" name="org.kordamp.ikonli:ikonli-javafx:12.2.0" level="project" />
+    <orderEntry type="library" name="org.kordamp.ikonli:ikonli-materialdesign2-pack:12.2.0" level="project" />
   </component>
 </module>
