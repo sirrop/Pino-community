@@ -120,6 +120,6 @@ public final class SequentialDrawingSupport implements Disposable {
 
     @Override
     public void dispose() {
-
+        g.beginPath();
     }
 }
