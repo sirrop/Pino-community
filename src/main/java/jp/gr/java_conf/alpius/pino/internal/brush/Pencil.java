@@ -17,6 +17,7 @@ public class Pencil extends Brush<PencilContext> {
 
     @Override
     public void first(DrawEvent e) {
+        support.begin();
         support.moveTo(e.getX(), e.getY());
     }
 

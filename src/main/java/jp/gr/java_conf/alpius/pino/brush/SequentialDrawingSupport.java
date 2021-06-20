@@ -47,14 +47,16 @@ public final class SequentialDrawingSupport implements Disposable {
         g.updateSurface();
     }
 
+    public void begin() {
+        initOnce();
+        g.beginPath();
+    }
 
     public void moveTo(double x, double y) {
-        initOnce();
         g.moveTo(x, y);
     }
 
     public void lineTo(double x, double y) {
-        initOnce();
         undo();
         g.lineTo(x, y);
         g.stroke();
