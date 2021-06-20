@@ -1,25 +1,29 @@
 package jp.gr.java_conf.alpius.pino.tool;
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.control.SelectionModel;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import jp.gr.java_conf.alpius.pino.application.ApplicationManager;
 import jp.gr.java_conf.alpius.pino.brush.Brush;
 import jp.gr.java_conf.alpius.pino.brush.BrushManager;
 import jp.gr.java_conf.alpius.pino.brush.event.DrawEvent;
 import jp.gr.java_conf.alpius.pino.core.util.Disposable;
 import jp.gr.java_conf.alpius.pino.core.util.Disposer;
+import jp.gr.java_conf.alpius.pino.internal.brush.BrushHelper;
+import jp.gr.java_conf.alpius.pino.internal.ui.canvas.DrawEventHandlerImpl;
 import jp.gr.java_conf.alpius.pino.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.layer.LayerObject;
+import jp.gr.java_conf.alpius.pino.notification.Notification;
+import jp.gr.java_conf.alpius.pino.notification.NotificationCenter;
+import jp.gr.java_conf.alpius.pino.notification.NotificationType;
+import jp.gr.java_conf.alpius.pino.project.ProjectManager;
 import jp.gr.java_conf.alpius.pino.ui.canvas.DrawEventHandler;
 import jp.gr.java_conf.alpius.pino.ui.event.EventType;
 import jp.gr.java_conf.alpius.pino.ui.input.MouseButton;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.control.SelectionModel;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
-import jp.gr.java_conf.alpius.pino.internal.brush.BrushHelper;
-import jp.gr.java_conf.alpius.pino.internal.ui.canvas.DrawEventHandlerImpl;
 
-import static jp.gr.java_conf.alpius.pino.ui.input.MouseEvent.*;
 import static javafx.scene.input.MouseEvent.MOUSE_RELEASED;
+import static jp.gr.java_conf.alpius.pino.ui.input.MouseEvent.*;
 
 public class DrawTool implements Tool {
     private final Disposable lastDisposable = Disposer.newDisposable();
@@ -109,19 +113,27 @@ public class DrawTool implements Tool {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        ApplicationManager.getApp().getEventDistributor().requestLockActiveTool(lock, this);
-        handler.enqueue(copyOf(e));
+        if (projectExists()) {
+            ApplicationManager.getApp().getEventDistributor().requestLockActiveTool(lock, this);
+            handler.enqueue(copyOf(e));
+        } else {
+            notifyAbsent();
+        }
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        handler.enqueue(copyOf(e));
+        if (projectExists()) {
+            handler.enqueue(copyOf(e));
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        handler.enqueue(copyOf(e));
-        ApplicationManager.getApp().getEventDistributor().requestUnlockActiveTool(lock);
+        if (projectExists()) {
+            handler.enqueue(copyOf(e));
+            ApplicationManager.getApp().getEventDistributor().requestUnlockActiveTool(lock);
+        }
     }
 
     @Override
@@ -129,6 +141,21 @@ public class DrawTool implements Tool {
         double value = e.getDeltaY() * zoomRate;
         canvas.setScaleX(canvas.getScaleX() + value);
         canvas.setScaleY(canvas.getScaleY() + value);
+    }
+
+    private boolean projectExists() {
+        return ProjectManager.getInstance().getProject() != null;
+    }
+
+    private void notifyAbsent() {
+        Notification notification = new Notification(
+                "プロジェクトが存在しません",
+                "",
+                "",
+                NotificationType.WARN,
+                null
+        );
+        NotificationCenter.getInstance().notify(notification);
     }
 
     @Override

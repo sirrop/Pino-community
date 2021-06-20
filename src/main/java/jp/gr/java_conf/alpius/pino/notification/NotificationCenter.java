@@ -1,5 +1,6 @@
 package jp.gr.java_conf.alpius.pino.notification;
 
+import jp.gr.java_conf.alpius.pino.application.ApplicationManager;
 import org.controlsfx.control.Notifications;
 
 import java.util.ArrayList;
@@ -7,6 +8,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class NotificationCenter implements Publisher {
+    public static NotificationCenter getInstance() {
+        return ApplicationManager.getApp().getService(NotificationCenter.class);
+    }
+
     private final LinkedList<Notification> history = new LinkedList<>();
 
     public void notify(Notification notification) {

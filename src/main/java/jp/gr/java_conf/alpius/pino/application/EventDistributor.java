@@ -1,16 +1,10 @@
 package jp.gr.java_conf.alpius.pino.application;
 
-import jp.gr.java_conf.alpius.pino.tool.DrawTool;
-import jp.gr.java_conf.alpius.pino.tool.HandTool;
-import jp.gr.java_conf.alpius.pino.tool.Tool;
-import jp.gr.java_conf.alpius.pino.core.util.Disposable;
-import jp.gr.java_conf.alpius.pino.core.util.Disposer;
-import jp.gr.java_conf.alpius.pino.tool.DrawTool;
-import jp.gr.java_conf.alpius.pino.tool.HandTool;
-import jp.gr.java_conf.alpius.pino.tool.Tool;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import jp.gr.java_conf.alpius.pino.core.util.Disposable;
+import jp.gr.java_conf.alpius.pino.core.util.Disposer;
 import jp.gr.java_conf.alpius.pino.tool.DrawTool;
 import jp.gr.java_conf.alpius.pino.tool.HandTool;
 import jp.gr.java_conf.alpius.pino.tool.Tool;
@@ -31,7 +25,7 @@ public class EventDistributor implements Disposable {
         var pane = ApplicationManager.getApp().getRoot().getCanvasPane();
         drawTool = new DrawTool();
         handTool = new HandTool();
-        activeTool = drawTool;
+        activeTool = handTool;
         Disposer.registerDisposable(lastDispose, drawTool);
 
         pane.setOnMouseClicked(this::mouseClicked);
