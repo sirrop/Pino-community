@@ -141,6 +141,12 @@ public final class PropertyEditorBuilder {
     private Node comboBox(PropertyDescriptor desc, EditorTarget target, Disposable parent) {
         Label label = new Label(desc.getDisplayName());
         assert desc.getPropertyType() == BlendMode.class;
+        Method valueOf;
+        try {
+            valueOf = desc.getPropertyType().getDeclaredMethod("valueOf", String.class);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
 
         List<String> names = new ArrayList<>();
         Map<String, String> nameMap = new HashMap<>();
@@ -170,7 +176,13 @@ public final class PropertyEditorBuilder {
 
         ComboBox<String> comboBox = new ComboBox<>();
         comboBox.getItems().setAll(names);
-        comboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> PropertyUtils.set(desc, target, BlendMode.valueOf(nameMap.get(newValue))));
+        comboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+            try {
+                PropertyUtils.set(desc, target, valueOf.invoke(null, nameMap.get(newValue)));
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        });
         Platform.runLater(() -> comboBox.getSelectionModel().selectFirst());
 
         return new HBox(label, comboBox);
