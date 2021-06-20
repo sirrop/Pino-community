@@ -11,8 +11,6 @@ public class Pencil extends Brush<PencilContext> {
         super(context);
     }
 
-    private double x;
-    private double y;
     private final SequentialDrawingSupport support = new SequentialDrawingSupport(this);
 
     @Override
