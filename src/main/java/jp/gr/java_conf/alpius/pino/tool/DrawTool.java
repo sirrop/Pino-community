@@ -14,9 +14,6 @@ import jp.gr.java_conf.alpius.pino.internal.brush.BrushHelper;
 import jp.gr.java_conf.alpius.pino.internal.ui.canvas.DrawEventHandlerImpl;
 import jp.gr.java_conf.alpius.pino.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.layer.LayerObject;
-import jp.gr.java_conf.alpius.pino.notification.Notification;
-import jp.gr.java_conf.alpius.pino.notification.NotificationCenter;
-import jp.gr.java_conf.alpius.pino.notification.NotificationType;
 import jp.gr.java_conf.alpius.pino.project.ProjectManager;
 import jp.gr.java_conf.alpius.pino.ui.canvas.DrawEventHandler;
 import jp.gr.java_conf.alpius.pino.ui.event.EventType;
@@ -116,8 +113,6 @@ public class DrawTool implements Tool {
         if (projectExists()) {
             ApplicationManager.getApp().getEventDistributor().requestLockActiveTool(lock, this);
             handler.enqueue(copyOf(e));
-        } else {
-            notifyAbsent();
         }
     }
 
@@ -147,16 +142,6 @@ public class DrawTool implements Tool {
         return ProjectManager.getInstance().getProject() != null;
     }
 
-    private void notifyAbsent() {
-        Notification notification = new Notification(
-                "プロジェクトが存在しません",
-                "",
-                "",
-                NotificationType.WARN,
-                null
-        );
-        NotificationCenter.getInstance().notify(notification);
-    }
 
     @Override
     public void dispose() {
