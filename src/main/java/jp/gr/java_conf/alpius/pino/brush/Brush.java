@@ -71,6 +71,9 @@ public abstract class Brush<T extends BrushContext> implements Disposable {
      *     このメソッドをオーバーライドすることで、コンストラクタではできないブラシの初期化を行えます。
      *     なお、以下の初期化はデフォルトで行われるため、開発者は明示的に初期化する必要はありません
      * </p>
+     * <p>
+     *     このメソッドはApplicationThreadではないスレッドで動作するので、描画関連の処理を記述することはできません
+     * </p>
      * <table>
      *     <tr><th>Graphicsプロパティ名</th> <th>値</th></tr>
      *     <tr><td>Fill</td><td>color</td></tr>

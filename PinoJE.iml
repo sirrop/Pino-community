@@ -13,7 +13,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="groovy-3.0.8" level="application" />
     <orderEntry type="library" name="org.openjax.jaxb:xjc:0.8.5" level="project" />
-    <orderEntry type="library" name="com.aparapi:aparapi:2.0.0" level="project" />
     <orderEntry type="library" name="com.google.flogger:flogger-system-backend:0.6" level="project" />
     <orderEntry type="library" name="com.google.flogger:flogger:0.6" level="project" />
     <orderEntry type="library" name="com.google.guava:guava:30.1.1-jre" level="project" />
@@ -27,5 +26,6 @@
     <orderEntry type="library" name="org.controlsfx:controlsfx:11.1.0" level="project" />
     <orderEntry type="library" name="org.kordamp.ikonli:ikonli-javafx:12.2.0" level="project" />
     <orderEntry type="library" name="org.kordamp.ikonli:ikonli-materialdesign2-pack:12.2.0" level="project" />
+    <orderEntry type="library" name="com.aparapi:aparapi:2.0.0" level="application" />
   </component>
 </module>

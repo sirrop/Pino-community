@@ -1,21 +1,26 @@
 package jp.gr.java_conf.alpius.pino.ui.actionSystem;
 
 import jp.gr.java_conf.alpius.pino.application.ApplicationManager;
+import jp.gr.java_conf.alpius.pino.internal.filter.action.FilterActions;
 import jp.gr.java_conf.alpius.pino.tool.action.DefaultToolActions;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class ActionRegistry {
     private final Map<String, Action> actionMap = new HashMap<>();
 
     public ActionRegistry() {
-        for (Class<? extends Action> action : CoreActions.get()) {
+        List<Class<? extends Action>> defaultActions = new LinkedList<>(CoreActions.get());
+        defaultActions.addAll(DefaultToolActions.get());
+        defaultActions.addAll(FilterActions.getActions());
+
+        for (Class<? extends Action> action : defaultActions) {
             register(action);
         }
-        for (Class<? extends Action> action : DefaultToolActions.get()) {
-            register(action);
-        }
+
     }
 
     public static ActionRegistry getInstance() {

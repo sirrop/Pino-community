@@ -40,6 +40,11 @@
             <ActionableMenuItem text="ひとつ進む(_R)" actionId="pino:redo"/>
             <ActionableMenuItem text="レイヤーを追加" actionId="pino:add-layer"/>
         </Menu>
+        <Menu text="フィルタ(_F)">
+            <Menu text="ブラー">
+                <ActionableMenuItem text="平均化" actionId="pino:mean-blur" />
+            </Menu>
+        </Menu>
     </MenuBar>
     <ToolBar fx:id="toolBar">
         <ActionableButton actionId="pino:tools:activate-draw-tool">
