@@ -11,7 +11,7 @@ import jp.gr.java_conf.alpius.pino.internal.layer.DrawableHelper;
 /**
  * 連続的な描画をサポートするクラスです。
  * <p>
- *     {@link Brush#drawLine(double, double, double, double)}を連続で使用すると、
+ *     {@link Graphics#strokeLine(double, double, double, double)}を連続で使用すると、
  *     前回描画した部分と重なり、不透明度をさげたときに想定と異なった動作をする場合があります。
  * </p>
  * <p>

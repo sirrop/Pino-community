@@ -95,8 +95,8 @@ public abstract class Brush<T extends BrushContext> implements Disposable {
         return context;
     }
 
-    protected final void drawLine(double x0, double y0, double x1, double y1) {
-        g.strokeLine(x0, y0, x1, y1);
+    protected final Graphics getGraphics() {
+        return g;
     }
 
     public abstract void first(DrawEvent e);
