@@ -9,8 +9,6 @@
 <?import jp.gr.java_conf.alpius.pino.ui.editor.LayerEditor?>
 <?import jp.gr.java_conf.alpius.pino.ui.Layer?>
 <?import org.controlsfx.control.StatusBar?>
-
-<?import org.controlsfx.control.NotificationPane?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="jp.gr.java_conf.alpius.pino.ui.Root"
       prefHeight="400.0" prefWidth="600.0">
@@ -46,17 +44,17 @@
             </Menu>
         </Menu>
     </MenuBar>
-    <ToolBar fx:id="toolBar">
-        <ActionableButton actionId="pino:tools:activate-draw-tool">
+    <ToolBar fx:id="toolBar" id="toolBar">
+        <ActionableRadioButton styleClass="tool" actionId="pino:tools:activate-draw-tool">
             <graphic>
                 <FontIcon iconLiteral="mdi2p-pencil" />
             </graphic>
-        </ActionableButton>
-        <ActionableButton actionId="pino:tools:activate-hand-tool">
+        </ActionableRadioButton>
+        <ActionableRadioButton styleClass="tool" actionId="pino:tools:activate-hand-tool" selected="true">
             <graphic>
                 <FontIcon iconLiteral="mdi2a-arrow-all"/>
             </graphic>
-        </ActionableButton>
+        </ActionableRadioButton>
         <ActionableButton text="ひとつ戻る" actionId="pino:undo"/>
         <ActionableButton text="ひとつ進む" actionId="pino:redo"/>
     </ToolBar>

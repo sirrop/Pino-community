@@ -7,9 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MultipleSelectionModel;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import jp.gr.java_conf.alpius.pino.brush.BrushManager;
 import jp.gr.java_conf.alpius.pino.core.util.Disposable;
@@ -31,6 +29,8 @@ public class Root implements Disposable {
     private BrushEditor brushEditor;
     @FXML
     private ToolBar toolBar;
+
+    private final ToggleGroup toggleGroup = new ToggleGroup();
 
     @FXML
     private LayerEditor layerEditor;
@@ -94,6 +94,7 @@ public class Root implements Disposable {
                 newValue.selectedItemProperty().addListener((obs2, old2, newValue2) -> updateEditor(newValue2));
             }
         });
+        registerToggles();
         MultipleSelectionModel<LayerObject> selectionModel = layer.getSelectionModel();
         if (selectionModel != null) {
             selectionModel.selectedItemProperty().addListener((obs, old, newValue) -> updateEditor(newValue));
@@ -102,6 +103,13 @@ public class Root implements Disposable {
         BrushManager brushManager = BrushManager.getInstance();
         brushManager.addSelectedBrushChangeListener(e -> brushEditor.setTarget(e.getNewBrush()));
         brushEditor.setTarget(brushManager.getSelectedBrush());
+    }
+
+    private void registerToggles() {
+        toolBar.getItems()
+                .forEach(it -> {
+                    if (it instanceof Toggle) ((Toggle) it).setToggleGroup(toggleGroup);
+                });
     }
 
     private void updateEditor(LayerObject object) {

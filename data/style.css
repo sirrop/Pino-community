@@ -2,3 +2,28 @@
     -fx-pref-width: 2.5;
     -fx-pref-height: 2.5;
 }
+
+#toolBar .tool .radio {
+    -fx-border-width: 0;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+    visibility: hidden;
+}
+
+#toolBar .tool .dot {
+    visibility: hidden;
+}
+
+#toolBar .tool {
+    -fx-border-width: 1;
+    -fx-border-color: gainsboro;
+    -fx-border-radius: 2;
+    -fx-pref-height: 25;
+    -fx-content-display: center;
+    -fx-background-color: linear-gradient(whitesmoke, gainsboro);
+    -fx-background-radius: 2;
+}
+
+#toolBar .tool:selected {
+    -fx-border-color: deepskyblue;
+}

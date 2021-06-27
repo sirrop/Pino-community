@@ -2,10 +2,11 @@ package jp.gr.java_conf.alpius.pino.ui.actionSystem;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.control.Button;
+import javafx.scene.control.RadioButton;
+import org.jetbrains.annotations.Nullable;
 
-public class ActionableButton extends Button {
-    public ActionableButton() {
+public class ActionableRadioButton extends RadioButton {
+    public ActionableRadioButton() {
         actionIdProperty().addListener((obs, old, newAction) -> {
             try {
                 Action action = ActionRegistry.getInstance().find(newAction);
@@ -14,8 +15,7 @@ public class ActionableButton extends Button {
 
             }
         });
-
-        getStyleClass().add("action-button");
+        getStyleClass().add("actionable-radio-button");
     }
 
     private StringProperty actionId;
@@ -31,6 +31,7 @@ public class ActionableButton extends Button {
         actionIdProperty().set(value);
     }
 
+    @Nullable
     public final String getActionId() {
         return actionId == null ? null : actionId.get();
     }
