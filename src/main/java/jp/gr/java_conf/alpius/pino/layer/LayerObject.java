@@ -73,14 +73,6 @@ public abstract class LayerObject implements Disposable, EditorTarget {
 
 
     /* -- Common properties -- */
-
-    private LayerState state = LayerState.STABLE;
-
-    public LayerState getState() {
-        return state;
-    }
-
-
     @NotNull
     @Bind
     private String name = getClass().getSimpleName();
@@ -173,7 +165,7 @@ public abstract class LayerObject implements Disposable, EditorTarget {
             BlendMode old = this.blendMode;
             this.blendMode = Objects.requireNonNull(blendMode);
             getPeer().setBlendMode(blendMode);
-            firePropertyChange("blendMoe", old, blendMode);
+            firePropertyChange("blendMode", old, blendMode);
         }
     }
 
