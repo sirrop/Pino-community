@@ -2,8 +2,10 @@ package jp.gr.java_conf.alpius.pino.ui.editor.skin;
 
 import com.google.common.flogger.FluentLogger;
 import javafx.beans.value.ChangeListener;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.SkinBase;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import jp.gr.java_conf.alpius.pino.core.util.Disposable;
@@ -53,11 +55,17 @@ public class LayerEditorSkin extends SkinBase<LayerEditor> {
         }
         uiDisposable = Disposer.newDisposable();
 
+        StackPane nameWrapper = new StackPane();
+        nameWrapper.getStyleClass().add("name-wrapper");
         Text layerName = new Text(object.getName());
+        layerName.getStyleClass().add("name-text");
+        nameWrapper.getChildren().add(layerName);
+        nameWrapper.setAlignment(Pos.CENTER_LEFT);
+
         Map<String, Node> spNode= new HashMap<>();
         Node userProperty = createUserProperty(object, spNode);
 
-        getChildren().setAll(new VBox(layerName, userProperty, spNode.get("opacity"), spNode.get("blendMode"), spNode.get("visible"), spNode.get("rough")));
+        getChildren().setAll(new VBox(nameWrapper, userProperty, spNode.get("opacity"), spNode.get("blendMode"), spNode.get("visible"), spNode.get("rough")));
     }
 
     private Node createUserProperty(LayerObject object, Map<String, Node> spNode) {

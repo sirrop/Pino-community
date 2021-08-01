@@ -121,7 +121,7 @@ public class Pino extends Application implements Disposable, ServiceContainer {
         }
         scene.setOnKeyPressed(this::searchAndPerform);
         scene.setOnKeyTyped(this::searchAndPerform);
-        scene.getStylesheets().add(Paths.get(System.getProperty("appDir", "."), "data", "style.css").toUri().toURL().toExternalForm());
+        scene.getStylesheets().add(Paths.get(System.getProperty("appDir", "."), "data", "pino-white.css").toUri().toURL().toExternalForm());
         this.scene = scene;
 
         s.setScene(scene);

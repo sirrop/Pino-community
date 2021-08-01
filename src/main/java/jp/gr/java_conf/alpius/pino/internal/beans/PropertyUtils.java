@@ -42,6 +42,15 @@ public final class PropertyUtils {
         }
     }
 
+    public static int getIntElse(PropertyDescriptor desc, Object key, int defaultValue) {
+        Object value = desc.getValue(key.toString());
+        if (value == null) {
+            return defaultValue;
+        } else {
+            return Integer.parseInt(value.toString());
+        }
+    }
+
     public static double getDoubleElse(PropertyDescriptor desc, Object key, double defaultValue) {
         Object value = desc.getValue(key.toString());
         if (value == null) {

@@ -69,7 +69,7 @@
         </ActionableButton>
     </ToolBar>
     <HBox fx:id="contentPane" VBox.vgrow="ALWAYS">
-        <SplitPane HBox.hgrow="ALWAYS" dividerPositions="0.8">
+        <SplitPane HBox.hgrow="ALWAYS" dividerPositions="0.75">
             <Pane fx:id="canvasPane" id="canvas-pane">
                 <Canvas fx:id="canvas" id="canvas"/>
             </Pane>

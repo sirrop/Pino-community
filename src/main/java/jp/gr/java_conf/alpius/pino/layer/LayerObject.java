@@ -96,6 +96,7 @@ public abstract class LayerObject implements Disposable, EditorTarget {
     }
 
 
+    @Precision(1)
     @Range(min = 0, max = 100)
     @Bind
     private float opacity = 100f;
@@ -170,6 +171,7 @@ public abstract class LayerObject implements Disposable, EditorTarget {
     }
 
 
+    @Precision(1)
     @ForEx
     private double x = 0.0;
 
@@ -186,6 +188,7 @@ public abstract class LayerObject implements Disposable, EditorTarget {
     }
 
 
+    @Precision(1)
     @ForEx
     private double y = 0.0;
 
@@ -202,6 +205,7 @@ public abstract class LayerObject implements Disposable, EditorTarget {
     }
 
 
+    @Precision(1)
     @ForEx
     private double z = 0.0;
 
@@ -219,6 +223,7 @@ public abstract class LayerObject implements Disposable, EditorTarget {
     }
 
 
+    @Precision(1)
     @ForEx
     private double rotateX = 0.0;
 
@@ -235,6 +240,7 @@ public abstract class LayerObject implements Disposable, EditorTarget {
     }
 
 
+    @Precision(1)
     @ForEx
     private double rotateY = 0.0;
 
@@ -251,6 +257,7 @@ public abstract class LayerObject implements Disposable, EditorTarget {
     }
 
 
+    @Precision(1)
     @ForEx
     private double rotateZ = 0.0;
 

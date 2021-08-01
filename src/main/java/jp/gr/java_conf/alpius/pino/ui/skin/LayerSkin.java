@@ -18,6 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import jp.gr.java_conf.alpius.commons.base.Validate;
+import jp.gr.java_conf.alpius.pino.core.annotaion.Beta;
 import jp.gr.java_conf.alpius.pino.core.util.Disposable;
 import jp.gr.java_conf.alpius.pino.core.util.Disposer;
 import jp.gr.java_conf.alpius.pino.internal.graphics.Renderer;
@@ -26,6 +27,7 @@ import jp.gr.java_conf.alpius.pino.ui.Layer;
 
 import java.beans.PropertyChangeEvent;
 
+@Beta
 public class LayerSkin extends SkinBase<Layer> {
     private final Disposable disposable = Disposer.newDisposable();
 

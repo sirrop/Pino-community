@@ -1,9 +1,6 @@
 package jp.gr.java_conf.alpius.pino.brush;
 
-import jp.gr.java_conf.alpius.pino.annotations.Bind;
-import jp.gr.java_conf.alpius.pino.annotations.Min;
-import jp.gr.java_conf.alpius.pino.annotations.Range;
-import jp.gr.java_conf.alpius.pino.annotations.ResourceBundle;
+import jp.gr.java_conf.alpius.pino.annotations.*;
 import jp.gr.java_conf.alpius.pino.core.util.Disposable;
 import jp.gr.java_conf.alpius.pino.graphics.BlendMode;
 import jp.gr.java_conf.alpius.pino.internal.beans.BeenPeer;
@@ -58,8 +55,9 @@ public abstract class BrushContext implements Disposable, EditorTarget {
     }
 
 
+    @Precision(1)
     @Bind
-    @Min(0)
+    @Range(min = 0, max = 300)
     private float width = 5;
 
     public final void setWidth(float value) {
@@ -71,7 +69,7 @@ public abstract class BrushContext implements Disposable, EditorTarget {
         return width;
     }
 
-
+    @Precision(1)
     @Bind
     @Range(min = 0d, max = 100d)
     private float opacity = 100f;

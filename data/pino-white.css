@@ -1,0 +1,151 @@
+/* MenuBar */
+.menu-bar {
+    -fx-background-color: whitesmoke;
+}
+
+.split-pane .split-pane-divider {
+    -fx-pref-width: 2.5;
+    -fx-pref-height: 2.5;
+}
+
+/* ToolBar */
+.tool-bar {
+    -fx-background-color: whitesmoke;
+}
+
+.tool-bar .tool .radio {
+    -fx-border-width: 0;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+    visibility: hidden;
+}
+
+.tool-bar .tool .dot {
+    visibility: hidden;
+}
+.tool-bar .tool:selected {
+    -fx-border-color: deepskyblue;
+}
+
+.tool-bar .tool:hover {
+    -fx-background-color: lightgray;
+}
+
+.tool-bar .actionable-button {
+    -fx-background-color: whitesmoke;
+    -fx-border-width: 0px;
+}
+
+.tool-bar .actionable-button:hover {
+    -fx-background-color: lightgray;
+}
+
+.tool-bar .actionable-radio-button {
+    -fx-content-display: center;
+}
+
+.font-icon {
+    -fx-fill: #111;
+}
+
+
+/* レイヤー */
+
+.layer-cell {
+    -fx-background-color: white;
+    -fx-border-color: white white whitesmoke white;
+    -fx-border-width: 1px 1px 1px 1px;
+}
+
+.layer-cell:selected {
+    -fx-border-color: deepskyblue;
+    -fx-background-color: white;
+}
+
+.layer .placeholder {
+    -fx-background-color: whitesmoke;
+}
+
+/* Canvas */
+#canvas-pane {
+    -fx-background-color: #eee;
+}
+
+/* Editors */
+.editor .name-text {
+    -fx-font-size: 1.2em;
+    -fx-fill: #222;
+}
+
+.editor .name-wrapper {
+    -fx-padding: 1px 0px 1px 5px;
+}
+
+.editor .property-name {
+    -fx-padding: 1px 0px 1px 5px;
+    -fx-min-width: 75px;
+    -fx-max-width: 75px;
+}
+
+.editor .slider {
+    -fx-min-width: 150px;
+    -fx-max-width: 150px;
+}
+
+.editor .slider .thumb {
+    -fx-background-color: whitesmoke;
+    -fx-border-color: #aaa;
+    -fx-border-radius: 12.5px;
+}
+
+.editor .slider .thumb:hover {
+    -fx-border-color: deepskyblue;
+}
+
+.editor .text-field {
+    -fx-alignment: center-left;
+    -fx-background-color: white;
+    -fx-border-color: gainsboro;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-pref-column-count: 5;
+    -fx-translate-x: 3px;
+}
+
+.editor .text-field:hover {
+    -fx-border-color: deepskyblue;
+}
+
+.editor .combo-box-base {
+    -fx-background-color: white;
+    -fx-border-color: lightgray;
+    -fx-border-radius: 3px;
+    -fx-pref-width: 150px;
+}
+
+.editor .combo-box-base:hover {
+    -fx-border-color: deepskyblue;
+}
+
+.editor .check-box {
+    -fx-padding: 1px 0px 1px 5px;
+}
+
+.check-box .box {
+    -fx-background-color: whitesmoke;
+    -fx-border-color: #aaa;
+    -fx-border-radius: 3px;
+}
+
+.check-box:hover .box {
+    -fx-border-color: deepskyblue;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: crimson;
+}
+
+/* StatusBar */
+.status-bar {
+    -fx-background-color: whitesmoke;
+}

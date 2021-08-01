@@ -21,6 +21,9 @@ import static jp.gr.java_conf.alpius.pino.core.util.Strings.isNullOrEmpty;
 
 @Internal
 public class BeenPeer<T> {
+    private static final Integer DEFAULT_INT_PRECISION = 0;
+    private static final Integer DEFAULT_FLOATING_PRECISION = 1;
+
     @NotNull
     private final T bean;
 
@@ -131,6 +134,17 @@ public class BeenPeer<T> {
 
         if (view != null) {
             PropertyUtils.putValue(desc, ViewType.KEY, view.value());
+        }
+
+        if (Utils.isIntType(desc.getPropertyType())) {
+            PropertyUtils.putValue(desc, NumberAttribute.PRECISION, DEFAULT_INT_PRECISION);
+        } else {
+            Precision precision = field.getAnnotation(Precision.class);
+            if (precision != null) {
+                PropertyUtils.putValue(desc, NumberAttribute.PRECISION, precision.value());
+            } else {
+                PropertyUtils.putValue(desc, NumberAttribute.PRECISION, DEFAULT_FLOATING_PRECISION);
+            }
         }
     }
 

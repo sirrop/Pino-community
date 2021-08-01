@@ -1,8 +1,10 @@
 package jp.gr.java_conf.alpius.pino.ui.editor.skin;
 
 import javafx.beans.value.ChangeListener;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.SkinBase;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import jp.gr.java_conf.alpius.pino.brush.BrushContext;
@@ -50,11 +52,16 @@ public class BrushEditorSkin extends SkinBase<BrushEditor> {
         }
         uiDisposable = Disposer.newDisposable();
 
+        StackPane nameWrapper = new StackPane();
+        nameWrapper.getStyleClass().add("name-wrapper");
         Text layerName = new Text(brushContext.getName());
+        layerName.getStyleClass().add("name-text");
+        nameWrapper.getChildren().add(layerName);
+        nameWrapper.setAlignment(Pos.CENTER_LEFT);
 
         Node userProperty = createUserProperty(brushContext);
 
-        getChildren().setAll(new VBox(layerName, userProperty));
+        getChildren().setAll(new VBox(nameWrapper, userProperty));
     }
 
     private Node createUserProperty(BrushContext brushContext) {

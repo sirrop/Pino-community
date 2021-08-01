@@ -1,12 +1,13 @@
 package jp.gr.java_conf.alpius.pino.ui.editor.skin;
 
+import com.google.common.flogger.FluentLogger;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.util.converter.NumberStringConverter;
+import javafx.util.StringConverter;
 import jp.gr.java_conf.alpius.pino.annotations.Bind;
 import jp.gr.java_conf.alpius.pino.core.annotaion.Internal;
 import jp.gr.java_conf.alpius.pino.core.util.Disposable;
@@ -24,11 +25,14 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.*;
 
 @Internal
 public final class PropertyEditorBuilder {
+    private static final FluentLogger log = FluentLogger.forEnclosingClass();
+    private static final String CLASS_NAME_LABEL = "property-name";
 
     public ViewType getDefaultViewType(Class<?> type) throws NoDefaultViewTypeException{
         if (type == int.class || type == Integer.class || type == long.class || type == Long.class || type == float.class || type == Float.class || type == double.class || type == Double.class)
@@ -64,8 +68,14 @@ public final class PropertyEditorBuilder {
         }
     }
 
+    private static Label label(String text) {
+        var res = new Label(text);
+        res.getStyleClass().add(CLASS_NAME_LABEL);
+        return res;
+    }
+
     private Node slider(PropertyDescriptor property, EditorTarget target, Disposable parent) {
-        Label label = new Label(property.getDisplayName());
+        Label label = label(property.getDisplayName());
         Slider slider = new Slider();
 
         double min = PropertyUtils.getDoubleElse(property, NumberAttribute.MIN, -2000);
@@ -78,7 +88,7 @@ public final class PropertyEditorBuilder {
 
         TextField textField = new TextField();
         TextFormatter<Number> formatter;
-        formatter = new TextFormatter<>(new NumberStringConverter(), PropertyUtils.get(property, target));
+        formatter = new TextFormatter<>(createConverter(property), PropertyUtils.get(property, target));
         textField.setTextFormatter(formatter);
         slider.valueProperty().bindBidirectional(formatter.valueProperty());
 
@@ -100,8 +110,39 @@ public final class PropertyEditorBuilder {
         return new HBox(label, slider, textField);
     }
 
+    private static StringConverter<Number> createConverter(PropertyDescriptor desc) {
+        return new StringConverter<>() {
+            private final int precision = PropertyUtils.getIntElse(desc, NumberAttribute.PRECISION, 0);
+
+            @Override
+            public String toString(Number number) {
+                double source = number.doubleValue();
+                int integer = (int) Math.floor(source);
+                if (precision == 0) {
+                    return String.valueOf(integer);
+                } else {
+                    int floating = (int) Math.floor(source * (10 ^ precision)) - (integer * (10 ^ precision));
+                    return String.format("%d.%d", integer, floating);
+                }
+
+            }
+
+            @Override
+            public Number fromString(String s) {
+                double source = Double.parseDouble(s);
+                int integer = (int) Math.floor(source);
+                if (precision == 0) {
+                    return integer;
+                } else {
+                    int floating = (int) Math.floor(source * (10 ^ precision)) - (integer * (10 ^ precision));
+                    return new BigDecimal(String.format("%d.%d", integer, floating));
+                }
+            }
+        };
+    }
+
     private Node textarea(PropertyDescriptor desc, EditorTarget target, Disposable parent) {
-        Label label = new Label(desc.getDisplayName());
+        Label label = label(desc.getDisplayName());
         String regexp = PropertyUtils.getStringElse(desc, StringAttribute.REGEXP, ".*");
         TextField field = new TextField();
         field.setText(PropertyUtils.get(desc, target));
@@ -139,7 +180,7 @@ public final class PropertyEditorBuilder {
     }
 
     private Node comboBox(PropertyDescriptor desc, EditorTarget target, Disposable parent) {
-        Label label = new Label(desc.getDisplayName());
+        Label label = label(desc.getDisplayName());
         assert desc.getPropertyType() == BlendMode.class;
         Method valueOf;
         try {
@@ -197,7 +238,7 @@ public final class PropertyEditorBuilder {
     }
 
     private Node colorChooser(PropertyDescriptor property, EditorTarget target, Disposable parent) {
-        Label label = new Label(property.getDisplayName());
+        Label label = label(property.getDisplayName());
         ColorPicker picker = new ColorPicker();
         picker.valueProperty().addListener((obs, old, newValue) -> PropertyUtils.set(property, target, toAWT(newValue)));
         picker.setValue(toFX(PropertyUtils.get(property, target)));

@@ -65,4 +65,17 @@ public final class Utils {
         String base = ann.base();
         return ResourceBundle.getBundle(base, Locale.getDefault(), beanClass.getClassLoader());
     }
+
+    public static boolean isIntType(Class<?> type) {
+        return type == Integer.TYPE ||
+                type == Long.TYPE ||
+                type == Integer.class ||
+                type == Long.class ||
+                type == Byte.TYPE ||
+                type == Character.TYPE ||
+                type == Short.TYPE ||
+                type == Byte.class ||
+                type == Character.class ||
+                type == Short.class;
+    }
 }
