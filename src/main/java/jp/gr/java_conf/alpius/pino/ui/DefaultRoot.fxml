@@ -47,21 +47,31 @@
     <ToolBar fx:id="toolBar" id="toolBar">
         <ActionableRadioButton styleClass="tool" actionId="pino:tools:activate-draw-tool">
             <graphic>
-                <FontIcon iconLiteral="mdi2p-pencil" />
+                <FontIcon styleClass="font-icon" iconLiteral="mdi2p-pencil" />
             </graphic>
         </ActionableRadioButton>
         <ActionableRadioButton styleClass="tool" actionId="pino:tools:activate-hand-tool" selected="true">
             <graphic>
-                <FontIcon iconLiteral="mdi2a-arrow-all"/>
+                <FontIcon styleClass="font-icon" iconLiteral="mdi2a-arrow-all"/>
             </graphic>
         </ActionableRadioButton>
-        <ActionableButton text="ひとつ戻る" actionId="pino:undo"/>
-        <ActionableButton text="ひとつ進む" actionId="pino:redo"/>
+
+
+        <ActionableButton actionId="pino:undo">
+            <graphic>
+                <FontIcon styleClass="font-icon" iconLiteral="mdi2u-undo"/>
+            </graphic>
+        </ActionableButton>
+        <ActionableButton actionId="pino:redo">
+            <graphic>
+                <FontIcon styleClass="font-icon" iconLiteral="mdi2r-redo" />
+            </graphic>
+        </ActionableButton>
     </ToolBar>
     <HBox fx:id="contentPane" VBox.vgrow="ALWAYS">
         <SplitPane HBox.hgrow="ALWAYS" dividerPositions="0.8">
-            <Pane fx:id="canvasPane">
-                <Canvas fx:id="canvas"/>
+            <Pane fx:id="canvasPane" id="canvas-pane">
+                <Canvas fx:id="canvas" id="canvas"/>
             </Pane>
             <SplitPane orientation="VERTICAL" dividerPositions="0.4">
                 <EditorGroup>
@@ -69,10 +79,19 @@
                     <BrushEditor fx:id="brushEditor"/>
                 </EditorGroup>
                 <Layer fx:id="layer">
-                    <ActionableButton text="追加" actionId="pino:add-layer"/>
+                    <ActionableButton actionId="pino:add-layer">
+                        <graphic>
+                            <FontIcon styleClass="font-icon" iconLiteral="mdi2p-plus-thick" />
+                        </graphic>
+                    </ActionableButton>
+                    <ActionableButton actionId="pino:remove-layer">
+                        <graphic>
+                            <FontIcon styleClass="font-icon" iconLiteral="mdi2m-minus-thick" />
+                        </graphic>
+                    </ActionableButton>
                 </Layer>
             </SplitPane>
         </SplitPane>
     </HBox>
-    <StatusBar fx:id="statusBar" text=""/>
+    <StatusBar styleClass="status-bar" fx:id="statusBar" text=""/>
 </VBox>

@@ -8,6 +8,7 @@ import jp.gr.java_conf.alpius.pino.application.ApplicationManager;
 import jp.gr.java_conf.alpius.pino.internal.graphics.Renderer;
 import jp.gr.java_conf.alpius.pino.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.layer.LayerObject;
+import jp.gr.java_conf.alpius.pino.project.Project;
 import jp.gr.java_conf.alpius.pino.project.ProjectManager;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.scripts.create_project;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.scripts.not_implemented;
@@ -39,7 +40,8 @@ final class CoreActions {
                 ExitApp.class,
                 Undo.class,
                 Redo.class,
-                AddLayer.class
+                AddLayer.class,
+                RemoveLayer.class
         );
     }
 
@@ -129,21 +131,23 @@ final class CoreActions {
             super(ACTION_ID, DESCRIPTION);
         }
 
+        private static final FileChooser.ExtensionFilter PNG = new FileChooser.ExtensionFilter("PNG", "*.png", "*.PNG");
+        private static final FileChooser.ExtensionFilter JPEG = new FileChooser.ExtensionFilter("JPEG", "*.jpeg", "*.jpg", "*.JPEG", "*.JPG");
+
         @Override
         public void performed(ActionEvent e) {
-            BufferedImage img = SwingFXUtils.fromFXImage(Renderer.render(ProjectManager.getInstance().getProject(), true), null);
+            BufferedImage img = SwingFXUtils.fromFXImage(
+                    Renderer.render(ProjectManager.getInstance().getProject(),
+                            true),
+                    null);
             FileChooser fc = new FileChooser();
             fc.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("PNG", "*.png")
+                    PNG, JPEG
             );
             File file = fc.showSaveDialog(null);
             if (file != null) {
                 try {
-                    if (file.toString().matches(".+\\.png")) {
-                        ImageIO.write(img, "png", file);
-                    } else {
-                        throw new RuntimeException("不明な拡張子です ファイル名：" + file.getName());
-                    }
+                    ImageIO.write(img, fc.getSelectedExtensionFilter().getDescription(), file);
                 } catch (IOException ioException) {
                     throw new RuntimeException(ioException);
                 }
@@ -227,7 +231,7 @@ final class CoreActions {
             //                throw new RuntimeException(mementoException);
             //            }
             //        });
-
+            run(not_implemented.class, ACTION_ID);
         }
     }
 
@@ -250,6 +254,7 @@ final class CoreActions {
             //                throw new RuntimeException(mementoException);
             //            }
             //        });
+            run(not_implemented.class, ACTION_ID);
         }
     }
 
@@ -263,15 +268,38 @@ final class CoreActions {
 
         @Override
         public void performed(ActionEvent e) {
+            Project project = ProjectManager.getInstance().getProject();
+            if (project == null) {
+                return;
+            }
             SelectionModel<LayerObject> selectionModel = ApplicationManager.getApp().getRoot().getLayer().getSelectionModel();
             if (selectionModel == null) return;
             int index = selectionModel.getSelectedIndex();
             if (index == -1) {
-                ProjectManager.getInstance().getProject().getLayer().add(0, new DrawableLayer());
+                project.getLayer().add(0, new DrawableLayer());
                 selectionModel.selectFirst();
             } else {
                 ProjectManager.getInstance().getProject().getLayer().add(index, new DrawableLayer());
                 selectionModel.select(index);
+            }
+        }
+    }
+
+    public static class RemoveLayer extends Action {
+        public static final String ACTION_ID = "pino:remove-layer";
+        public static final String DESCRIPTION = "選択しているレイヤーを取り除きます";
+
+        public RemoveLayer() {
+            super(ACTION_ID, DESCRIPTION);
+        }
+
+        @Override
+        public void performed(ActionEvent e) {
+            SelectionModel<LayerObject> selectionModel = ApplicationManager.getApp().getRoot().getLayer().getSelectionModel();
+            if (selectionModel == null) return;
+            int index = selectionModel.getSelectedIndex();
+            if (index != -1) {
+                ProjectManager.getInstance().getProject().getLayer().remove(index);
             }
         }
     }

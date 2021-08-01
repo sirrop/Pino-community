@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import jp.gr.java_conf.alpius.pino.core.util.Disposable;
@@ -30,7 +31,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 
 public class Pino extends Application implements Disposable, ServiceContainer {
     private ApplicationHelper helper;
@@ -86,7 +89,15 @@ public class Pino extends Application implements Disposable, ServiceContainer {
             loader = Root.load(Paths.get(appConfig.getRootFXML()));
         }
         root = loader.getController();
-        autoRepaint = AutoRepaint.create(root.getCanvas(), () -> Renderer.render(ProjectManager.getInstance().getProject(), false));
+        autoRepaint = AutoRepaint.create(root.getCanvas(), () -> {
+            CompletableFuture<Image> image = new CompletableFuture<>();
+            runLater(() -> image.complete(Renderer.render(ProjectManager.getInstance().getProject(), false)));
+            try {
+                return image.get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         distributor = new EventDistributor();
         autoRepaint.setFps(appConfig.getCanvasFps());

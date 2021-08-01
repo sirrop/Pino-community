@@ -1,20 +1,8 @@
 package jp.gr.java_conf.alpius.pino.application;
 
-import jp.gr.java_conf.alpius.pino.layer.LayerRegistry;
-import jp.gr.java_conf.alpius.pino.notification.NotificationCenter;
-import jp.gr.java_conf.alpius.pino.project.ProjectManager;
-import jp.gr.java_conf.alpius.pino.service.MutableServiceContainer;
-import jp.gr.java_conf.alpius.pino.ui.KeyMap;
-import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionRegistry;
+import javafx.collections.FXCollections;
 import jp.gr.java_conf.alpius.pino.brush.BrushManager;
 import jp.gr.java_conf.alpius.pino.brush.BrushRegistry;
-import jp.gr.java_conf.alpius.pino.layer.LayerRegistry;
-import jp.gr.java_conf.alpius.pino.notification.NotificationCenter;
-import jp.gr.java_conf.alpius.pino.project.ProjectManager;
-import jp.gr.java_conf.alpius.pino.service.MutableServiceContainer;
-import jp.gr.java_conf.alpius.pino.ui.KeyMap;
-import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionRegistry;
-import javafx.collections.FXCollections;
 import jp.gr.java_conf.alpius.pino.layer.LayerRegistry;
 import jp.gr.java_conf.alpius.pino.notification.NotificationCenter;
 import jp.gr.java_conf.alpius.pino.project.ProjectManager;

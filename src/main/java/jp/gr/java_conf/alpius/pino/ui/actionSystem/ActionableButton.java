@@ -15,7 +15,7 @@ public class ActionableButton extends Button {
             }
         });
 
-        getStyleClass().add("action-button");
+        getStyleClass().add("actionable-button");
     }
 
     private StringProperty actionId;

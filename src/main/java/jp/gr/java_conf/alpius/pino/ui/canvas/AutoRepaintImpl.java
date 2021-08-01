@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import jp.gr.java_conf.alpius.pino.application.ApplicationError;
+import jp.gr.java_conf.alpius.pino.application.ApplicationManager;
 import org.quartz.*;
 import org.quartz.spi.JobFactory;
 import org.quartz.spi.TriggerFiredBundle;
@@ -142,6 +143,10 @@ class AutoRepaintImpl implements AutoRepaint {
                     g.clearRect(0, 0, target.getWidth(), target.getHeight());
                     old = newImage;
                     g.drawImage(newImage, 0, 0);
+                    ApplicationManager.getApp()
+                            .getRoot()
+                            .getLayer()
+                            .refresh();
                 });
             }
         }

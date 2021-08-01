@@ -1,13 +1,10 @@
 package jp.gr.java_conf.alpius.pino.ui;
 
+import javafx.beans.property.*;
 import jp.gr.java_conf.alpius.pino.layer.LayerObject;
 import jp.gr.java_conf.alpius.pino.project.Project;
 import jp.gr.java_conf.alpius.pino.ui.skin.LayerSkin;
 import javafx.beans.DefaultProperty;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -106,7 +103,13 @@ public class Layer extends Control {
 
     @Override
     protected Skin<?> createDefaultSkin() {
-        return new LayerSkin(this);
+        return new LayerSkin(this, dirty);
+    }
+
+    private BooleanProperty dirty = new SimpleBooleanProperty();
+
+    public void refresh() {
+        dirty.set(true);
     }
 
 

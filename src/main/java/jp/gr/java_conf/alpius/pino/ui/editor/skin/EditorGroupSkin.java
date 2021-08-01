@@ -20,6 +20,7 @@ public class EditorGroupSkin extends SkinBase<EditorGroup> {
     private void initialize() {
         ObservableList<? extends FxEditor<?>> editors = getSkinnable().getItems();
         TabPane tabPane = new TabPane();
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         editors.addListener((ListChangeListener<? super FxEditor<?>>) c -> {
             List<Tab> tabs = editors.stream().map(it -> new Tab(it.getLabel(), it)).collect(Collectors.toList());
             tabPane.getTabs().setAll(tabs);
