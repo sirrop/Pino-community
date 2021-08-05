@@ -1,20 +1,17 @@
 package jp.gr.java_conf.alpius.pino.ui.actionSystem.scripts
 
+import javafx.scene.control.*
+import javafx.scene.layout.HBox
+import javafx.scene.layout.VBox
+import javafx.util.converter.NumberStringConverter
 import jp.gr.java_conf.alpius.pino.application.ApplicationManager
 import jp.gr.java_conf.alpius.pino.layer.DrawableLayer
 import jp.gr.java_conf.alpius.pino.project.Project
 import jp.gr.java_conf.alpius.pino.project.ProjectManager
-import javafx.scene.control.ButtonType
-import javafx.scene.control.Dialog
-import javafx.scene.control.Label
-import javafx.scene.control.TextField
-import javafx.scene.control.TextFormatter
-import javafx.scene.layout.HBox
-import javafx.scene.layout.VBox
-import javafx.util.converter.NumberStringConverter
 
 import java.awt.color.ColorSpace
 import java.awt.color.ICC_Profile
+import java.nio.file.Paths
 
 def dialog = new Dialog<ButtonType>()
 def width = new TextField()
@@ -23,6 +20,7 @@ def height = new TextField()
 def widthFormatter = new TextFormatter<>(new NumberStringConverter(), 500)
 def heightFormatter = new TextFormatter<>(new NumberStringConverter(), 500)
 
+dialog.dialogPane.stylesheets.add(Paths.get("data", "pino-white.css").toUri().toURL().toExternalForm())
 width.textFormatter = widthFormatter
 width.styleClass.add 'width'
 height.textFormatter = heightFormatter

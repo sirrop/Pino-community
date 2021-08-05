@@ -59,12 +59,12 @@
 
         <ActionableButton actionId="pino:undo">
             <graphic>
-                <FontIcon styleClass="font-icon" iconLiteral="mdi2u-undo"/>
+                <FontIcon id="undo" styleClass="font-icon" iconLiteral="mdi2u-undo"/>
             </graphic>
         </ActionableButton>
         <ActionableButton actionId="pino:redo">
             <graphic>
-                <FontIcon styleClass="font-icon" iconLiteral="mdi2r-redo" />
+                <FontIcon id="redo" styleClass="font-icon" iconLiteral="mdi2r-redo" />
             </graphic>
         </ActionableButton>
     </ToolBar>
@@ -86,7 +86,7 @@
                     </ActionableButton>
                     <ActionableButton actionId="pino:remove-layer">
                         <graphic>
-                            <FontIcon styleClass="font-icon" iconLiteral="mdi2m-minus-thick" />
+                            <FontIcon styleClass="font-icon" iconLiteral="mdi2t-trash-can-outline" />
                         </graphic>
                     </ActionableButton>
                 </Layer>

@@ -46,11 +46,15 @@
 
 .font-icon {
     -fx-fill: #111;
+    -fx-font-size: 1.2em;
+}
+
+#undo, #redo {
+    -fx-fill: forestgreen;
 }
 
 
-/* レイヤー */
-
+/* Layer */
 .layer-cell {
     -fx-background-color: white;
     -fx-border-color: white white whitesmoke white;
@@ -64,6 +68,17 @@
 
 .layer .placeholder {
     -fx-background-color: whitesmoke;
+}
+
+.icon-area {
+    -fx-pref-width: 24px;
+    -fx-alignment: center;
+    -fx-spacing: 8px;
+}
+
+.eye-icon, .rough-icon {
+    -fx-font-size: 1.2em;
+    -fx-fill: #555;
 }
 
 /* Canvas */
@@ -148,4 +163,31 @@
 /* StatusBar */
 .status-bar {
     -fx-background-color: whitesmoke;
+}
+
+/* Dialog */
+.dialog-pane .label {
+    -fx-pref-width: 50px;
+}
+
+.dialog-pane .text-field {
+    -fx-pref-column: 10;
+    -fx-border-color: #aaa;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+}
+
+.dialog-pane .text-field:hover {
+    -fx-border-color: deepskyblue;
+}
+
+.dialog-pane .button {
+    -fx-background-color: whitesmoke;
+    -fx-border-color: #aaa;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+}
+
+.dialog-pane .button:hover {
+    -fx-border-color: deepskyblue;
 }
