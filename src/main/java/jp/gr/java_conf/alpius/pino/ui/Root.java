@@ -77,6 +77,7 @@ public class Root implements Disposable {
             if (newValue != null) {
                 ((ObservableList<LayerObject>) newValue.getLayer()).addListener((Observable obs) -> layer.getItems().setAll(newValue.getLayer()));
                 layer.getItems().setAll(newValue.getLayer());
+                computeCanvasLocation();
                 Platform.runLater(() -> Objects.requireNonNull(layer.getSelectionModel()).selectFirst());
             } else {
                 layer.getItems().clear();
@@ -103,6 +104,13 @@ public class Root implements Disposable {
         BrushManager brushManager = BrushManager.getInstance();
         brushManager.addSelectedBrushChangeListener(e -> brushEditor.setTarget(e.getNewBrush()));
         brushEditor.setTarget(brushManager.getSelectedBrush());
+    }
+
+    private void computeCanvasLocation() {
+        var x = canvasPane.getWidth() / 2 - canvas.getWidth() / 2;
+        var y = canvasPane.getHeight() / 2 - canvas.getHeight() / 2;
+        canvas.setTranslateX(x);
+        canvas.setTranslateY(y);
     }
 
     private void registerToggles() {
