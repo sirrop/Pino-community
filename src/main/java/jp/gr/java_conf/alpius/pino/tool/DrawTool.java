@@ -14,6 +14,9 @@ import jp.gr.java_conf.alpius.pino.internal.brush.BrushHelper;
 import jp.gr.java_conf.alpius.pino.internal.ui.canvas.DrawEventHandlerImpl;
 import jp.gr.java_conf.alpius.pino.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.layer.LayerObject;
+import jp.gr.java_conf.alpius.pino.notification.Notification;
+import jp.gr.java_conf.alpius.pino.notification.NotificationCenter;
+import jp.gr.java_conf.alpius.pino.notification.NotificationType;
 import jp.gr.java_conf.alpius.pino.project.ProjectManager;
 import jp.gr.java_conf.alpius.pino.ui.canvas.DrawEventHandler;
 import jp.gr.java_conf.alpius.pino.ui.event.EventType;
@@ -108,9 +111,28 @@ public class DrawTool implements Tool {
         return res;
     }
 
+    private boolean isInvisible() {
+        SelectionModel<LayerObject> selectionModel = ApplicationManager.getApp().getRoot().getLayer().getSelectionModel();
+        if (selectionModel == null) {
+            throw new IllegalStateException("selection model is null");
+        }
+        return !selectionModel.getSelectedItem().isVisible();
+    }
+
     @Override
     public void mousePressed(MouseEvent e) {
         if (projectExists()) {
+            if (isInvisible()) {
+                Notification notification = new Notification(
+                        "非表示のレイヤーに描画しようとしています",
+                        "",
+                        "",
+                        NotificationType.WARN,
+                        null
+                );
+                NotificationCenter.getInstance().notify(notification);
+                return;
+            }
             ApplicationManager.getApp().getEventDistributor().requestLockActiveTool(lock, this);
             handler.enqueue(copyOf(e));
         }
@@ -119,6 +141,9 @@ public class DrawTool implements Tool {
     @Override
     public void mouseDragged(MouseEvent e) {
         if (projectExists()) {
+            if (isInvisible()) {
+                return;
+            }
             handler.enqueue(copyOf(e));
         }
     }
@@ -126,6 +151,9 @@ public class DrawTool implements Tool {
     @Override
     public void mouseReleased(MouseEvent e) {
         if (projectExists()) {
+            if (isInvisible()) {
+                return;
+            }
             handler.enqueue(copyOf(e));
             ApplicationManager.getApp().getEventDistributor().requestUnlockActiveTool(lock);
         }
