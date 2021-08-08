@@ -4,12 +4,13 @@ import javafx.scene.image.WritableImage;
 import jp.gr.java_conf.alpius.imagefx.Graphics;
 import jp.gr.java_conf.alpius.pino.core.annotaion.Internal;
 import jp.gr.java_conf.alpius.pino.internal.layer.LayerHelper;
-import jp.gr.java_conf.alpius.pino.internal.layer.LayerPeer;
 import jp.gr.java_conf.alpius.pino.layer.LayerObject;
 import jp.gr.java_conf.alpius.pino.project.Project;
 import jp.gr.java_conf.alpius.pino.project.ProjectManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ListIterator;
 
 @Internal
 public final class Renderer {
@@ -24,7 +25,10 @@ public final class Renderer {
         int h = (int) Math.round(project.getHeight());
         var res = new WritableImage(w, h);
         Graphics g = new Graphics(res);
-        project.getLayer().stream().map(LayerHelper::getPeer).forEach(it -> ((LayerPeer) it).render(g, ignoreRough));
+        ListIterator<LayerObject> itr = project.getLayer().listIterator(project.getLayer().size());
+        while (itr.hasPrevious()) {
+            LayerHelper.getPeer(itr.previous()).render(g, ignoreRough);
+        }
         return res;
     }
 
