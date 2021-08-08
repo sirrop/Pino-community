@@ -2,12 +2,14 @@ package jp.gr.java_conf.alpius.pino.layer;
 
 import javafx.scene.image.WritableImage;
 import jp.gr.java_conf.alpius.imagefx.Graphics;
+import jp.gr.java_conf.alpius.pino.annotations.Name;
 import jp.gr.java_conf.alpius.pino.internal.layer.DrawableHelper;
 import jp.gr.java_conf.alpius.pino.internal.layer.DrawablePeer;
 import jp.gr.java_conf.alpius.pino.internal.layer.LayerPeer;
 import jp.gr.java_conf.alpius.pino.project.Project;
 import jp.gr.java_conf.alpius.pino.project.ProjectManager;
 
+@Name("レイヤー")
 public class DrawableLayer extends LayerObject {
     static {
         DrawableHelper.setDrawableAccessor(new DrawableHelper.DrawableAccessor() {
