@@ -91,12 +91,12 @@
                     </ActionableButton>
                     <ActionableButton actionId="pino:raise-layer">
                         <graphic>
-                            <FontIcon styleClass="font-icon" iconLiteral="mdi2c-chevron-up" />
+                            <FontIcon styleClass="font-icon" iconLiteral="mdi2m-menu-up" />
                         </graphic>
                     </ActionableButton>
                     <ActionableButton actionId="pino:lower-layer">
                         <graphic>
-                            <FontIcon styleClass="font-icon" iconLiteral="mdi2c-chevron-down" />
+                            <FontIcon styleClass="font-icon" iconLiteral="mdi2m-menu-down" />
                         </graphic>
                     </ActionableButton>
                 </Layer>
