@@ -89,6 +89,16 @@
                             <FontIcon styleClass="font-icon" iconLiteral="mdi2t-trash-can-outline" />
                         </graphic>
                     </ActionableButton>
+                    <ActionableButton actionId="pino:raise-layer">
+                        <graphic>
+                            <FontIcon styleClass="font-icon" iconLiteral="mdi2c-chevron-up" />
+                        </graphic>
+                    </ActionableButton>
+                    <ActionableButton actionId="pino:lower-layer">
+                        <graphic>
+                            <FontIcon styleClass="font-icon" iconLiteral="mdi2c-chevron-down" />
+                        </graphic>
+                    </ActionableButton>
                 </Layer>
             </SplitPane>
         </SplitPane>

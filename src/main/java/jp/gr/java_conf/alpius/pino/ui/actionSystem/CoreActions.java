@@ -41,7 +41,9 @@ final class CoreActions {
                 Undo.class,
                 Redo.class,
                 AddLayer.class,
-                RemoveLayer.class
+                RemoveLayer.class,
+                RaiseLayer.class,
+                LowerLayer.class
         );
     }
 
@@ -301,6 +303,58 @@ final class CoreActions {
             if (index != -1) {
                 ProjectManager.getInstance().getProject().getLayer().remove(index);
             }
+        }
+    }
+
+    public static class RaiseLayer extends Action {
+        public static final String ID = "pino:raise-layer";
+        public static final String DESCRIPTION = "選択しているレイヤーをひとつ上に移動します";
+
+        public RaiseLayer() {
+            super(ID, DESCRIPTION);
+        }
+
+        public void performed(ActionEvent e) {
+            SelectionModel<LayerObject> selectionModel = ApplicationManager.getApp().getRoot().getLayer().getSelectionModel();
+            if (selectionModel == null) {
+                return;
+            }
+
+            List<LayerObject> layerList = ProjectManager.getInstance().getProject().getLayer();
+            int index = selectionModel.getSelectedIndex();
+            if (index <= 0) {
+                return;
+            }
+
+            LayerObject switched = layerList.set(index - 1, layerList.get(index));
+            layerList.set(index, switched);
+            selectionModel.clearAndSelect(index - 1);
+        }
+    }
+
+    public static class LowerLayer extends Action {
+        public static final String ID = "pino:lower-layer";
+        public static final String DESCRIPTION = "選択しているレイヤーをひとつ下に移動します";
+
+        public LowerLayer() {
+            super(ID, DESCRIPTION);
+        }
+
+        public void performed(ActionEvent e) {
+            SelectionModel<LayerObject> selectionModel = ApplicationManager.getApp().getRoot().getLayer().getSelectionModel();
+            if (selectionModel == null) {
+                return;
+            }
+
+            List<LayerObject> layerList = ProjectManager.getInstance().getProject().getLayer();
+            int index = selectionModel.getSelectedIndex();
+            if (index == layerList.size() - 1) {
+                return;
+            }
+
+            LayerObject switched = layerList.set(index + 1, layerList.get(index));
+            layerList.set(index, switched);
+            selectionModel.clearAndSelect(index + 1);
         }
     }
 }
