@@ -19,6 +19,8 @@ public enum BlendMode {
     @Bind
     HARD_LIGHT,
     @Bind
+    SOFT_LIGHT,
+    @Bind
     DODGE,
     @Bind
     BURN,
@@ -29,7 +31,5 @@ public enum BlendMode {
     @Bind
     DIFFERENCE,
     @Bind
-    EXCLUSION,
-    @Bind
-    SOFT_LIGHT
+    EXCLUSION
 }
