@@ -11,11 +11,14 @@ import javafx.scene.text.Text;
 import jp.gr.java_conf.alpius.commons.base.Validate;
 import jp.gr.java_conf.alpius.pino.core.util.Disposable;
 import jp.gr.java_conf.alpius.pino.core.util.Disposer;
+import jp.gr.java_conf.alpius.pino.graphics.BlendMode;
 import jp.gr.java_conf.alpius.pino.internal.graphics.Renderer;
+import jp.gr.java_conf.alpius.pino.internal.util.Utils;
 import jp.gr.java_conf.alpius.pino.layer.LayerObject;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ResourceBundle;
 
 public class LayerCell extends ListCell<LayerObject> implements Disposable {
     private final Node graphic;
@@ -28,8 +31,8 @@ public class LayerCell extends ListCell<LayerObject> implements Disposable {
     private WritableImage image;
     private boolean requireInit = true;
     private final Text label = new Text();
+    private final Text blendMode = new Text();
     private final Text opacity = new Text();
-    private final Text rough = new Text();
     private LayerObject oldItem;
     private static double fitHeight = 50;
     private static final StringProperty visibleIconLiteral = new SimpleStringProperty("mdi2e-eye-outline");
@@ -71,15 +74,13 @@ public class LayerCell extends ListCell<LayerObject> implements Disposable {
         roughMarker.getStyleClass().add("rough-marker");
         imageWrapper.getStyleClass().add("image-area");
         label.getStyleClass().add("name");
+        blendMode.getStyleClass().add("blend-mode");
         opacity.getStyleClass().add("opacity");
-        rough.getStyleClass().add("rough");
 
         iconArea.getChildren().addAll(eyeIcon, roughIcon);
 
         var parent = new HBox();
-        var hbox = new HBox(opacity, rough);
-        var vbox = new VBox(label, hbox);
-        HBox.setHgrow(vbox, Priority.ALWAYS);
+        var vbox = new VBox(label, new HBox(blendMode, opacity));
         parent.getChildren().addAll(iconArea, imageWrapper, vbox);
         return parent;
     }
@@ -125,6 +126,10 @@ public class LayerCell extends ListCell<LayerObject> implements Disposable {
         int integer = (int) (item.getOpacity());
         int floatingPoint = ((int) (item.getOpacity() * 10)) - integer * 10;
         opacity.setText(integer + "." + floatingPoint + "%");
+        ResourceBundle blendModeBundle = Utils.findBundle(BlendMode.class);
+        assert blendModeBundle != null;
+        blendMode.setText(blendModeBundle.getString(item.getBlendMode().name() + ".name"));
+
         if (item.isVisible()) {
             eyeIcon.setIconLiteral(getVisibleIconLiteral());
         } else {
@@ -159,6 +164,11 @@ public class LayerCell extends ListCell<LayerObject> implements Disposable {
                 } else {
                     roughIcon.setIconLiteral("mdi2f-format-color-highlight");
                 }
+                break;
+            case "blendMode":
+                ResourceBundle blendModeBundle = Utils.findBundle(BlendMode.class);
+                assert blendModeBundle != null;
+                blendMode.setText(blendModeBundle.getString(e.getNewValue().toString() + ".name"));
                 break;
         }
     }

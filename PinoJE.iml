@@ -27,5 +27,14 @@
     <orderEntry type="library" name="com.aparapi:aparapi:2.0.0" level="application" />
     <orderEntry type="library" name="javafx16" level="application" />
     <orderEntry type="library" name="ImageFX" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../StandardApplicationToolkit/out/artifacts/StandardApplicationToolkit_jar/StandardApplicationToolkit.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
