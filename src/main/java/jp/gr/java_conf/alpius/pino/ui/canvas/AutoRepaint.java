@@ -6,6 +6,7 @@ import com.google.inject.Injector;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import jp.gr.java_conf.alpius.pino.core.util.Disposable;
+import jp.gr.java_conf.alpius.pino.internal.ui.canvas.AutoRepaintImpl;
 import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
 

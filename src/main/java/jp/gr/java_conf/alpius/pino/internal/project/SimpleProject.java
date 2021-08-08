@@ -4,6 +4,7 @@ import jp.gr.java_conf.alpius.pino.core.annotaion.Internal;
 import jp.gr.java_conf.alpius.pino.layer.LayerObject;
 import jp.gr.java_conf.alpius.pino.project.Project;
 import jp.gr.java_conf.alpius.pino.service.ServiceContainer;
+import jp.gr.java_conf.alpius.sat.utils.UserDataHolder;
 
 import java.awt.color.ICC_Profile;
 import java.util.List;
@@ -15,13 +16,15 @@ public class SimpleProject implements Project {
     private final ICC_Profile profile;
     private final ServiceContainer service;
     private final List<LayerObject> layer;
+    private final UserDataHolder userDataHolder;
 
-    public SimpleProject(double width, double height, ICC_Profile profile, ServiceContainer service, List<LayerObject> layer) {
+    public SimpleProject(double width, double height, ICC_Profile profile, ServiceContainer service, List<LayerObject> layer, UserDataHolder userDataHolder) {
         this.width = width;
         this.height = height;
         this.profile = profile;
         this.service = service;
         this.layer = layer;
+        this.userDataHolder = userDataHolder;
     }
 
     @Override
@@ -47,6 +50,11 @@ public class SimpleProject implements Project {
     @Override
     public ICC_Profile getColorProfile() {
         return profile;
+    }
+
+    @Override
+    public UserDataHolder getUserDataHolder() {
+        return userDataHolder;
     }
 
     @Override

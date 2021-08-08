@@ -1,4 +1,4 @@
-package jp.gr.java_conf.alpius.pino.ui.canvas;
+package jp.gr.java_conf.alpius.pino.internal.ui.canvas;
 
 import com.google.common.flogger.FluentLogger;
 import com.google.inject.Inject;
@@ -9,14 +9,21 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import jp.gr.java_conf.alpius.pino.application.ApplicationError;
 import jp.gr.java_conf.alpius.pino.application.ApplicationManager;
+import jp.gr.java_conf.alpius.pino.core.annotaion.Internal;
+import jp.gr.java_conf.alpius.pino.project.Project;
+import jp.gr.java_conf.alpius.pino.project.ProjectManager;
+import jp.gr.java_conf.alpius.pino.ui.canvas.AutoRepaint;
+import jp.gr.java_conf.alpius.sat.utils.Key;
 import org.quartz.*;
 import org.quartz.spi.JobFactory;
 import org.quartz.spi.TriggerFiredBundle;
 
 import java.util.function.Supplier;
 
-class AutoRepaintImpl implements AutoRepaint {
+@Internal
+public class AutoRepaintImpl implements AutoRepaint {
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
+    public static final Key<Boolean> DIRTY_FLAG = Key.get();
     private final JobDetail job;
     private Trigger trigger;
     private final Scheduler scheduler;
@@ -125,7 +132,7 @@ class AutoRepaintImpl implements AutoRepaint {
     }
 
     @Singleton
-    static class Task implements Job {
+    public static class Task implements Job {
         @Inject
         private Canvas target;
 
@@ -136,6 +143,16 @@ class AutoRepaintImpl implements AutoRepaint {
 
         @Override
         public void execute(JobExecutionContext context) {
+            Project project = ProjectManager.getInstance().getProject();
+            if (project == null) {
+                return;
+            }
+
+            Boolean isDirty = project.getUserDataHolder().getUserData(DIRTY_FLAG);
+            if (isDirty != Boolean.TRUE) {
+                return;
+            }
+
             var newImage = source.get();
             if (old != newImage) {
                 var g = target.getGraphicsContext2D();
@@ -149,10 +166,11 @@ class AutoRepaintImpl implements AutoRepaint {
                             .refresh();
                 });
             }
+
         }
     }
 
-    static class TaskFactory implements JobFactory {
+    public static class TaskFactory implements JobFactory {
 
         @Inject
         private Injector injector;
@@ -164,17 +182,17 @@ class AutoRepaintImpl implements AutoRepaint {
         }
     }
 
-    interface QuartzEx {
+    public interface QuartzEx {
         Scheduler getScheduler();
     }
 
     @Singleton
-    static class QuartzExImpl implements QuartzEx {
+    public static class QuartzExImpl implements QuartzEx {
 
         private final Scheduler scheduler;
 
         @Inject
-        QuartzExImpl(SchedulerFactory schedulerFactory, TaskFactory taskFactory) throws SchedulerException {
+        public QuartzExImpl(SchedulerFactory schedulerFactory, TaskFactory taskFactory) throws SchedulerException {
             this.scheduler = schedulerFactory.getScheduler();
             this.scheduler.setJobFactory(taskFactory);
             scheduler.start();
@@ -186,6 +204,6 @@ class AutoRepaintImpl implements AutoRepaint {
         }
     }
 
-    interface ImageSupplier extends Supplier<Image> {
+    public interface ImageSupplier extends Supplier<Image> {
     }
 }
