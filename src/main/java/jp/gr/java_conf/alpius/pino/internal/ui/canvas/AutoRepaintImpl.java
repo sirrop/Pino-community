@@ -10,10 +10,7 @@ import javafx.scene.image.Image;
 import jp.gr.java_conf.alpius.pino.application.ApplicationError;
 import jp.gr.java_conf.alpius.pino.application.ApplicationManager;
 import jp.gr.java_conf.alpius.pino.core.annotaion.Internal;
-import jp.gr.java_conf.alpius.pino.project.Project;
-import jp.gr.java_conf.alpius.pino.project.ProjectManager;
 import jp.gr.java_conf.alpius.pino.ui.canvas.AutoRepaint;
-import jp.gr.java_conf.alpius.sat.utils.Key;
 import org.quartz.*;
 import org.quartz.spi.JobFactory;
 import org.quartz.spi.TriggerFiredBundle;
@@ -23,7 +20,6 @@ import java.util.function.Supplier;
 @Internal
 public class AutoRepaintImpl implements AutoRepaint {
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
-    public static final Key<Boolean> DIRTY_FLAG = Key.get();
     private final JobDetail job;
     private Trigger trigger;
     private final Scheduler scheduler;
@@ -143,16 +139,6 @@ public class AutoRepaintImpl implements AutoRepaint {
 
         @Override
         public void execute(JobExecutionContext context) {
-            Project project = ProjectManager.getInstance().getProject();
-            if (project == null) {
-                return;
-            }
-
-            Boolean isDirty = project.getUserDataHolder().getUserData(DIRTY_FLAG);
-            if (isDirty != Boolean.TRUE) {
-                return;
-            }
-
             var newImage = source.get();
             if (old != newImage) {
                 var g = target.getGraphicsContext2D();

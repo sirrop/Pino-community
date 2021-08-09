@@ -6,7 +6,10 @@ import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import jp.gr.java_conf.alpius.commons.base.Validate;
 import jp.gr.java_conf.alpius.pino.core.util.Disposable;
@@ -80,7 +83,10 @@ public class LayerCell extends ListCell<LayerObject> implements Disposable {
         iconArea.getChildren().addAll(eyeIcon, roughIcon);
 
         var parent = new HBox();
-        var vbox = new VBox(label, new HBox(blendMode, opacity));
+        var hbox = new HBox(blendMode, opacity);
+        hbox.getStyleClass().add("label-area2");
+        var vbox = new VBox(label, hbox);
+        vbox.getStyleClass().add("label-area");
         parent.getChildren().addAll(iconArea, imageWrapper, vbox);
         return parent;
     }

@@ -21,8 +21,19 @@
 }
 
 .tool-bar .tool .dot {
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
     visibility: hidden;
 }
+
+.tool-bar .tool {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-padding: 3px -1.35px 3px -1.35px;
+    -fx-background-radius: 3px;
+    -fx-border-radius: 3px;
+}
+
 .tool-bar .tool:selected {
     -fx-border-color: deepskyblue;
 }
@@ -81,6 +92,24 @@
     -fx-fill: #555;
 }
 
+.name,
+.blend-mode,
+.opacity {
+    -fx-fill: #333;
+    -fx-text-origin: bottom;
+}
+
+
+
+.label-area,
+.label-area2 {
+    -fx-spacing: 5px;
+}
+
+.label-area {
+    -fx-alignment: center-left;
+}
+
 /* Canvas */
 #canvas-pane {
     -fx-background-color: #eee;
@@ -93,7 +122,7 @@
 }
 
 .editor .name-wrapper {
-    -fx-padding: 1px 0px 1px 5px;
+    -fx-padding: 2px 0px 3px 5px;
 }
 
 .editor .property-name {

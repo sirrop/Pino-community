@@ -5,10 +5,8 @@ import jp.gr.java_conf.alpius.imagefx.Graphics;
 import jp.gr.java_conf.alpius.pino.core.annotaion.Internal;
 import jp.gr.java_conf.alpius.pino.graphics.BlendMode;
 import jp.gr.java_conf.alpius.pino.internal.beans.BeenPeer;
-import jp.gr.java_conf.alpius.pino.internal.ui.canvas.AutoRepaintImpl;
 import jp.gr.java_conf.alpius.pino.internal.util.FXUtils;
 import jp.gr.java_conf.alpius.pino.layer.LayerObject;
-import jp.gr.java_conf.alpius.pino.project.ProjectManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,7 +49,6 @@ public abstract class LayerPeer extends BeenPeer<LayerObject> {
 
     public void markDirty() {
         dirty = DirtyFlag.DIRTY;
-        ProjectManager.getInstance().getProject().getUserDataHolder().putUserData(AutoRepaintImpl.DIRTY_FLAG, Boolean.TRUE);
     }
 
     public void setVisible(boolean value) {
