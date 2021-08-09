@@ -45,12 +45,12 @@
         </Menu>
     </MenuBar>
     <ToolBar fx:id="toolBar" id="toolBar">
-        <ActionableRadioButton styleClass="tool" actionId="pino:tools:activate-draw-tool">
+        <ActionableRadioButton styleClass="tool" actionId="pino:tools:activate-draw-tool"  selected="true">
             <graphic>
                 <FontIcon styleClass="font-icon" iconLiteral="mdi2p-pencil" />
             </graphic>
         </ActionableRadioButton>
-        <ActionableRadioButton styleClass="tool" actionId="pino:tools:activate-hand-tool" selected="true">
+        <ActionableRadioButton styleClass="tool" actionId="pino:tools:activate-hand-tool">
             <graphic>
                 <FontIcon styleClass="font-icon" iconLiteral="mdi2a-arrow-all"/>
             </graphic>

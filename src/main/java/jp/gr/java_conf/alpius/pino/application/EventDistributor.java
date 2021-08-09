@@ -25,7 +25,7 @@ public class EventDistributor implements Disposable {
         var pane = ApplicationManager.getApp().getRoot().getCanvasPane();
         drawTool = new DrawTool();
         handTool = new HandTool();
-        activeTool = handTool;
+        activeTool = drawTool;
         Disposer.registerDisposable(lastDispose, drawTool);
 
         pane.setOnMouseClicked(this::mouseClicked);
