@@ -9,11 +9,11 @@
     <SplitPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"
                dividerPositions="0.3">
         <VBox>
-            <Button text="スタイル" onAction="#style" textOverrun="CLIP"/>
-            <Button text="メニュー" onAction="#menu" textOverrun="CLIP"/>
-            <Button text="ショートカットキー" onAction="#shortcutKey" textOverrun="CLIP"/>
-            <Button text="カーソル" onAction="#cursor" textOverrun="CLIP"/>
-            <Button text="キャンバス" onAction="#canvas" textOverrun="CLIP"/>
+            <Button styleClass="menu" text="スタイル" onAction="#style" textOverrun="CLIP"/>
+            <Button styleClass="menu" text="メニュー" onAction="#menu" textOverrun="CLIP"/>
+            <Button styleClass="menu" text="ショートカットキー" onAction="#shortcutKey" textOverrun="CLIP"/>
+            <Button styleClass="menu" text="カーソル" onAction="#cursor" textOverrun="CLIP"/>
+            <Button styleClass="menu" text="キャンバス" onAction="#canvas" textOverrun="CLIP"/>
         </VBox>
         <AnchorPane fx:id="main"/>
     </SplitPane>

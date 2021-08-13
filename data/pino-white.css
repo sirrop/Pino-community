@@ -108,6 +108,7 @@
 
 .label-area {
     -fx-alignment: center-left;
+    -fx-padding: 0 0 0 5px;
 }
 
 /* Canvas */
@@ -219,4 +220,20 @@
 
 .dialog-pane .button:hover {
     -fx-border-color: deepskyblue;
+}
+
+/* Configuration Dialog */
+.config-dialog .label {
+    -fx-min-width: -1;
+    -fx-max-width: -1;
+    -fx-pref-width: 150px;
+}
+
+.config-dialog .menu {
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+}
+
+.config-dialog .menu:hover {
+    -fx-background-color: lightgray;
 }
