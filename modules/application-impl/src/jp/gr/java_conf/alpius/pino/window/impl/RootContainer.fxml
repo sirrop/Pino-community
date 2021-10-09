@@ -33,6 +33,7 @@
             <ActionMenuItem text="プロジェクトを新規作成" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.MakeProject" />
             <ActionMenuItem text="閉じる" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.CloseProject" />
             <ActionMenuItem text="出力" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Output" />
+            <ActionMenuItem text="終了" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Exit" />
         </Menu>
         <Menu text="編集(_E)">
             <ActionMenuItem text="ひとつ戻る" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Undo" />
