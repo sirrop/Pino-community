@@ -1,7 +1,7 @@
 # Pino: An illustration drawing application
 Pino is an application for creators who love to draw and paint.
 
-##Dependencies
+## Dependencies
 - OpenJDK17 or higher
 - JavaFX11 or higher
 - ControlsFX11.1.0 or higher
