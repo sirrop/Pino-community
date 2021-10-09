@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="ImageFX">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../ImageFX/out/artifacts/ImageFX_jar/ImageFX.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="com.branc.pino.core">
-    <output-path>$PROJECT_DIR$/out/artifacts/com_branc_pino_core</output-path>
-    <root id="archive" name="com.branc.pino.core.jar">
-      <element id="module-output" name="com.branc.pino.core" />
-    </root>
-  </artifact>
-</component>

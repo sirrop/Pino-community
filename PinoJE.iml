@@ -9,32 +9,19 @@
       <excludeFolder url="file://$MODULE_DIR$/javadoc" />
       <excludeFolder url="file://$MODULE_DIR$/log" />
     </content>
-    <orderEntry type="jdk" jdkName="corretto-11" jdkType="JavaSDK" />
+    <orderEntry type="jdk" jdkName="17" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="groovy-3.0.8" level="application" />
     <orderEntry type="library" name="org.openjax.jaxb:xjc:0.8.5" level="project" />
-    <orderEntry type="library" name="com.google.flogger:flogger-system-backend:0.6" level="project" />
-    <orderEntry type="library" name="com.google.flogger:flogger:0.6" level="project" />
     <orderEntry type="library" name="com.google.guava:guava:30.1.1-jre" level="project" />
     <orderEntry type="library" name="com.google.inject:guice:5.0.1" level="project" />
     <orderEntry type="library" name="org.quartz-scheduler:quartz:2.3.2" level="project" />
     <orderEntry type="library" name="org.slf4j:slf4j-api:1.7.30" level="project" />
     <orderEntry type="library" name="annotations-20.1.0" level="application" />
-    <orderEntry type="library" name="Juno1.0.1" level="project" />
     <orderEntry type="library" name="org.controlsfx:controlsfx:11.1.0" level="project" />
     <orderEntry type="library" name="org.kordamp.ikonli:ikonli-javafx:12.2.0" level="project" />
     <orderEntry type="library" name="org.kordamp.ikonli:ikonli-materialdesign2-pack:12.2.0" level="project" />
     <orderEntry type="library" name="com.aparapi:aparapi:2.0.0" level="application" />
     <orderEntry type="library" name="javafx16" level="application" />
-    <orderEntry type="library" name="ImageFX" level="project" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../StandardApplicationToolkit/out/artifacts/StandardApplicationToolkit_jar/StandardApplicationToolkit.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
   </component>
 </module>

@@ -3,6 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PinoJE.iml" filepath="$PROJECT_DIR$/PinoJE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/application-api/application-api.iml" filepath="$PROJECT_DIR$/modules/application-api/application-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/application-impl/application-impl.iml" filepath="$PROJECT_DIR$/modules/application-impl/application-impl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/core/core.iml" filepath="$PROJECT_DIR$/modules/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/graphics/graphics.iml" filepath="$PROJECT_DIR$/modules/graphics/graphics.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/ui/ui.iml" filepath="$PROJECT_DIR$/modules/ui/ui.iml" />
     </modules>
   </component>
 </project>
