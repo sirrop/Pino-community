@@ -50,6 +50,6 @@ module pino.application.impl {
     provides GraphicManager.BrushViewGraphicVisitor with DefaultBrushViewGraphicVisitor;
     provides Action
             with    ActivateDrawTool, ActivateHandTool,
-                    MakeProject, CloseProject, Output,
+                    MakeProject, CloseProject, Output, Exit,
                     Undo, Redo;
 }
