@@ -18,10 +18,12 @@ package jp.gr.java_conf.alpius.pino.graphics.brush;
 
 import jp.gr.java_conf.alpius.pino.beans.BeanPeer;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
+import jp.gr.java_conf.alpius.pino.util.Strings;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class AbstractBrush implements Brush {
     private BeanPeer<Brush> beanPeer;
@@ -53,5 +55,23 @@ public abstract class AbstractBrush implements Brush {
 
     protected <T> void firePropertyChange(String propertyName, T oldValue, T newValue) {
         getPeer().firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    private String name = getClass().getSimpleName();
+
+    public void setName(String value) {
+        if (!Objects.equals(this.name, value)) {
+            String old = name;
+            if (Strings.isNullOrEmpty(value)) {
+                name = getClass().getSimpleName();
+            } else {
+                name = value;
+            }
+            firePropertyChange("name", old, name);
+        }
+    }
+
+    public String getName() {
+        return name;
     }
 }

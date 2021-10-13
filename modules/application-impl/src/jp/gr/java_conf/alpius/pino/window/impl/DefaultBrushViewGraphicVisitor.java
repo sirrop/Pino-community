@@ -23,7 +23,7 @@ import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 
 public class DefaultBrushViewGraphicVisitor implements GraphicManager.BrushViewGraphicVisitor {
     public Node visit(Brush brush) {
-        return new Label(brush.getClass().getSimpleName());
+        return new Label(brush.getName());
     }
 
     public String toString() {
