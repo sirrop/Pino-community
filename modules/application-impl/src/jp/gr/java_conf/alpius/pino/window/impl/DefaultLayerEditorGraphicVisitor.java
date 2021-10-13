@@ -145,6 +145,10 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
     }
 
     public static Node slider(Consumer<Slider> configurator) {
+        return slider(configurator, 1);
+    }
+
+    public static Node slider(Consumer<Slider> configurator, int mug) {
         var slider = new Slider();
         configurator.accept(slider);
         var incBtn = new Button("+");
@@ -152,10 +156,30 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
         var decBtn = new Button("-");
         decBtn.setOnAction(e -> slider.decrement());
         var textField = new TextField();
-        var formatter = new TextFormatter<>(new NumberStringConverter(), slider.getValue());
+        var formatter = new TextFormatter<>(new NumberStringConverter() {
+            @Override
+            public String toString(Number number) {
+                String result = super.toString(number);
+                return drop(result, getNumDigitsUnderPoint(result) - mug);
+            }
+        }, slider.getValue());
         textField.setTextFormatter(formatter);
         textField.setPrefWidth(DEFAULT_TEXTFIELD_PREF_WIDTH);
         formatter.valueProperty().bindBidirectional(slider.valueProperty());
         return new HBox(slider, decBtn, incBtn, textField);
+    }
+
+    private static int getNumDigitsUnderPoint(String str) {
+        int point = str.indexOf('.');
+        if (point == -1) {
+            return 0;
+        } else {
+            return str.length() - point - 1;
+        }
+    }
+
+    private static String drop(String string, int num) {
+        if (num <= 0) return string;
+        return string.substring(0, string.length() - num);
     }
 }

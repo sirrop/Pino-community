@@ -20,6 +20,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.image.PixelFormat;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
@@ -30,10 +31,15 @@ import jp.gr.java_conf.alpius.pino.service.MutableServiceContainer;
 import jp.gr.java_conf.alpius.pino.service.SimpleServiceContainer;
 import jp.gr.java_conf.alpius.pino.tool.ToolManager;
 import jp.gr.java_conf.alpius.pino.tool.plugin.DrawTool;
+import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionEvent;
+import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionUtils;
 import jp.gr.java_conf.alpius.pino.util.ActiveModel;
 import jp.gr.java_conf.alpius.pino.util.Key;
 import jp.gr.java_conf.alpius.pino.window.Window;
-import jp.gr.java_conf.alpius.pino.window.impl.*;
+import jp.gr.java_conf.alpius.pino.window.impl.JFxWindow;
+import jp.gr.java_conf.alpius.pino.window.impl.MenuManager;
+import jp.gr.java_conf.alpius.pino.window.impl.PinoRootContainer;
+import jp.gr.java_conf.alpius.pino.window.impl.RootContainer;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -81,11 +87,21 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         container.getBrushView().setItems((ObservableList<Brush>) BrushManager.getInstance().getBrushList());
 
         window.setRootContainer(container);
+        window.getScene().addEventHandler(KeyEvent.KEY_PRESSED, this::searchActionAndPerform);
         window.setTitle("Pino Paint");
         window.show();
         eventDistributor = new EventDistributor(window);
         services.register(ToolManager.class, eventDistributor);
         eventDistributor.activate(DrawTool.getInstance());
+    }
+
+    private void searchActionAndPerform(KeyEvent e) {
+        for (var binding: KeyBinding.getKeyConfigs()) {
+            if (binding.getKey().match(e)) {
+                ActionUtils.findByCanonicalName(binding.getValue())
+                        .ifPresent(action -> action.performAction(new ActionEvent(e.getSource())));
+            }
+        }
     }
 
     @Override

@@ -29,6 +29,7 @@ import java.util.function.Function;
 
 public class JFxWindow implements jp.gr.java_conf.alpius.pino.window.Window {
     private final Stage peer;
+    private Scene scene;
 
     public JFxWindow(Stage peer) {
         this.peer = peer;
@@ -229,11 +230,15 @@ public class JFxWindow implements jp.gr.java_conf.alpius.pino.window.Window {
     public void setRootContainer(RootContainer container) {
         this.container = container;
         if (container != null) {
-            peer.setScene(new Scene(container.getContent()));
+            peer.setScene(scene = new Scene(container.getContent()));
         }
     }
 
     public RootContainer getRootContainer() {
         return container;
+    }
+
+    public Scene getScene() {
+        return scene;
     }
 }
