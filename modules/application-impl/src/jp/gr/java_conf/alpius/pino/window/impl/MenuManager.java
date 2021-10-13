@@ -17,7 +17,10 @@
 package jp.gr.java_conf.alpius.pino.window.impl;
 
 import javafx.scene.control.*;
+import jp.gr.java_conf.alpius.pino.application.impl.BrushManager;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
+import jp.gr.java_conf.alpius.pino.graphics.brush.Eraser;
+import jp.gr.java_conf.alpius.pino.graphics.brush.Pencil;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.ImageLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.Layers;
@@ -38,6 +41,7 @@ public final class MenuManager {
     public MenuManager() {
         initLayerEditor();
         initLayerCell();
+        initBrushCell();
     }
 
     private void initLayerEditor() {
@@ -92,6 +96,33 @@ public final class MenuManager {
         layerCell.getItems().addAll(add, delete);
     }
 
+    private void initBrushCell() {
+        var add = new Menu("追加");
+        {
+            var pencil = new MenuItem("Pencil");
+            var eraser = new MenuItem("Eraser");
+            pencil.setOnAction(e -> {
+                var mgr = BrushManager.getInstance();
+                int index = mgr.getActiveModel().getActivatedIndex();
+                mgr.getBrushList().add(index, new Pencil());
+            });
+            eraser.setOnAction(e -> {
+                var mgr = BrushManager.getInstance();
+                int index = mgr.getActiveModel().getActivatedIndex();
+                mgr.getBrushList().add(index, new Eraser());
+            });
+            add.getItems().addAll(pencil, eraser);
+        }
+
+        var delete = new MenuItem("削除");
+        delete.setOnAction(e -> {
+            var mgr = BrushManager.getInstance();
+            var item = mgr.getActiveModel().getActivatedItem();
+            mgr.getBrushList().remove(item);
+        });
+        brushCell.getItems().addAll(add, delete);
+    }
+
     public ContextMenu getLayerEditorMenu() {
         return layerEditor;
     }
@@ -103,5 +134,9 @@ public final class MenuManager {
 
     public ContextMenu getBrushEditorMenu() {
         return brushEditor;
+    }
+
+    public ContextMenu getBrushCellMenu() {
+        return brushCell;
     }
 }

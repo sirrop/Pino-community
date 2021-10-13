@@ -29,6 +29,7 @@ import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 
 public class BrushCell extends ListCell<Brush> {
     public BrushCell() {
+        setContextMenu(MenuManager.getInstance().getBrushCellMenu());
         focusedProperty().addListener((obs, oldValue, newValue) -> {
             Brush item = getItem();
             if (newValue && item != null) {
