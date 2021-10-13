@@ -41,6 +41,7 @@ public final class MenuManager {
     public MenuManager() {
         initLayerEditor();
         initLayerCell();
+        initBrushEditor();
         initBrushCell();
     }
 
@@ -94,6 +95,32 @@ public final class MenuManager {
             p.getLayers().remove(p.getActiveModel().getActivatedIndex());
         });
         layerCell.getItems().addAll(add, delete);
+    }
+
+    private void initBrushEditor() {
+        var rename = new MenuItem("リネーム");
+        rename.setOnAction(e -> {
+            var brush = BrushManager.getInstance().getActiveModel().getActivatedItem();
+            var dialog = new Dialog<ButtonType>();
+            var textField = new TextField();
+            dialog.getDialogPane().setContent(textField);
+            textField.setText(brush.getName());
+            dialog.getDialogPane().getButtonTypes().setAll(ButtonType.CANCEL, ButtonType.OK);
+
+            dialog.showAndWait()
+                    .filter(it -> it == ButtonType.OK)
+                    .ifPresent(it -> {
+                        var newName = textField.getText();
+                        if (newName == null || newName.isEmpty() || newName.isBlank()) {
+                            return;
+                        }
+                        brush.setName(newName);
+                        var root = ((JFxWindow) Pino.getApp().getWindow()).getRootContainer();
+                        root.getBrushEditor().refresh();
+                        root.getBrushView().refresh();
+                    });
+        });
+        brushEditor.getItems().addAll(rename);
     }
 
     private void initBrushCell() {

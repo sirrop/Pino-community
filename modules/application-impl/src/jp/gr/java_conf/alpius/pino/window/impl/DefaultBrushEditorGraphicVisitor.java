@@ -38,7 +38,7 @@ public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEdi
         VBox container = new VBox(3);
         container.setPadding(new Insets(5));
 
-        var name = new Label(brush.getClass().getSimpleName());
+        var name = new Label(brush.getName());
         container.getChildren().add(name);
 
         if (brush instanceof Pencil pencil) {
