@@ -33,10 +33,7 @@ import jp.gr.java_conf.alpius.pino.tool.plugin.DrawTool;
 import jp.gr.java_conf.alpius.pino.util.ActiveModel;
 import jp.gr.java_conf.alpius.pino.util.Key;
 import jp.gr.java_conf.alpius.pino.window.Window;
-import jp.gr.java_conf.alpius.pino.window.impl.JFxWindow;
-import jp.gr.java_conf.alpius.pino.window.impl.MenuManager;
-import jp.gr.java_conf.alpius.pino.window.impl.PinoRootContainer;
-import jp.gr.java_conf.alpius.pino.window.impl.RootContainer;
+import jp.gr.java_conf.alpius.pino.window.impl.*;
 
 import java.awt.*;
 import java.util.HashMap;

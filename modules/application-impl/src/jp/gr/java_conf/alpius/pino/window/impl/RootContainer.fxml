@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionButton?>
-<?import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionMenuItem?>
-<?import jp.gr.java_conf.alpius.pino.window.impl.BrushEditor?>
-<?import jp.gr.java_conf.alpius.pino.window.impl.LayerEditor?>
-<?import org.controlsfx.control.StatusBar?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
-
 <!--
   ~ Copyright [2021] [shiro]
   ~
@@ -26,6 +16,14 @@
   ~ limitations under the License.
   -->
 
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import jp.gr.java_conf.alpius.pino.ui.actionSystem.*?>
+<?import jp.gr.java_conf.alpius.pino.window.impl.BrushEditor?>
+<?import jp.gr.java_conf.alpius.pino.window.impl.LayerEditor?>
+<?import org.controlsfx.control.StatusBar?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <VBox fx:id="content" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="jp.gr.java_conf.alpius.pino.window.impl.PinoRootContainer" prefHeight="800" prefWidth="1200.0">
     <!-- メニューバー -->
     <MenuBar fx:id="menuBar">
@@ -68,7 +66,7 @@
     </ToolBar>
 
     <HBox fx:id="contentPane" VBox.vgrow="ALWAYS">
-        <SplitPane HBox.hgrow="ALWAYS" dividerPositions="0.2,0.75">
+        <SplitPane HBox.hgrow="ALWAYS" dividerPositions="0.25,0.75">
             <SplitPane orientation="VERTICAL" dividerPositions="0.4">
                 <BrushEditor fx:id="brushEditor">
                     <placeholder>
