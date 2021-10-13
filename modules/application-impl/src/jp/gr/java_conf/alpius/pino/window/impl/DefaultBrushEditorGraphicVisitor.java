@@ -43,6 +43,7 @@ public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEdi
 
         if (brush instanceof Pencil pencil) {
             var width = slider(slider -> {
+                slider.setBlockIncrement(1);
                 slider.setValue(pencil.getWidth());
                 slider.valueProperty().addListener((observable, oldValue, newValue) -> pencil.setWidth(newValue.floatValue()));
             });
@@ -50,6 +51,7 @@ public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEdi
             var opacity = slider(slider -> {
                 slider.setMin(0);
                 slider.setMax(100);
+                slider.setBlockIncrement(1);
                 slider.setValue(pencil.getOpacity() * 100);
                 slider.valueProperty().addListener((observable, oldValue, newValue) -> pencil.setOpacity(newValue.floatValue() / 100));
             });
@@ -60,6 +62,7 @@ public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEdi
             container.getChildren().addAll(labeled("幅", width), labeled("不透明度", opacity), colorPicker);
         } else if (brush instanceof Eraser eraser) {
             var width = slider(it -> {
+                it.setBlockIncrement(1);
                 it.setValue(eraser.getWidth());
                 it.valueProperty().addListener((observable, oldValue, newValue) -> eraser.setWidth(newValue.floatValue()));
             });
@@ -67,6 +70,7 @@ public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEdi
             var opacity = slider(it -> {
                 it.setMin(0);
                 it.setMax(100);
+                it.setBlockIncrement(1);
                 it.setValue(eraser.getOpacity() * 100);
                 it.valueProperty().addListener((observable, oldValue, newValue) -> eraser.setOpacity(newValue.floatValue() / 100));
             });
@@ -109,11 +113,15 @@ public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEdi
     public static Node slider(Consumer<Slider> configurator) {
         var slider = new Slider();
         configurator.accept(slider);
+        var incBtn = new Button("+");
+        incBtn.setOnAction(e -> slider.increment());
+        var decBtn = new Button("-");
+        decBtn.setOnAction(e -> slider.decrement());
         var textField = new TextField();
         var formatter = new TextFormatter<>(new NumberStringConverter(), slider.getValue());
         textField.setTextFormatter(formatter);
         textField.setPrefWidth(DEFAULT_TEXTFIELD_PREF_WIDTH);
         formatter.valueProperty().bindBidirectional(slider.valueProperty());
-        return new HBox(slider, textField);
+        return new HBox(slider, decBtn, incBtn, textField);
     }
 }

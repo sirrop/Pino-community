@@ -71,27 +71,32 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
 
         var x = slider(it -> {
             it.setValue(e.getX());
+            it.setBlockIncrement(1);
             it.valueProperty().addListener((obs, oldvalue, newvalue) -> e.setX(newvalue.doubleValue()));
         });
 
         var y = slider(it -> {
             it.setValue(e.getY());
+            it.setBlockIncrement(1);
             it.valueProperty().addListener((obs, oldValue, newValue) -> e.setY(newValue.doubleValue()));
         });
 
         var rotate = slider(it -> {
             it.setMin(-360);
             it.setMax(360);
+            it.setBlockIncrement(1);
             it.setValue(e.getRotate());
             it.valueProperty().addListener((obs, oldValue, newValue) -> e.setRotate(newValue.doubleValue()));
         });
 
         var scaleX = slider(it -> {
+            it.setBlockIncrement(1);
             it.setValue(e.getScaleX() * 100);
             it.valueProperty().addListener((obs, oldValue, newValue) -> e.setScaleX(newValue.doubleValue() / 100));
         });
 
         var scaleY = slider(it -> {
+            it.setBlockIncrement(1);
             it.setValue(e.getScaleY() * 100);
             it.valueProperty().addListener((obs, oldValue, newValue) -> e.setScaleY(newValue.doubleValue() / 100));
         });
@@ -142,11 +147,15 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
     public static Node slider(Consumer<Slider> configurator) {
         var slider = new Slider();
         configurator.accept(slider);
+        var incBtn = new Button("+");
+        incBtn.setOnAction(e -> slider.increment());
+        var decBtn = new Button("-");
+        decBtn.setOnAction(e -> slider.decrement());
         var textField = new TextField();
         var formatter = new TextFormatter<>(new NumberStringConverter(), slider.getValue());
         textField.setTextFormatter(formatter);
         textField.setPrefWidth(DEFAULT_TEXTFIELD_PREF_WIDTH);
         formatter.valueProperty().bindBidirectional(slider.valueProperty());
-        return new HBox(slider, textField);
+        return new HBox(slider, decBtn, incBtn, textField);
     }
 }
