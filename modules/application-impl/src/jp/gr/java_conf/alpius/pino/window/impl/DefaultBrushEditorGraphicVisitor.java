@@ -18,19 +18,21 @@ package jp.gr.java_conf.alpius.pino.window.impl;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.util.converter.NumberStringConverter;
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Eraser;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Pencil;
 
+import java.util.function.Consumer;
+
 public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEditorGraphicVisitor {
     private static final double DEFAULT_LABEL_PREF_WIDTH = 60;
+    private static final double DEFAULT_TEXTFIELD_PREF_WIDTH = 60;
 
     public Node visit(Brush brush) {
         VBox container = new VBox(3);
@@ -40,27 +42,35 @@ public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEdi
         container.getChildren().add(name);
 
         if (brush instanceof Pencil pencil) {
-            var width = new Slider();
-            width.setValue(pencil.getWidth());
-            width.valueProperty().addListener((observable, oldValue, newValue) -> pencil.setWidth(newValue.floatValue()));
-            var opacity = new Slider();
-            opacity.setMin(0);
-            opacity.setMax(100);
-            opacity.setValue(pencil.getOpacity() * 100);
-            opacity.valueProperty().addListener((observable, oldValue, newValue) -> pencil.setOpacity(newValue.floatValue() / 100));
+            var width = slider(slider -> {
+                slider.setValue(pencil.getWidth());
+                slider.valueProperty().addListener((observable, oldValue, newValue) -> pencil.setWidth(newValue.floatValue()));
+            });
+
+            var opacity = slider(slider -> {
+                slider.setMin(0);
+                slider.setMax(100);
+                slider.setValue(pencil.getOpacity() * 100);
+                slider.valueProperty().addListener((observable, oldValue, newValue) -> pencil.setOpacity(newValue.floatValue() / 100));
+            });
+
             var colorPicker = new ColorPicker();
             colorPicker.setValue(asFxColor(pencil.getColor()));
             colorPicker.valueProperty().addListener((observable, oldValue, newValue) -> pencil.setColor(asAwtColor(newValue)));
             container.getChildren().addAll(labeled("幅", width), labeled("不透明度", opacity), colorPicker);
         } else if (brush instanceof Eraser eraser) {
-            var width = new Slider();
-            width.setValue(eraser.getWidth());
-            width.valueProperty().addListener((observable, oldValue, newValue) -> eraser.setWidth(newValue.floatValue()));
-            var opacity = new Slider();
-            opacity.setMin(0);
-            opacity.setMax(100);
-            opacity.setValue(eraser.getOpacity() * 100);
-            opacity.valueProperty().addListener((observable, oldValue, newValue) -> eraser.setOpacity(newValue.floatValue() / 100));
+            var width = slider(it -> {
+                it.setValue(eraser.getWidth());
+                it.valueProperty().addListener((observable, oldValue, newValue) -> eraser.setWidth(newValue.floatValue()));
+            });
+
+            var opacity = slider(it -> {
+                it.setMin(0);
+                it.setMax(100);
+                it.setValue(eraser.getOpacity() * 100);
+                it.valueProperty().addListener((observable, oldValue, newValue) -> eraser.setOpacity(newValue.floatValue() / 100));
+            });
+
             container.getChildren().addAll(labeled("幅", width), labeled("不透明度", opacity));
         }
         return container;
@@ -94,5 +104,16 @@ public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEdi
 
     public String toString() {
         return "default";
+    }
+
+    public static Node slider(Consumer<Slider> configurator) {
+        var slider = new Slider();
+        configurator.accept(slider);
+        var textField = new TextField();
+        var formatter = new TextFormatter<>(new NumberStringConverter(), slider.getValue());
+        textField.setTextFormatter(formatter);
+        textField.setPrefWidth(DEFAULT_TEXTFIELD_PREF_WIDTH);
+        formatter.valueProperty().bindBidirectional(slider.valueProperty());
+        return new HBox(slider, textField);
     }
 }

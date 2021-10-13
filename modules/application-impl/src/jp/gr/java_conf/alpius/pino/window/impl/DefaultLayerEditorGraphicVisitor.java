@@ -18,13 +18,11 @@ package jp.gr.java_conf.alpius.pino.window.impl;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.util.converter.NumberStringConverter;
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
 import jp.gr.java_conf.alpius.pino.graphics.layer.ImageLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
@@ -33,9 +31,11 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.function.Consumer;
 
 public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEditorGraphicVisitor {
     private static final double DEFAULT_LABEL_PREF_WIDTH = 60;
+    private static final double DEFAULT_TEXTFIELD_PREF_WIDTH = 60;
 
     private static Label label(String text) {
         var res = new Label(text);
@@ -50,12 +50,14 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
 
         var name = new Label(e.getName());
 
-        var slider = new Slider();
-        slider.setMin(0);
-        slider.setMax(100);
-        slider.setBlockIncrement(1);
-        slider.valueProperty().addListener((obs, oldValue, newValue) -> e.setOpacity(newValue.floatValue() / 100));
-        slider.setValue(e.getOpacity() * 100);
+        var slider = slider(it -> {
+            it.setMin(0);
+            it.setMax(100);
+            it.setBlockIncrement(1);
+            it.valueProperty().addListener((obs, oldValue, newValue) -> e.setOpacity(newValue.floatValue() / 100));
+            it.setValue(e.getOpacity() * 100);
+        });
+
 
         var visible = new CheckBox();
         visible.setText("表示");
@@ -67,27 +69,32 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
         rough.setSelected(e.isRough());
         rough.selectedProperty().addListener((obs, oldValue, newValue) -> e.setRough(newValue));
 
-        var x = new Slider();
-        x.setValue(e.getX());
-        x.valueProperty().addListener((obs, oldvalue, newvalue) -> e.setX(newvalue.doubleValue()));
+        var x = slider(it -> {
+            it.setValue(e.getX());
+            it.valueProperty().addListener((obs, oldvalue, newvalue) -> e.setX(newvalue.doubleValue()));
+        });
 
-        var y = new Slider();
-        y.setValue(e.getY());
-        y.valueProperty().addListener((obs, oldValue, newValue) -> e.setY(newValue.doubleValue()));
+        var y = slider(it -> {
+            it.setValue(e.getY());
+            it.valueProperty().addListener((obs, oldValue, newValue) -> e.setY(newValue.doubleValue()));
+        });
 
-        var rotate = new Slider();
-        rotate.setMin(-360);
-        rotate.setMax(360);
-        rotate.setValue(e.getRotate());
-        rotate.valueProperty().addListener((obs, oldValue, newValue) -> e.setRotate(newValue.doubleValue()));
+        var rotate = slider(it -> {
+            it.setMin(-360);
+            it.setMax(360);
+            it.setValue(e.getRotate());
+            it.valueProperty().addListener((obs, oldValue, newValue) -> e.setRotate(newValue.doubleValue()));
+        });
 
-        var scaleX = new Slider();
-        scaleX.setValue(e.getScaleX() * 100);
-        scaleX.valueProperty().addListener((obs, oldValue, newValue) -> e.setScaleX(newValue.doubleValue() / 100));
+        var scaleX = slider(it -> {
+            it.setValue(e.getScaleX() * 100);
+            it.valueProperty().addListener((obs, oldValue, newValue) -> e.setScaleX(newValue.doubleValue() / 100));
+        });
 
-        var scaleY = new Slider();
-        scaleY.setValue(e.getScaleY() * 100);
-        scaleY.valueProperty().addListener((obs, oldValue, newValue) -> e.setScaleY(newValue.doubleValue() / 100));
+        var scaleY = slider(it -> {
+            it.setValue(e.getScaleY() * 100);
+            it.valueProperty().addListener((obs, oldValue, newValue) -> e.setScaleY(newValue.doubleValue() / 100));
+        });
 
         var clipping = new CheckBox();
         clipping.setText("下のレイヤーでクリッピング");
@@ -130,5 +137,16 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
 
     public String toString() {
         return "default";
+    }
+
+    public static Node slider(Consumer<Slider> configurator) {
+        var slider = new Slider();
+        configurator.accept(slider);
+        var textField = new TextField();
+        var formatter = new TextFormatter<>(new NumberStringConverter(), slider.getValue());
+        textField.setTextFormatter(formatter);
+        textField.setPrefWidth(DEFAULT_TEXTFIELD_PREF_WIDTH);
+        formatter.valueProperty().bindBidirectional(slider.valueProperty());
+        return new HBox(slider, textField);
     }
 }
