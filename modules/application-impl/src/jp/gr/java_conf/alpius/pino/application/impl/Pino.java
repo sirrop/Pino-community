@@ -93,6 +93,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         eventDistributor = new EventDistributor(window);
         services.register(ToolManager.class, eventDistributor);
         eventDistributor.activate(DrawTool.getInstance());
+        Thread.currentThread().setUncaughtExceptionHandler(new ErrorHandler());
     }
 
     private void searchActionAndPerform(KeyEvent e) {

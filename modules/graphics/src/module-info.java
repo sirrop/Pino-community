@@ -5,6 +5,7 @@ module pino.graphics {
     exports jp.gr.java_conf.alpius.pino.graphics.filter;
     exports jp.gr.java_conf.alpius.pino.graphics;
     exports jp.gr.java_conf.alpius.pino.graphics.layer;
+    exports jp.gr.java_conf.alpius.pino.graphics.internal.graphics;
 
     requires transitive java.desktop;
     requires transitive pino.core;

@@ -18,6 +18,9 @@ package jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin;
 
 import javafx.geometry.Insets;
 import javafx.scene.Group;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -28,6 +31,7 @@ import jp.gr.java_conf.alpius.pino.project.impl.PinoProject;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.Action;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionEvent;
 
+import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_Profile;
 
@@ -39,7 +43,9 @@ public class MakeProject implements Action {
         makeDialog().showAndWait()
                 .ifPresent(info -> {
                     log("success: make project! [width: %d, height: %d, profile: %s, accel: %b]", info.width, info.height, info.profile, info.accel);
-                    Pino.getApp().setProjectAndDispose(new PinoProject(info.width, info.height));
+                    var project = new PinoProject(info.width, info.height);
+                    project.getCanvas().setBackground(info.background());
+                    Pino.getApp().setProjectAndDispose(project);
                 });
     }
 
@@ -55,7 +61,7 @@ public class MakeProject implements Action {
         dialog.setTitle("新規プロジェクトを作成する");
         dialog.setResizable(false);
         dialog.getDialogPane().setPrefWidth(250);
-        dialog.getDialogPane().setPrefHeight(100);
+        dialog.getDialogPane().setPrefHeight(130);
         dialog.setResultConverter(type -> {
             if (type == ButtonType.OK) {
                 return display.getResult();
@@ -69,6 +75,7 @@ public class MakeProject implements Action {
     private static record ProjectInfo(
             int width, int height,
             ICC_Profile profile,
+            Paint background,
             boolean accel
     ) {
     }
@@ -88,11 +95,15 @@ public class MakeProject implements Action {
         private final Label px0                                 = new Label("px");
         private final Label px1                                 = new Label("px");
 
+        // 背景色選択用
+        private final Label backgroundPickerLabel = new Label("背景色");
+        private final ColorPicker backgroundPicker = new ColorPicker();
+
         public Display() {
             var container = new Pane();
             var hbox0 = new HBox(widthLabel, widthInput, px0);
             var hbox1 = new HBox(heightLabel, heightInput, px1);
-            var vbox = new VBox(hbox0, hbox1);
+            var vbox = new VBox(hbox0, hbox1, new HBox(backgroundPickerLabel, backgroundPicker));
             hbox0.setSpacing(3);
             hbox1.setSpacing(3);
             vbox.setPadding(new Insets(5));
@@ -104,12 +115,22 @@ public class MakeProject implements Action {
             heightInput.setTextFormatter(heightFormatter);
             widthLabel.setPrefWidth(LABEL_PREF_WIDTH);
             heightLabel.setPrefWidth(LABEL_PREF_WIDTH);
+            backgroundPickerLabel.setPrefWidth(LABEL_PREF_WIDTH);
+            backgroundPicker.setValue(javafx.scene.paint.Color.TRANSPARENT);
             getChildren().setAll(container);
         }
 
 
         public ProjectInfo getResult() {
-            return new ProjectInfo(width, height, ICC_Profile.getInstance(ColorSpace.CS_sRGB), false);
+            return new ProjectInfo(width, height, ICC_Profile.getInstance(ColorSpace.CS_sRGB), asAwtColor(backgroundPicker.getValue()), false);
+        }
+
+        private static Color asAwtColor(javafx.scene.paint.Color c) {
+            float a = (float) c.getOpacity();
+            float r = (float) c.getRed();
+            float g = (float) c.getGreen();
+            float b = (float) c.getBlue();
+            return new Color(r, g, b, a);
         }
     }
 }
