@@ -18,6 +18,7 @@ package jp.gr.java_conf.alpius.pino.graphics.canvas;
 
 import jp.gr.java_conf.alpius.pino.annotation.Beta;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
+import jp.gr.java_conf.alpius.pino.graphics.internal.util.ColorUtils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -25,7 +26,7 @@ import java.awt.image.BufferedImage;
 public interface Canvas extends Disposable {
 
     // used default canvas background
-    Color TRANSPARENT = new Color(0, true);
+    Color TRANSPARENT = ColorUtils.TRANSPARENT;
 
     static Canvas createGeneral() {
         return new GeneralCanvas();

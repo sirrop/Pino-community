@@ -24,6 +24,9 @@ import jp.gr.java_conf.alpius.pino.graphics.brush.Pencil;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.ImageLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.Layers;
+import jp.gr.java_conf.alpius.pino.graphics.layer.geom.Ellipse;
+import jp.gr.java_conf.alpius.pino.graphics.layer.geom.Rectangle;
+import jp.gr.java_conf.alpius.pino.graphics.layer.geom.Text;
 
 /**
  * Menuを管理します
@@ -78,6 +81,21 @@ public final class MenuManager {
         {
             var drawable = new MenuItem("描画レイヤー");
             var image = new MenuItem("画像レイヤー");
+            var shape = new Menu("図形");
+            {
+                var rect = new MenuItem("四角形");
+                var ellipse = new MenuItem("楕円");
+                rect.setOnAction(e -> {
+                    var p = Pino.getApp().getProject();
+                    p.getLayers().add(p.getActiveModel().getActivatedIndex(), Layers.create(Rectangle::new, p.getWidth(), p.getHeight()));
+                });
+                ellipse.setOnAction(e -> {
+                    var p = Pino.getApp().getProject();
+                    p.getLayers().add(p.getActiveModel().getActivatedIndex(), Layers.create(Ellipse::new, p.getWidth(), p.getHeight()));
+                });
+                shape.getItems().addAll(rect, ellipse);
+            }
+            var text = new MenuItem("テキスト");
             drawable.setOnAction(e -> {
                 var p = Pino.getApp().getProject();
                 p.getLayers().add(p.getActiveModel().getActivatedIndex(), Layers.create(DrawableLayer::new, p.getWidth(), p.getHeight()));
@@ -86,7 +104,11 @@ public final class MenuManager {
                 var p = Pino.getApp().getProject();
                 p.getLayers().add(p.getActiveModel().getActivatedIndex(), Layers.create(ImageLayer::new, p.getWidth(), p.getHeight()));
             });
-            add.getItems().addAll(drawable, image);
+            text.setOnAction(e -> {
+                var p = Pino.getApp().getProject();
+                p.getLayers().add(p.getActiveModel().getActivatedIndex(), Layers.create(Text::new, p.getWidth(), p.getHeight()));
+            });
+            add.getItems().addAll(drawable, image, shape, text);
         }
 
         var delete = new MenuItem("削除");
