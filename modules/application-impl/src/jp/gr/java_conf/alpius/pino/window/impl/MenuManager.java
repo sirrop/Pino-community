@@ -54,12 +54,13 @@ public final class MenuManager {
     }
 
     private void initLayerEditor() {
-        var rename = new MenuItem("リネーム");
+        var rename = new MenuItem("レイヤー名を変更");
         rename.setOnAction(e -> {
             var p = Pino.getApp().getProject();
             var layer = p.getActiveModel().getActivatedItem();
             var dialog = new Dialog<ButtonType>();
             var textField = new TextField();
+            dialog.setTitle("レイヤー名を変更");
             dialog.getDialogPane().setContent(textField);
             textField.setText(layer.getName());
             dialog.getDialogPane().getButtonTypes().setAll(ButtonType.CANCEL, ButtonType.OK);
@@ -77,8 +78,15 @@ public final class MenuManager {
                         root.getLayerView().refresh();
                     });
         });
-
-        layerEditor.getItems().setAll(rename);
+        var convertLayer = new MenuItem("描画レイヤーに変換");
+        convertLayer.setOnAction(e -> {
+            var p = Pino.getApp().getProject();
+            var activeModel = p.getActiveModel();
+            var index = activeModel.getActivatedIndex();
+            var original = activeModel.getActivatedItem();
+            p.getLayers().set(index, original.toDrawable());
+        });
+        layerEditor.getItems().setAll(rename, convertLayer);
     }
 
     private void initLayerCell() {
@@ -133,11 +141,12 @@ public final class MenuManager {
     }
 
     private void initBrushEditor() {
-        var rename = new MenuItem("リネーム");
+        var rename = new MenuItem("ブラシ名を変更");
         rename.setOnAction(e -> {
             var brush = BrushManager.getInstance().getActiveModel().getActivatedItem();
             var dialog = new Dialog<ButtonType>();
             var textField = new TextField();
+            dialog.setTitle("ブラシ名を変更");
             dialog.getDialogPane().setContent(textField);
             textField.setText(brush.getName());
             dialog.getDialogPane().getButtonTypes().setAll(ButtonType.CANCEL, ButtonType.OK);

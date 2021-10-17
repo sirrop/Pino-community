@@ -355,6 +355,34 @@ public abstract class LayerObject implements Disposable, Originator {
         return new MyMemento(this);
     }
 
+    public DrawableLayer toDrawable() {
+        var drawable = new DrawableLayer();
+        if (this.canvas == null) {
+            throw new IllegalStateException("canvas == null");
+        }
+        drawable.setCanvas(canvas);
+
+        var g = drawable.createGraphics();
+        g.addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
+        render(g, new Rectangle(canvas.getWidth(), canvas.getHeight()), false);
+        g.dispose();
+
+        if (!name.equals(getClass().getSimpleName())) {
+            drawable.setName(name);
+        }
+        drawable.setVisible(visible);
+        drawable.setRough(rough);
+        drawable.setCompositeFactory(compositeFactory);
+        if (parent != null) {
+            drawable.setParent(parent);
+            int index = parent.getChildren().indexOf(this);
+            parent.getChildren().set(index, drawable);
+        }
+
+
+        return drawable;
+    }
+
     /**
      * {@inheritDoc}
      */
