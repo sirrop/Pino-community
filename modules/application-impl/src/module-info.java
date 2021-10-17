@@ -51,5 +51,6 @@ module pino.application.impl {
     provides Action
             with    ActivateDrawTool, ActivateHandTool,
                     MakeProject, CloseProject, Output, Exit,
-                    Undo, Redo;
+                    Undo, Redo,
+                    HorizontalFlip, VerticalFlip;
 }
