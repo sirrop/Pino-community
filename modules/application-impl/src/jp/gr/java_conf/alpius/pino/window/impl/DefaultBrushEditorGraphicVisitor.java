@@ -24,10 +24,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.converter.NumberStringConverter;
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
-import jp.gr.java_conf.alpius.pino.graphics.brush.MeanBlur;
-import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
-import jp.gr.java_conf.alpius.pino.graphics.brush.Eraser;
-import jp.gr.java_conf.alpius.pino.graphics.brush.Pencil;
+import jp.gr.java_conf.alpius.pino.graphics.brush.*;
 
 import java.util.function.Consumer;
 
@@ -98,6 +95,34 @@ public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEdi
                 it.valueProperty().addListener(((observable, oldValue, newValue) -> blur.setKernelHeight(Math.round(newValue.floatValue()))));
             });
             container.getChildren().addAll(labeled("幅", width), labeled("ぼかしの強さX", kernelWidth), labeled("ぼかしの強さY", kernelHeight));
+        } else if (brush instanceof GaussianBlur blur) {
+            var width = slider(it -> {
+                it.setBlockIncrement(1);
+                it.setValue(blur.getWidth());
+                it.valueProperty().addListener((observable, oldValue, newValue) -> blur.setWidth(newValue.floatValue()));
+            });
+            var kernelWidth = slider(it -> {
+                it.setMin(1);
+                it.setMax(99);
+                it.setBlockIncrement(2);
+                it.setValue(blur.getKernelWidth());
+                it.valueProperty().addListener(((observable, oldValue, newValue) -> blur.setKernelWidth(Math.round(newValue.floatValue()))));
+            }, 0);
+            var kernelHeight = slider(it -> {
+                it.setMin(1);
+                it.setMax(99);
+                it.setBlockIncrement(2);
+                it.setValue(blur.getKernelHeight());
+                it.valueProperty().addListener(((observable, oldValue, newValue) -> blur.setKernelHeight(Math.round(newValue.floatValue()))));
+            }, 0);
+            var deviation = slider(it -> {
+                it.setMin(0.01);
+                it.setMax(5);
+                it.setBlockIncrement(0.01);
+                it.setValue(blur.getDeviation());
+                it.valueProperty().addListener((observable, oldValue, newValue) -> blur.setDeviation(newValue.doubleValue()));
+            }, 2);
+            container.getChildren().addAll(labeled("幅", width), labeled("ぼかしの強さX", kernelWidth), labeled("ぼかしの強さY", kernelHeight), labeled("偏差", deviation));
         }
         return container;
     }
