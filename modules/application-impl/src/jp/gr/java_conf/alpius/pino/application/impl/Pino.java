@@ -58,6 +58,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
     public Pino() {
 
         /* -- register core services -- */
+        services.register(BlendModeRegistry.class, new BlendModeRegistry());
         services.register(BrushManager.class, new BrushManager());
         services.register(GraphicManager.class, new GraphicManager());
         services.register(History.class, new HistoryImpl(100));

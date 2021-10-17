@@ -24,7 +24,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.util.converter.NumberStringConverter;
+import jp.gr.java_conf.alpius.pino.application.impl.BlendModeRegistry;
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
+import jp.gr.java_conf.alpius.pino.graphics.CompositeFactory;
 import jp.gr.java_conf.alpius.pino.graphics.layer.ImageLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
 import jp.gr.java_conf.alpius.pino.graphics.layer.ShapeLayer;
@@ -108,7 +110,12 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
         });
 
         var clipping = new CheckBox();
-        clipping.setText("下のレイヤーでクリッピング");
+        clipping.setText("下のレイヤーでクリッピング ※未対応");
+
+        var blendMode = new ComboBox<CompositeFactory>();
+        blendMode.setItems(BlendModeRegistry.getInstance().getAvailableBlendModeList());
+        blendMode.setValue(e.getCompositeFactory());
+        blendMode.valueProperty().addListener((observable, oldValue, newValue) -> e.setCompositeFactory(newValue));
 
         container.getChildren().setAll(
                 name,
@@ -118,6 +125,7 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
                 new HBox(label("拡大率X"), scaleX),
                 new HBox(label("拡大率Y"), scaleY),
                 new HBox(label("不透明度"), slider),
+                new HBox(label("合成モード"), blendMode),
                 visible,
                 rough,
                 clipping
