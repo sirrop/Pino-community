@@ -123,7 +123,29 @@ public final class MenuManager {
             }
             syncLayerSelection(index);
         });
-        layerCell.getItems().addAll(add, delete);
+
+        var up = new MenuItem("上へ動かす");
+        up.setOnAction(e -> {
+            var p = Pino.getApp().getProject();
+            var index = p.getActiveModel().getActivatedIndex();
+            if (index != 0) {
+                var layer = p.getLayers().remove(index);
+                p.getLayers().add(index - 1, layer);
+                syncLayerSelection(index - 1);
+            }
+        });
+
+        var down = new MenuItem("下へ動かす");
+        down.setOnAction(e -> {
+            var p = Pino.getApp().getProject();
+            var index = p.getActiveModel().getActivatedIndex();
+            if (index != p.getLayers().size() - 1) {
+                var layer = p.getLayers().remove(index);
+                p.getLayers().add(index + 1, layer);
+                syncLayerSelection(index + 1);
+            }
+        });
+        layerCell.getItems().addAll(add, delete, up, down);
     }
 
     private static EventHandler<ActionEvent> addAction(Supplier<? extends LayerObject> constructor) {
@@ -176,11 +198,13 @@ public final class MenuManager {
                 var mgr = BrushManager.getInstance();
                 int index = mgr.getActiveModel().getActivatedIndex();
                 mgr.getBrushList().add(index, new Pencil());
+                syncBrushSelection(index);
             });
             eraser.setOnAction(e -> {
                 var mgr = BrushManager.getInstance();
                 int index = mgr.getActiveModel().getActivatedIndex();
                 mgr.getBrushList().add(index, new Eraser());
+                syncBrushSelection(index);
             });
             add.getItems().addAll(pencil, eraser);
         }
@@ -191,7 +215,34 @@ public final class MenuManager {
             var item = mgr.getActiveModel().getActivatedItem();
             mgr.getBrushList().remove(item);
         });
-        brushCell.getItems().addAll(add, delete);
+
+        var up = new MenuItem("上へ動かす");
+        up.setOnAction(e -> {
+            var p = BrushManager.getInstance();
+            var index = p.getActiveModel().getActivatedIndex();
+            if (index != 0) {
+                var brush = p.getBrushList().remove(index);
+                p.getBrushList().add(index - 1, brush);
+                syncBrushSelection(index - 1);
+            }
+        });
+
+        var down = new MenuItem("下へ動かす");
+        down.setOnAction(e -> {
+            var p = BrushManager.getInstance();
+            var index = p.getActiveModel().getActivatedIndex();
+            if (index != p.getBrushList().size() - 1) {
+                var brush = p.getBrushList().remove(index);
+                p.getBrushList().add(index + 1, brush);
+                syncBrushSelection(index + 1);
+            }
+        });
+        brushCell.getItems().addAll(add, delete, up, down);
+    }
+
+    private static void syncBrushSelection(int index) {
+        BrushManager.getInstance().getActiveModel().activate(index);
+        ((JFxWindow) Pino.getApp().getWindow()).getRootContainer().getBrushView().getSelectionModel().clearAndSelect(index);
     }
 
     public ContextMenu getLayerEditorMenu() {
