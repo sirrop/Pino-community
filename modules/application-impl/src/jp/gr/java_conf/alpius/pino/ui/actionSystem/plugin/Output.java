@@ -25,6 +25,7 @@ import jp.gr.java_conf.alpius.pino.ui.actionSystem.Action;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionEvent;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Arrays;
@@ -37,7 +38,15 @@ public class Output implements Action {
     public void performAction(ActionEvent e) {
         var p = Pino.getApp().getProject();
         if (p != null) {
-            BufferedImage snap = p.getCanvas().snapshot();
+            BufferedImage snap = new BufferedImage(p.getWidth(), p.getHeight(), BufferedImage.TYPE_INT_ARGB_PRE);
+            var g = snap.createGraphics();
+            var aoi = new Rectangle(p.getWidth(), p.getHeight());
+            var itr = p.getLayers().listIterator(p.getLayers().size());
+            while (itr.hasPrevious()) {
+                var previous = itr.previous();
+                previous.render(g, aoi, true);
+            }
+            g.dispose();
             try {
                 FileChooser fc = new FileChooser();
                 fc.getExtensionFilters().addAll(getExtensionFilters());
