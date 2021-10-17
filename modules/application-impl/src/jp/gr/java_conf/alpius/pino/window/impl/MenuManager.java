@@ -21,6 +21,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import jp.gr.java_conf.alpius.pino.application.impl.BrushManager;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
+import jp.gr.java_conf.alpius.pino.graphics.brush.MeanBlur;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Eraser;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Pencil;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
@@ -192,8 +193,9 @@ public final class MenuManager {
     private void initBrushCell() {
         var add = new Menu("追加");
         {
-            var pencil = new MenuItem("Pencil");
-            var eraser = new MenuItem("Eraser");
+            var pencil = new MenuItem("鉛筆");
+            var eraser = new MenuItem("消しゴム");
+            var blur = new MenuItem("平均化ブラシ");
             pencil.setOnAction(e -> {
                 var mgr = BrushManager.getInstance();
                 int index = mgr.getActiveModel().getActivatedIndex();
@@ -206,7 +208,13 @@ public final class MenuManager {
                 mgr.getBrushList().add(index, new Eraser());
                 syncBrushSelection(index);
             });
-            add.getItems().addAll(pencil, eraser);
+            blur.setOnAction(e -> {
+                var mgr = BrushManager.getInstance();
+                int index = mgr.getActiveModel().getActivatedIndex();
+                mgr.getBrushList().add(index, new MeanBlur());
+                syncBrushSelection(index);
+            });
+            add.getItems().addAll(pencil, eraser, blur);
         }
 
         var delete = new MenuItem("削除");

@@ -19,6 +19,7 @@ package jp.gr.java_conf.alpius.pino.application.impl;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import jp.gr.java_conf.alpius.pino.graphics.brush.MeanBlur;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Eraser;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Pencil;
@@ -38,7 +39,7 @@ public final class BrushManager {
         activeModel.activate(0);
     }
 
-    private final ObservableList<Brush> brushList = FXCollections.observableArrayList(new Pencil(), new Eraser());
+    private final ObservableList<Brush> brushList = FXCollections.observableArrayList(new Pencil(), new Eraser(), new MeanBlur());
     private final ActiveModel<Brush> activeModel = new BrushMgrActiveModel(this);
 
     public List<Brush> getBrushList() {

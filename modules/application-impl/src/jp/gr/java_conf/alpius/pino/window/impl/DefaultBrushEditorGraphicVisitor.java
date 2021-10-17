@@ -24,6 +24,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.converter.NumberStringConverter;
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
+import jp.gr.java_conf.alpius.pino.graphics.brush.MeanBlur;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Eraser;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Pencil;
@@ -76,6 +77,27 @@ public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEdi
             });
 
             container.getChildren().addAll(labeled("幅", width), labeled("不透明度", opacity));
+        } else if (brush instanceof MeanBlur blur) {
+            var width = slider(it -> {
+                it.setBlockIncrement(1);
+                it.setValue(blur.getWidth());
+                it.valueProperty().addListener((observable, oldValue, newValue) -> blur.setWidth(newValue.floatValue()));
+            });
+            var kernelWidth = slider(it -> {
+                it.setMin(0);
+                it.setMax(100);
+                it.setBlockIncrement(1);
+                it.setValue(blur.getKernelWidth());
+                it.valueProperty().addListener(((observable, oldValue, newValue) -> blur.setKernelWidth(Math.round(newValue.floatValue()))));
+            }, 0);
+            var kernelHeight = slider(it -> {
+                it.setMin(0);
+                it.setMax(100);
+                it.setBlockIncrement(1);
+                it.setValue(blur.getKernelHeight());
+                it.valueProperty().addListener(((observable, oldValue, newValue) -> blur.setKernelHeight(Math.round(newValue.floatValue()))));
+            });
+            container.getChildren().addAll(labeled("幅", width), labeled("ぼかしの強さX", kernelWidth), labeled("ぼかしの強さY", kernelHeight));
         }
         return container;
     }
@@ -128,7 +150,11 @@ public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEdi
             @Override
             public String toString(Number number) {
                 String result = super.toString(number);
-                return drop(result, getNumDigitsUnderPoint(result) - mug);
+                result = drop(result, getNumDigitsUnderPoint(result) - mug);
+                if (mug == 0 && result.lastIndexOf('.') != -1) {
+                    result = drop(result, 1);
+                }
+                return result;
             }
         }, slider.getValue());
         textField.setTextFormatter(formatter);
