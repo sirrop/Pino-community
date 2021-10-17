@@ -16,7 +16,6 @@
 
 package jp.gr.java_conf.alpius.pino.graphics.brush;
 
-import jp.gr.java_conf.alpius.pino.annotation.Beta;
 import jp.gr.java_conf.alpius.pino.beans.Bind;
 import jp.gr.java_conf.alpius.pino.beans.Min;
 import jp.gr.java_conf.alpius.pino.beans.Range;
@@ -25,10 +24,6 @@ import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 
 import java.awt.*;
 
-/**
- * 現在不具合の多いブラシのため使用の際には注意してください
- */
-@Beta
 public class Eraser extends AbstractBrush {
     @Bind
     @Min(0)
@@ -89,10 +84,6 @@ public class Eraser extends AbstractBrush {
     }
 }
 
-/**
- * FIXME: {@link BrushContextBase#saveLayer()}および{@link BrushContextBase#restoreLayer()}を使用した実装ではなく、{@link Composite}を使用した実装に変えてください
- * saveLayerおよびrestoreLayerをしようすると画面がチカチカする原因となります
- */
 final class EraserContext extends BrushContextBase<Eraser> {
     public EraserContext(Eraser eraser, DrawableLayer layer) {
         super(eraser, layer);
@@ -102,14 +93,15 @@ final class EraserContext extends BrushContextBase<Eraser> {
     protected void initialize() {
         Eraser eraser = getBrush();
 
-        setComposite(AlphaComposite.DstOut);
+        setComposite(AlphaComposite.Src);
 
         final var canvas = getTarget().getCanvas();
         final var w = canvas.getWidth();
         final var h = canvas.getHeight();
 
         copy   = canvas.createCompatibleImage(Transparency.TRANSLUCENT);
-        mask   = canvas.createCompatibleImage(Transparency.TRANSLUCENT);
+        mask   = canvas.createCompatibleImage(Transparency.BITMASK);
+        paint = canvas.createCompatibleImage(Transparency.TRANSLUCENT);
         offscreen = canvas.createCompatibleImage(Transparency.TRANSLUCENT);
 
         var g = (Graphics2D) copy.getGraphics();
@@ -117,6 +109,7 @@ final class EraserContext extends BrushContextBase<Eraser> {
         g.dispose();
 
         maskG = (Graphics2D) mask.getGraphics();
+        paintG  = (Graphics2D) paint.getGraphics();
         offscreenG = (Graphics2D) offscreen.getGraphics();
 
         maskG.setStroke(new BasicStroke(eraser.getWidth(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
@@ -125,14 +118,14 @@ final class EraserContext extends BrushContextBase<Eraser> {
         } else {
             maskG.addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF));
         }
-
-        saveLayer();
     }
 
     private Image copy;         // 初期化時のLayerの状態のコピー
     private Image mask;         // 描画領域を決定するマスク
+    private Image paint;        // paint
     private Image offscreen;    // オフスクリーンイメージ
 
+    private Graphics2D paintG;
     private Graphics2D maskG;
     private Graphics2D offscreenG;
 
@@ -160,12 +153,23 @@ final class EraserContext extends BrushContextBase<Eraser> {
         last = e;
     }
 
+    private void updatePaint() {
+        var g = paintG;
+        g.setComposite(AlphaComposite.Src);
+        g.drawImage(mask, 0, 0, null);
+        var comp = AlphaComposite.getInstance(AlphaComposite.SRC_IN, 1 - getBrush().getOpacity());
+        g.setComposite(comp);
+        g.drawImage(copy, 0, 0, null);
+    }
+
     private void renderOffscreen() {
         var g = offscreenG;
         g.setComposite(AlphaComposite.Src);
-        g.drawImage(mask, 0, 0, null);
-        g.setComposite(AlphaComposite.SrcIn.derive(getBrush().getOpacity()));
         g.drawImage(copy, 0, 0, null);
+        g.setComposite(AlphaComposite.DstOut);
+        g.drawImage(mask, 0, 0, null);
+        g.setComposite(AlphaComposite.SrcOver);
+        g.drawImage(paint, 0, 0, null);
     }
 
     private void updateLayer() {
@@ -176,8 +180,10 @@ final class EraserContext extends BrushContextBase<Eraser> {
         super.dispose();
         copy.flush();
         mask.flush();
+        paint.flush();
         offscreen.flush();
         maskG.dispose();
+        paintG.dispose();
         offscreenG.dispose();
     }
 
@@ -188,8 +194,8 @@ final class EraserContext extends BrushContextBase<Eraser> {
 
     @Override
     public void onDrawing(DrawEvent e) {
-        restoreLayer();
         updateMask(e);
+        updatePaint();
         renderOffscreen();
         updateLayer();
     }
