@@ -18,6 +18,9 @@ package jp.gr.java_conf.alpius.pino.graphics.layer;
 
 import jp.gr.java_conf.alpius.pino.beans.Bind;
 import jp.gr.java_conf.alpius.pino.graphics.internal.util.ColorUtils;
+import jp.gr.java_conf.alpius.pino.memento.IncompatibleMementoException;
+import jp.gr.java_conf.alpius.pino.memento.Memento;
+import jp.gr.java_conf.alpius.pino.memento.MementoBase;
 
 import java.awt.*;
 
@@ -46,4 +49,30 @@ public abstract class ShapeLayer extends LayerObject {
 
     @Override
     protected abstract void renderContent(Graphics2D g, Shape aoi, boolean ignoreRough);
+
+    public Memento<?> createMemento() {
+        return new ShapeMemento(this, super.createMemento());
+    }
+
+    public void restore(Memento<?> memento) {
+        if (memento == null) {
+            throw new NullPointerException("memento is null!");
+        }
+
+        super.restore(memento.getParent());
+
+        if (memento instanceof ShapeMemento m) {
+            fill = m.fill;
+        } else {
+            throw new IncompatibleMementoException("\"memento\" is not compatible to LayerObject.");
+        }
+    }
+
+    private static class ShapeMemento extends MementoBase<ShapeLayer> {
+        private final Color fill;
+        public ShapeMemento(ShapeLayer originator, Memento<?> parentMemento) {
+            super(originator, parentMemento);
+            fill = originator.fill;
+        }
+    }
 }

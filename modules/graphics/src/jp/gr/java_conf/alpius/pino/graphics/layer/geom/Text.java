@@ -18,6 +18,9 @@ package jp.gr.java_conf.alpius.pino.graphics.layer.geom;
 
 import jp.gr.java_conf.alpius.pino.beans.Bind;
 import jp.gr.java_conf.alpius.pino.graphics.layer.ShapeLayer;
+import jp.gr.java_conf.alpius.pino.memento.IncompatibleMementoException;
+import jp.gr.java_conf.alpius.pino.memento.Memento;
+import jp.gr.java_conf.alpius.pino.memento.MementoBase;
 
 import java.awt.*;
 import java.util.Objects;
@@ -47,5 +50,31 @@ public class Text extends ShapeLayer {
         g.setPaint(getFill());
         g.setFont(new Font(Font.DIALOG, Font.PLAIN, 50));
         g.drawString(text, 0, g.getFont().getSize());
+    }
+
+    public Memento<?> createMemento() {
+        return new TextMemento(this, super.createMemento());
+    }
+
+    public void restore(Memento<?> memento) {
+        if (memento == null) {
+            throw new NullPointerException("memento is null!");
+        }
+
+        super.restore(memento.getParent());
+
+        if (memento instanceof TextMemento m) {
+            text = m.text;
+        } else {
+            throw new IncompatibleMementoException("\"memento\" is not compatible to LayerObject.");
+        }
+    }
+
+    private static class TextMemento extends MementoBase<Text> {
+        private final String text;
+        public TextMemento(Text originator, Memento<?> parentMemento) {
+            super(originator, parentMemento);
+            text = originator.text;
+        }
     }
 }

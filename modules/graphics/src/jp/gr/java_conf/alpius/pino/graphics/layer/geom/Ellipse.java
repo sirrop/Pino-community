@@ -19,6 +19,9 @@ package jp.gr.java_conf.alpius.pino.graphics.layer.geom;
 import jp.gr.java_conf.alpius.pino.beans.Bind;
 import jp.gr.java_conf.alpius.pino.beans.Min;
 import jp.gr.java_conf.alpius.pino.graphics.layer.ShapeLayer;
+import jp.gr.java_conf.alpius.pino.memento.IncompatibleMementoException;
+import jp.gr.java_conf.alpius.pino.memento.Memento;
+import jp.gr.java_conf.alpius.pino.memento.MementoBase;
 
 import java.awt.*;
 
@@ -66,5 +69,34 @@ public class Ellipse extends ShapeLayer {
         g.addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
         g.setPaint(getFill());
         g.fillArc(0, 0, width, height, 0, 360);
+    }
+
+    public Memento<?> createMemento() {
+        return new EllipseMemento(this, super.createMemento());
+    }
+
+    public void restore(Memento<?> memento) {
+        if (memento == null) {
+            throw new NullPointerException("memento is null!");
+        }
+
+        super.restore(memento.getParent());
+
+        if (memento instanceof EllipseMemento m) {
+            width = m.width;
+            height = m.height;
+        } else {
+            throw new IncompatibleMementoException("\"memento\" is not compatible to LayerObject.");
+        }
+    }
+
+    private static class EllipseMemento extends MementoBase<Ellipse> {
+        private final int width;
+        private final int height;
+        public EllipseMemento(Ellipse originator, Memento<?> parentMemento) {
+            super(originator, parentMemento);
+            width = originator.width;
+            height = originator.height;
+        }
     }
 }
