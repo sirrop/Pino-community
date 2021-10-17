@@ -16,6 +16,8 @@
 
 package jp.gr.java_conf.alpius.pino.window.impl;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import jp.gr.java_conf.alpius.pino.application.impl.BrushManager;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
@@ -23,10 +25,13 @@ import jp.gr.java_conf.alpius.pino.graphics.brush.Eraser;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Pencil;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.ImageLayer;
+import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
 import jp.gr.java_conf.alpius.pino.graphics.layer.Layers;
 import jp.gr.java_conf.alpius.pino.graphics.layer.geom.Ellipse;
 import jp.gr.java_conf.alpius.pino.graphics.layer.geom.Rectangle;
 import jp.gr.java_conf.alpius.pino.graphics.layer.geom.Text;
+
+import java.util.function.Supplier;
 
 /**
  * Menuを管理します
@@ -85,38 +90,46 @@ public final class MenuManager {
             {
                 var rect = new MenuItem("四角形");
                 var ellipse = new MenuItem("楕円");
-                rect.setOnAction(e -> {
-                    var p = Pino.getApp().getProject();
-                    p.getLayers().add(p.getActiveModel().getActivatedIndex(), Layers.create(Rectangle::new, p.getWidth(), p.getHeight()));
-                });
-                ellipse.setOnAction(e -> {
-                    var p = Pino.getApp().getProject();
-                    p.getLayers().add(p.getActiveModel().getActivatedIndex(), Layers.create(Ellipse::new, p.getWidth(), p.getHeight()));
-                });
+                rect.setOnAction(addAction(Rectangle::new));
+                ellipse.setOnAction(addAction(Ellipse::new));
                 shape.getItems().addAll(rect, ellipse);
             }
             var text = new MenuItem("テキスト");
-            drawable.setOnAction(e -> {
-                var p = Pino.getApp().getProject();
-                p.getLayers().add(p.getActiveModel().getActivatedIndex(), Layers.create(DrawableLayer::new, p.getWidth(), p.getHeight()));
-            });
-            image.setOnAction(e -> {
-                var p = Pino.getApp().getProject();
-                p.getLayers().add(p.getActiveModel().getActivatedIndex(), Layers.create(ImageLayer::new, p.getWidth(), p.getHeight()));
-            });
-            text.setOnAction(e -> {
-                var p = Pino.getApp().getProject();
-                p.getLayers().add(p.getActiveModel().getActivatedIndex(), Layers.create(Text::new, p.getWidth(), p.getHeight()));
-            });
+            drawable.setOnAction(addAction(DrawableLayer::new));
+            image.setOnAction(addAction(ImageLayer::new));
+            text.setOnAction(addAction(Text::new));
             add.getItems().addAll(drawable, image, shape, text);
         }
 
         var delete = new MenuItem("削除");
         delete.setOnAction(e -> {
             var p = Pino.getApp().getProject();
-            p.getLayers().remove(p.getActiveModel().getActivatedIndex());
+            var index = p.getActiveModel().getActivatedIndex();
+            p.getLayers().remove(index);
+            if (index > 0) {
+                --index;
+            } else {
+                if (p.getLayers().size() == 0) {
+                    index = -1;
+                }
+            }
+            syncLayerSelection(index);
         });
         layerCell.getItems().addAll(add, delete);
+    }
+
+    private static EventHandler<ActionEvent> addAction(Supplier<? extends LayerObject> constructor) {
+        return e -> {
+            var p = Pino.getApp().getProject();
+            var index = p.getActiveModel().getActivatedIndex();
+            p.getLayers().add(index, Layers.create(constructor, p.getWidth(), p.getHeight()));
+            syncLayerSelection(index);
+        };
+    }
+
+    private static void syncLayerSelection(int index) {
+        Pino.getApp().getProject().getActiveModel().activate(index);
+        ((JFxWindow) Pino.getApp().getWindow()).getRootContainer().getLayerView().getSelectionModel().clearAndSelect(index);
     }
 
     private void initBrushEditor() {
