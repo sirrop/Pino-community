@@ -103,5 +103,5 @@
     </HBox>
 
     <!-- ステータスバー -->
-    <StatusBar text="Pinoだよ！！！！" />
+    <StatusBar visible="false" managed="false" />
 </VBox>
