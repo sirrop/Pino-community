@@ -19,6 +19,10 @@ package jp.gr.java_conf.alpius.pino.graphics.layer;
 import java.util.List;
 
 public class Folder extends Parent {
+    public Folder(List<LayerObject> children) {
+        super(children);
+    }
+
     public List<LayerObject> getChildren() {
         return super.getChildren();
     }
