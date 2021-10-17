@@ -25,6 +25,6 @@ public class VerticalFlip implements Action {
     @Override
     public void performAction(ActionEvent e) {
         var canvas = ((JFxWindow) Pino.getApp().getWindow()).getRootContainer().getCanvas();
-        canvas.setScaleY(canvas.getScaleY() * -1);
+        if (canvas.getHeight() != 0) canvas.setScaleY(canvas.getScaleY() * -1);
     }
 }

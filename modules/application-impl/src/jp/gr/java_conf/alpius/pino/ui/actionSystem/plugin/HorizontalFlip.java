@@ -25,6 +25,6 @@ public class HorizontalFlip implements Action {
     @Override
     public void performAction(ActionEvent e) {
         var canvas = ((JFxWindow) Pino.getApp().getWindow()).getRootContainer().getCanvas();
-        canvas.setScaleX(canvas.getScaleX() * -1);
+        if (canvas.getWidth() != 0) canvas.setScaleX(canvas.getScaleX() * -1);
     }
 }
