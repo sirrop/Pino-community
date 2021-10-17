@@ -1,0 +1,15 @@
+<component name="ArtifactManager">
+  <artifact name="graphics:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/graphics_jar</output-path>
+    <root id="root">
+      <element id="archive" name="graphics.jar">
+        <element id="module-output" name="graphics" />
+        <element id="module-output" name="core" />
+      </element>
+      <element id="file-copy" path="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.20/lombok-1.18.20.jar" />
+      <element id="file-copy" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/20.1.0/annotations-20.1.0.jar" />
+      <element id="library" level="project" name="com.google.guava:guava:30.1.1-jre" />
+      <element id="library" level="application" name="javafx16" />
+    </root>
+  </artifact>
+</component>
