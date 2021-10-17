@@ -119,8 +119,10 @@ public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEdi
         configurator.accept(slider);
         var incBtn = new Button("+");
         incBtn.setOnAction(e -> slider.increment());
+        incBtn.getStyleClass().add("increment-button");
         var decBtn = new Button("-");
         decBtn.setOnAction(e -> slider.decrement());
+        decBtn.getStyleClass().add("decrement-button");
         var textField = new TextField();
         var formatter = new TextFormatter<>(new NumberStringConverter() {
             @Override
