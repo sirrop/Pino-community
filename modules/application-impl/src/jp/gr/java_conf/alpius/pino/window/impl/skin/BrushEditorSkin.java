@@ -18,6 +18,7 @@ package jp.gr.java_conf.alpius.pino.window.impl.skin;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.StackPane;
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
@@ -48,6 +49,10 @@ public class BrushEditorSkin extends SkinBase<BrushEditor> {
         } else {
             graphic = GraphicManager.getInstance().getEditorGraphic(brush);
         }
-        getChildren().setAll(graphic);
+        var container = new ScrollPane();
+        container.setContent(graphic);
+        container.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        container.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        getChildren().setAll(container);
     }
 }

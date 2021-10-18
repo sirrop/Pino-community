@@ -52,14 +52,11 @@ public class GaussianBlur extends AbstractBrush {
 
     @Bind
     @Min(1)
-    private int kernelWidth = 3;
+    private int kernelWidth = 1;
 
     public final void setKernelWidth(int value) {
         if (value < 0) {
             throw new IllegalArgumentException("kernelWidth < 0");
-        }
-        if (value % 2 == 0) {
-            throw new IllegalArgumentException("value % 2 == 0");
         }
         if (value != kernelWidth) {
             var old = kernelWidth;
@@ -74,14 +71,11 @@ public class GaussianBlur extends AbstractBrush {
 
     @Bind
     @Min(1)
-    private int kernelHeight = 3;
+    private int kernelHeight = 1;
 
     public final void setKernelHeight(int value) {
         if (value < 0) {
             throw new IllegalArgumentException("kernelHeight < 0");
-        }
-        if (value % 2 == 0) {
-            throw new IllegalArgumentException("value % 2 == 0");
         }
         if (value != kernelHeight) {
             var old = kernelHeight;
@@ -136,10 +130,12 @@ public class GaussianBlur extends AbstractBrush {
         @Override
         protected void initialize() {
             var brush = getBrush();
-            float[] array = new float[brush.kernelWidth * brush.kernelHeight];
-            fillArray(array, brush.kernelWidth, brush.kernelHeight, brush.deviation);
-            BufferedImageOp op;
-            op = new ConvolveOp(new Kernel(brush.kernelWidth, brush.kernelHeight, array));
+            int kernelWidth = brush.kernelWidth * 2 + 1;
+            int kernelHeight = brush.kernelHeight * 2 + 1;
+            float[] array = new float[kernelWidth * kernelHeight];
+            fillArray(array, kernelWidth, kernelHeight, brush.deviation);
+            //printMatrix(array, kernelWidth, kernelHeight);  // for test
+            BufferedImageOp op = new ConvolveOp(new Kernel(kernelWidth, kernelHeight, array));
 
             setComposite(AlphaComposite.Src);
 
@@ -174,13 +170,27 @@ public class GaussianBlur extends AbstractBrush {
         private static void fillArray(float[] array, int width, int height, double deviation) {
             GaussianFunction func = GaussianFunction.create(deviation);
             float sum = 0;
-            for (int y = -(height / 2), offset = width / 2; y < height / 2; ++y, offset += width) {
-                for (int x = -(width / 2); x < width / 2; ++x) {
-                    sum += array[offset + x] = func.apply(x, y);
+            System.out.printf("width: %d, height: %d\n", width, height);
+            for (int y = -(height / 2), offset = width / 2; y <= height / 2; ++y, offset += width) {
+                for (int x = -(width / 2); x <= width / 2; ++x) {
+                    float out;
+                    sum += out = array[offset + x] = func.apply(x, y);
+                    System.out.printf("(%d, %d) = %f\n", x, y, out);
                 }
             }
+            printMatrix(array, width, height); // for test
             for (int i = 0, len = array.length; i < len; ++i) {
                 array[i] /= sum;
+            }
+        }
+
+        // for test
+        private static void printMatrix(float[] matrix, int width, int height) {
+            for (int y = 0, offset = 0; y < height; ++y, offset += width) {
+                for (int x = 0; x < width; ++x) {
+                    System.out.print(matrix[offset + x] + " ");
+                }
+                System.out.println();
             }
         }
 
@@ -280,8 +290,9 @@ public class GaussianBlur extends AbstractBrush {
 
     private interface GaussianFunction {
         float apply(int x, int y);
+        double SQRT_2PI = Math.sqrt(2 * Math.PI);
         static GaussianFunction create(double deviation) {
-            return (x, y) -> (float) (Math.exp( -(Math.pow(x, 2) + Math.pow(y, 2)) / (2 * Math.pow(deviation, 2)) ) / (Math.sqrt(2 * Math.PI) * deviation));
+            return (x, y) -> (float) (Math.exp( -(x * x  + y * y) / (2 * deviation * deviation) ) / (SQRT_2PI * deviation));
         }
     }
 }
