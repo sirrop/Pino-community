@@ -22,7 +22,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
 import jp.gr.java_conf.alpius.pino.disposable.Disposer;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
@@ -36,7 +35,6 @@ import jp.gr.java_conf.alpius.pino.tool.ToolManager;
 import jp.gr.java_conf.alpius.pino.tool.plugin.DrawTool;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionEvent;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionUtils;
-import jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Exit;
 import jp.gr.java_conf.alpius.pino.util.ActiveModel;
 import jp.gr.java_conf.alpius.pino.util.Key;
 import jp.gr.java_conf.alpius.pino.window.Window;
@@ -96,9 +94,6 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         window.setRootContainer(container);
         window.getScene().addEventHandler(KeyEvent.KEY_PRESSED, this::searchActionAndPerform);
         window.setTitle("Pino Paint");
-
-        // FIXME: 緊急避難的にExitアクションを使用しています
-        primaryStage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> new Exit().performAction(new ActionEvent(e.getSource())));
         window.show();
         eventDistributor = new EventDistributor(window);
         services.register(ToolManager.class, eventDistributor);
@@ -154,8 +149,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
 
     @Override
     public void exit() {
-        // FIXME: 緊急避難的にExitアクションを使用しています
-        new Exit().performAction(new ActionEvent(this));
+        Platform.exit();
     }
 
     @Override

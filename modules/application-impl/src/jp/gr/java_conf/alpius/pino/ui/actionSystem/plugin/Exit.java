@@ -16,17 +16,13 @@
 
 package jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin;
 
-import javafx.application.Platform;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
-import jp.gr.java_conf.alpius.pino.disposable.Disposer;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.Action;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionEvent;
 
 public class Exit implements Action {
     @Override
     public void performAction(ActionEvent e) {
-        // FIXME: 緊急避難的にExitアクションで終了処理を行っています。bootstrapを作成し、Runtimeをフックする実装に変更してください。
-        Disposer.dispose(Pino.getApp());
-        Platform.exit();
+        Pino.getApp().exit();
     }
 }
