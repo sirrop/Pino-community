@@ -30,7 +30,6 @@ import jp.gr.java_conf.alpius.pino.window.impl.RootContainer;
 import java.awt.geom.Rectangle2D;
 import java.util.Optional;
 
-// FIXME : キャンバスの拡大率が変化しているときの挙動がおかしいので修正してください
 public class RectangleLassoTool implements Tool {
     private static final int INDEX_LEFT = 0;
     private static final int INDEX_TOP = 1;

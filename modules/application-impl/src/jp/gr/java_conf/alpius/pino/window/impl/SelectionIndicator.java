@@ -29,7 +29,6 @@ import java.awt.geom.PathIterator;
 import java.util.Collection;
 import java.util.List;
 
-// FIXME : キャンバスの拡大率が変化しているときの挙動がおかしいので修正してください
 public class SelectionIndicator extends Region implements Disposable {
     private Disposable shapeDisposable;
 

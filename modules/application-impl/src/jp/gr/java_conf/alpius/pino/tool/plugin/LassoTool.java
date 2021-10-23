@@ -36,7 +36,6 @@ import java.util.Optional;
 /**
  * 投げ縄ツールです。
  */
-// FIXME : キャンバスの拡大率が変化しているときの挙動がおかしいので修正してください
 public final class LassoTool implements Tool {
     private final IntArrayList xPts = new IntArrayList();
     private final IntArrayList yPts = new IntArrayList();
