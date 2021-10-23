@@ -83,9 +83,9 @@ public class SelectionIndicator extends Region implements Disposable {
         Path indicator = new Path();
 
         var canvas = getCanvas();
-        indicator.layoutXProperty().bind(canvas.layoutYProperty());
+        indicator.layoutXProperty().bind(canvas.layoutXProperty());
         indicator.layoutYProperty().bind(canvas.layoutYProperty());
-        indicator.scaleXProperty().bind(canvas.scaleYProperty());
+        indicator.scaleXProperty().bind(canvas.scaleXProperty());
         indicator.scaleYProperty().bind(canvas.scaleYProperty());
         indicator.translateXProperty().bind(canvas.translateXProperty());
         indicator.translateYProperty().bind(canvas.translateYProperty());

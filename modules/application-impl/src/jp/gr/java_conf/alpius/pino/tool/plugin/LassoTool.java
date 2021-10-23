@@ -76,7 +76,7 @@ public final class LassoTool implements Tool {
         var canvas = getCanvas();
         indicator.layoutXProperty().bind(canvas.layoutYProperty());
         indicator.layoutYProperty().bind(canvas.layoutYProperty());
-        indicator.scaleXProperty().bind(canvas.scaleYProperty());
+        indicator.scaleXProperty().bind(canvas.scaleXProperty());
         indicator.scaleYProperty().bind(canvas.scaleYProperty());
         indicator.translateXProperty().bind(canvas.translateXProperty());
         indicator.translateYProperty().bind(canvas.translateYProperty());

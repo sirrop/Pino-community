@@ -70,9 +70,9 @@ public class RectangleLassoTool implements Tool {
     private void addIndicator() {
         indicator = new Rectangle();
         var canvas = getCanvas();
-        indicator.layoutXProperty().bind(canvas.layoutYProperty());
+        indicator.layoutXProperty().bind(canvas.layoutXProperty());
         indicator.layoutYProperty().bind(canvas.layoutYProperty());
-        indicator.scaleXProperty().bind(canvas.scaleYProperty());
+        indicator.scaleXProperty().bind(canvas.scaleXProperty());
         indicator.scaleYProperty().bind(canvas.scaleYProperty());
         indicator.translateXProperty().bind(canvas.translateXProperty());
         indicator.translateYProperty().bind(canvas.translateYProperty());
