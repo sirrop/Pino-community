@@ -22,6 +22,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
 import jp.gr.java_conf.alpius.pino.disposable.Disposer;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
@@ -94,6 +95,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         window.setRootContainer(container);
         window.getScene().addEventHandler(KeyEvent.KEY_PRESSED, this::searchActionAndPerform);
         window.setTitle("Pino Paint");
+        primaryStage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> exit());
         window.show();
         eventDistributor = new EventDistributor(window);
         services.register(ToolManager.class, eventDistributor);
@@ -149,6 +151,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
 
     @Override
     public void exit() {
+        Disposer.dispose(this);
         Platform.exit();
     }
 
@@ -219,6 +222,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         timer.stop();
         eventDistributor.dispose();
         Disposer.dispose(lastDisposable);
+        System.out.println("Application is disposed");
     }
 
     private void updateCanvas(Project project) {

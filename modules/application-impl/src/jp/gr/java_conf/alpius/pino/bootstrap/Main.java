@@ -17,7 +17,6 @@
 package jp.gr.java_conf.alpius.pino.bootstrap;
 
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
-import jp.gr.java_conf.alpius.pino.disposable.Disposer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,8 +46,7 @@ public class Main {
     }
 
     private static void bootstrap(String[] args) {
-        Runtime.getRuntime()
-                .addShutdownHook(new Thread(() -> Disposer.dispose(Pino.getApp()), "Application Shutdown Hook"));
+
     }
 
     private static void showMessage(String title, Throwable cause) {
