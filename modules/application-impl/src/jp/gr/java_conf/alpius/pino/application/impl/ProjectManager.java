@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.application;
+package jp.gr.java_conf.alpius.pino.application.impl;
 
-import java.util.Objects;
+import jp.gr.java_conf.alpius.pino.disposable.Disposable;
+import jp.gr.java_conf.alpius.pino.project.Project;
 
-public final class ApplicationConfig {
-    public static final boolean verbose;
+import java.util.function.Consumer;
 
-    static {
-        verbose = Objects.equals(System.getProperty("pino.trace"), "verbose");
-    }
+public interface ProjectManager extends Disposable {
+    void setAndDispose(Project project);
+    Project get();
+    void addBeforeChange(Consumer<Project> action);
+    void removeBeforeChange(Consumer<Project> action);
+    void addOnChanged(Consumer<Project> action);
+    void removeOnChanged(Consumer<Project> action);
 }

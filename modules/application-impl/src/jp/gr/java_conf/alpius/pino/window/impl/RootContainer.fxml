@@ -68,6 +68,21 @@
                 <FontIcon iconLiteral="mdi2s-swap-horizontal" />
             </graphic>
         </ActionButton>
+        <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ActivateRectangleLassoTool">
+            <graphic>
+                <FontIcon iconLiteral="mdi2r-rectangle-outline" />
+            </graphic>
+        </ActionButton>
+        <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ActivateLassoTool">
+            <graphic>
+                <FontIcon iconLiteral="mdi2l-lasso" />
+            </graphic>
+        </ActionButton>
+        <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ActivateMoveLayerTool">
+            <graphic>
+                <FontIcon iconLiteral="mdi2h-hand-right" />
+            </graphic>
+        </ActionButton>
     </ToolBar>
 
     <HBox fx:id="contentPane" VBox.vgrow="ALWAYS">

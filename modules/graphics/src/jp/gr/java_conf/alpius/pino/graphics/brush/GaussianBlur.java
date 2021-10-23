@@ -21,14 +21,11 @@ import jp.gr.java_conf.alpius.pino.beans.Min;
 import jp.gr.java_conf.alpius.pino.graphics.brush.event.DrawEvent;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class GaussianBlur extends AbstractBrush {
     @Bind
@@ -170,15 +167,12 @@ public class GaussianBlur extends AbstractBrush {
         private static void fillArray(float[] array, int width, int height, double deviation) {
             GaussianFunction func = GaussianFunction.create(deviation);
             float sum = 0;
-            System.out.printf("width: %d, height: %d\n", width, height);
             for (int y = -(height / 2), offset = width / 2; y <= height / 2; ++y, offset += width) {
                 for (int x = -(width / 2); x <= width / 2; ++x) {
-                    float out;
-                    sum += out = array[offset + x] = func.apply(x, y);
-                    System.out.printf("(%d, %d) = %f\n", x, y, out);
+                    sum += array[offset + x] = func.apply(x, y);
                 }
             }
-            printMatrix(array, width, height); // for test
+            //printMatrix(array, width, height); // for test
             for (int i = 0, len = array.length; i < len; ++i) {
                 array[i] /= sum;
             }
@@ -241,23 +235,6 @@ public class GaussianBlur extends AbstractBrush {
         }
 
         public void dispose() {
-            try {
-                BufferedImage renderedImage = new BufferedImage(paint.getWidth(null), paint.getHeight(null), BufferedImage.TYPE_INT_ARGB_PRE);
-                var g = renderedImage.createGraphics();
-                g.setComposite(AlphaComposite.Src);
-
-                g.drawImage(blurred, 0, 0, null);
-                ImageIO.write(renderedImage, "png", Files.newOutputStream(Paths.get("copy.png")));
-                g.drawImage(mask, 0, 0, null);
-                ImageIO.write(renderedImage, "png", Files.newOutputStream(Paths.get("mask.png")));
-                g.drawImage(paint, 0, 0, null);
-                ImageIO.write(renderedImage, "png", Files.newOutputStream(Paths.get("paint.png")));
-                g.drawImage(offscreen, 0, 0, null);
-                ImageIO.write(renderedImage, "png", Files.newOutputStream(Paths.get("offscreen.png")));
-                g.dispose();
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
             super.dispose();
             copy.flush();
             blurred.flush();

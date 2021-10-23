@@ -22,6 +22,9 @@ import javafx.collections.ObservableList;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import jp.gr.java_conf.alpius.pino.disposable.Disposable;
+import jp.gr.java_conf.alpius.pino.disposable.Disposer;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
 import jp.gr.java_conf.alpius.pino.history.History;
@@ -33,6 +36,7 @@ import jp.gr.java_conf.alpius.pino.tool.ToolManager;
 import jp.gr.java_conf.alpius.pino.tool.plugin.DrawTool;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionEvent;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionUtils;
+import jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Exit;
 import jp.gr.java_conf.alpius.pino.util.ActiveModel;
 import jp.gr.java_conf.alpius.pino.util.Key;
 import jp.gr.java_conf.alpius.pino.window.Window;
@@ -55,6 +59,8 @@ import static jp.gr.java_conf.alpius.pino.internal.InternalLogger.log;
 public class Pino extends Application implements jp.gr.java_conf.alpius.pino.application.Application {
     private static Pino app;
 
+    private final Disposable lastDisposable = Disposer.newDisposable("Application Internal Disposable");
+
     public Pino() {
 
         /* -- register core services -- */
@@ -64,6 +70,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         services.register(History.class, new HistoryImpl(100));
         services.register(MenuManager.class, new MenuManager());
         services.register(Publisher.class, new NotificationCenter());
+        services.register(ProjectManager.class, initializeProjectMgr(new ProjectManagerImpl()));
 
     }
 
@@ -72,7 +79,6 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
     private JFxWindow window;
     private final MutableServiceContainer services = new SimpleServiceContainer();
     private final Map<Object, Object> userData = new HashMap<>();
-    private Project project;
     private RepaintTimer timer;
     private EventDistributor eventDistributor;
 
@@ -90,6 +96,9 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         window.setRootContainer(container);
         window.getScene().addEventHandler(KeyEvent.KEY_PRESSED, this::searchActionAndPerform);
         window.setTitle("Pino Paint");
+
+        // FIXME: 緊急避難的にExitアクションを使用しています
+        primaryStage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> new Exit().performAction(new ActionEvent(e.getSource())));
         window.show();
         eventDistributor = new EventDistributor(window);
         services.register(ToolManager.class, eventDistributor);
@@ -108,8 +117,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
 
     @Override
     public void stop() {
-        timer.stop();
-        eventDistributor.dispose();
+
     }
 
     public static Pino getApp() {
@@ -146,7 +154,8 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
 
     @Override
     public void exit() {
-        Platform.exit();
+        // FIXME: 緊急避難的にExitアクションを使用しています
+        new Exit().performAction(new ActionEvent(this));
     }
 
     @Override
@@ -165,32 +174,25 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         userData.put(key, value);
     }
 
-    public void setProjectAndDispose(Project project) {
-        timer.stop();
-        initProject(project);
-        var old = this.project;
-        this.project = project;
-        if (old != null) {
-            old.dispose();
-        }
-        updateCanvas();
-        timer.start();
+    private ProjectManager initializeProjectMgr(ProjectManager mgr) {
+        mgr.addBeforeChange(project -> {
+            timer.stop();
+            initProject(project);
+        });
+        mgr.addOnChanged(project -> {
+            updateCanvas(project);
+            timer.start();
+        });
+        Disposer.registerDisposable(lastDisposable, mgr);
+        return mgr;
     }
 
-    /**
-     * 古いProjectの破棄は、呼び出し元の役割です。
-     * @param project project
-     */
-    public void setProject(Project project) {
-        timer.stop();
-        initProject(project);
-        this.project = project;
-        updateCanvas();
-        timer.start();
+    public void setProjectAndDispose(Project project) {
+        getService(ProjectManager.class).setAndDispose(project);
     }
 
     public Project getProject() {
-        return project;
+        return getService(ProjectManager.class).get();
     }
 
     private void initProject(Project project) {
@@ -220,12 +222,12 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
 
     @Override
     public void dispose() {
-        if (project != null) {
-            project.dispose();
-        }
+        timer.stop();
+        eventDistributor.dispose();
+        Disposer.dispose(lastDisposable);
     }
 
-    private void updateCanvas() {
+    private void updateCanvas(Project project) {
         var container = window.getRootContainer();
         var canvas = container.getCanvas();
         if (project == null) {
@@ -244,6 +246,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
      * Canvasの再描画を行います
      */
     void repaint() {
+        var project = getService(ProjectManager.class).get();
         var canvas = project.getCanvas();
         var layers = project.getLayers();
         var g = canvas.createGraphics();

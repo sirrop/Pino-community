@@ -30,8 +30,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import jp.gr.java_conf.alpius.pino.application.impl.Pino;
+import jp.gr.java_conf.alpius.pino.application.impl.ProjectManager;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
+import jp.gr.java_conf.alpius.pino.project.impl.SelectionManager;
 
 import java.io.IOException;
 
@@ -49,6 +52,8 @@ public class PinoRootContainer implements RootContainer {
     private Background background;
     @FXML
     private Pane canvasPane;
+    private SelectionIndicator indicator;
+
     @FXML
     private HBox contentPane;
     @FXML
@@ -70,6 +75,19 @@ public class PinoRootContainer implements RootContainer {
         layerView.setCellFactory(listView -> new LayerCell());
         brushEditor.setContextMenu(MenuManager.getInstance().getBrushEditorMenu());
         brushView.setCellFactory(listView -> new BrushCell());
+        Pino.getApp().getService(ProjectManager.class)
+                .addOnChanged(project -> {
+                    if (project != null) {
+                        indicator = new SelectionIndicator(project.getService(SelectionManager.class));
+                        indicator.prefWidthProperty().bind(canvasPane.widthProperty());
+                        indicator.prefHeightProperty().bind(canvasPane.heightProperty());
+                        canvasPane.getChildren().add(indicator);
+                    } else {
+                        if (indicator != null) {
+                            canvasPane.getChildren().remove(indicator);
+                        }
+                    }
+                });
     }
 
     public void setBackground(Paint fill) {

@@ -28,6 +28,7 @@ import jp.gr.java_conf.alpius.pino.input.MouseEvent;
 import jp.gr.java_conf.alpius.pino.notification.Notification;
 import jp.gr.java_conf.alpius.pino.notification.NotificationType;
 import jp.gr.java_conf.alpius.pino.notification.Publisher;
+import jp.gr.java_conf.alpius.pino.project.impl.SelectionManager;
 import jp.gr.java_conf.alpius.pino.tool.Tool;
 import jp.gr.java_conf.alpius.pino.window.impl.JFxWindow;
 
@@ -86,6 +87,8 @@ public class DrawTool implements Tool {
                                     .getActiveModel()
                                     .getActivatedItem()
                                     .createContext(drawable);
+            var selection = Pino.getApp().getProject().getService(SelectionManager.class).get();
+            context.clip(selection);
             builder = MementoElementBuilder.builder(drawable).savePreviousState();
             context.onStart(new DrawEvent(drawable, DrawEvent.Type.ON_START, e.getX(), e.getY()));
             target = drawable;

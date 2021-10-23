@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.application;
+package jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin;
 
-import java.util.Objects;
+import jp.gr.java_conf.alpius.pino.application.impl.Pino;
+import jp.gr.java_conf.alpius.pino.tool.ToolManager;
+import jp.gr.java_conf.alpius.pino.tool.plugin.LassoTool;
+import jp.gr.java_conf.alpius.pino.ui.actionSystem.Action;
+import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionEvent;
 
-public final class ApplicationConfig {
-    public static final boolean verbose;
-
-    static {
-        verbose = Objects.equals(System.getProperty("pino.trace"), "verbose");
+public class ActivateLassoTool implements Action {
+    @Override
+    public void performAction(ActionEvent e) {
+        Pino.getApp().getService(ToolManager.class).activate(new LassoTool());
     }
 }

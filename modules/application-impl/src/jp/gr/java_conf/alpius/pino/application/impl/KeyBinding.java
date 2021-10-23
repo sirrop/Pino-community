@@ -26,7 +26,8 @@ final class KeyBinding {
     public static List<Pair<KeyCombination, String>> getKeyConfigs() {
         return List.of(
                 keyBinding("Shortcut+Z", "jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Undo"),
-                keyBinding("Shortcut+Y", "jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Redo")
+                keyBinding("Shortcut+Y", "jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Redo"),
+                keyBinding("Esc", "jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ClearSelection")
         );
     }
 
