@@ -32,8 +32,8 @@ public class GeneralCanvasProxy extends CanvasProxy {
     private static final int TYPE_INT_ARGB = 0;
     private static final int TYPE_BYTE_GRAY = 1;
 
-    private int type;
-    private byte[] data;
+    private transient int type;
+    private transient byte[] data;
 
     public GeneralCanvasProxy(GeneralCanvas canvas) {
         var surface = canvas.getSurface();

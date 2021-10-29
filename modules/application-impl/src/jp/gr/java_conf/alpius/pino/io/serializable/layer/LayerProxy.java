@@ -44,19 +44,19 @@ public abstract class LayerProxy implements Serializable {
 
     private transient State state;
 
-    private String name;
-    private float opacity;
-    private boolean visible;
-    private boolean rough;
-    private CompositeProxy composite;
-    private double x;
-    private double y;
-    private double rotate;
-    private double scaleX;
-    private double scaleY;
-    private LayerProxy clip;
-    private ParentProxy parent;
-    private CanvasProxy canvas;
+    private transient String name;
+    private transient float opacity;
+    private transient boolean visible;
+    private transient boolean rough;
+    private transient CompositeProxy composite;
+    private transient double x;
+    private transient double y;
+    private transient double rotate;
+    private transient double scaleX;
+    private transient double scaleY;
+    private transient LayerProxy clip;
+    private transient ParentProxy parent;
+    private transient CanvasProxy canvas;
 
 
     protected LayerProxy(LayerObject layer) {

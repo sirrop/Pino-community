@@ -33,10 +33,10 @@ public class ProjectProxy implements Serializable {
     @Serial
     private static final long serialVersionUID = -2677378551349971288L;
 
-    private int width;
-    private int height;
-    private ICC_Profile iccProfile;
-    private List<LayerProxy> layers;
+    private transient int width;
+    private transient int height;
+    private transient ICC_Profile iccProfile;
+    private transient List<LayerProxy> layers;
 
     public ProjectProxy(Project project) {
         var children = project.getLayers()

@@ -29,7 +29,7 @@ public class BlendModeProxy extends CompositeProxy {
     @Serial
     private static final long serialVersionUID = 7708728692125257995L;
 
-    private String mode;
+    private transient String mode;
 
     public BlendModeProxy(AlphaBlend.Mode mode) {
         initialize(mode.name());
