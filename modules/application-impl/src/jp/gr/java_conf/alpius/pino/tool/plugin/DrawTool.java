@@ -82,6 +82,8 @@ public class DrawTool implements Tool {
                                     .getActivatedItem();
 
         if (layer instanceof DrawableLayer drawable) {
+            if (drawable.isLocked()) notifyLocked();
+
             context = BrushManager.getInstance()
                                     .getActiveModel()
                                     .getActivatedItem()
@@ -122,6 +124,16 @@ public class DrawTool implements Tool {
 
     private boolean projectExists() {
         return Pino.getApp().getProject() != null;
+    }
+
+    private void notifyLocked() {
+        Notification notification = new Notification(
+                "レイヤーがロックされています", /* title */
+                "ロックされたレイヤーに描画することは出来ません\nロックを解除するか、ロックされていない描画レイヤを選択してください", /* body */
+                null,  /* icon */
+                NotificationType.INFO  /* type */
+        );
+        Pino.getApp().getService(Publisher.class).publish(notification);
     }
 
     @Override
