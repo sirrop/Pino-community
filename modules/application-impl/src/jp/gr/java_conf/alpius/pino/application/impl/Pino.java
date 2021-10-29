@@ -27,6 +27,11 @@ import jp.gr.java_conf.alpius.pino.disposable.Disposable;
 import jp.gr.java_conf.alpius.pino.disposable.Disposer;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
+import jp.gr.java_conf.alpius.pino.gui.JFxWindow;
+import jp.gr.java_conf.alpius.pino.gui.PinoRootContainer;
+import jp.gr.java_conf.alpius.pino.gui.RootContainer;
+import jp.gr.java_conf.alpius.pino.gui.screen.options.OptionScreen;
+import jp.gr.java_conf.alpius.pino.gui.widget.MenuManager;
 import jp.gr.java_conf.alpius.pino.history.History;
 import jp.gr.java_conf.alpius.pino.notification.Publisher;
 import jp.gr.java_conf.alpius.pino.project.Project;
@@ -38,11 +43,6 @@ import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionEvent;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionUtils;
 import jp.gr.java_conf.alpius.pino.util.ActiveModel;
 import jp.gr.java_conf.alpius.pino.util.Key;
-import jp.gr.java_conf.alpius.pino.window.Window;
-import jp.gr.java_conf.alpius.pino.window.impl.JFxWindow;
-import jp.gr.java_conf.alpius.pino.window.impl.MenuManager;
-import jp.gr.java_conf.alpius.pino.window.impl.PinoRootContainer;
-import jp.gr.java_conf.alpius.pino.window.impl.RootContainer;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -52,8 +52,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import static jp.gr.java_conf.alpius.pino.internal.InternalLogger.log;
 
 public class Pino extends Application implements jp.gr.java_conf.alpius.pino.application.Application {
     private static Pino app;
@@ -70,6 +68,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         services.register(MenuManager.class, new MenuManager());
         services.register(Publisher.class, new NotificationCenter());
         services.register(ProjectManager.class, initializeProjectMgr(new ProjectManagerImpl()));
+        services.register(OptionScreen.class, OptionScreen.create());
 
     }
 
@@ -127,7 +126,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
     }
 
     @Override
-    public Window getWindow() {
+    public JFxWindow getWindow() {
         return window;
     }
 
@@ -222,7 +221,6 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         timer.stop();
         eventDistributor.dispose();
         Disposer.dispose(lastDisposable);
-        System.out.println("Application is disposed");
     }
 
     private void updateCanvas(Project project) {
@@ -231,11 +229,9 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         if (project == null) {
             canvas.setWidth(0);
             canvas.setHeight(0);
-            log("canvas has been updated! [width: %d, height: %d]", 0, 0);
         } else {
             canvas.setWidth(project.getWidth());
             canvas.setHeight(project.getHeight());
-            log("canvas has been updated! [width: %d, height: %d]", project.getWidth(), project.getHeight());
         }
     }
 

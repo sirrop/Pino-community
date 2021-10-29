@@ -20,17 +20,18 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import jp.gr.java_conf.alpius.pino.ui.actionSystem.*?>
-<?import jp.gr.java_conf.alpius.pino.window.impl.BrushEditor?>
-<?import jp.gr.java_conf.alpius.pino.window.impl.LayerEditor?>
+<?import jp.gr.java_conf.alpius.pino.gui.widget.BrushEditor?>
+<?import jp.gr.java_conf.alpius.pino.gui.widget.LayerEditor?>
 <?import org.controlsfx.control.StatusBar?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
-<VBox fx:id="content" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="jp.gr.java_conf.alpius.pino.window.impl.PinoRootContainer" prefHeight="800" prefWidth="1200.0">
+<VBox fx:id="content" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="jp.gr.java_conf.alpius.pino.gui.PinoRootContainer" prefHeight="800" prefWidth="1200.0">
     <!-- メニューバー -->
     <MenuBar fx:id="menuBar">
         <Menu text="ファイル(_F)">
             <ActionMenuItem text="プロジェクトを新規作成" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.MakeProject" />
             <ActionMenuItem text="閉じる" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.CloseProject" />
             <ActionMenuItem text="出力" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Output" />
+            <ActionMenuItem text="設定" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ShowOptionsAction" />
             <ActionMenuItem text="終了" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Exit" />
         </Menu>
         <Menu text="編集(_E)">

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.window.impl;
+package jp.gr.java_conf.alpius.pino.gui.widget;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;

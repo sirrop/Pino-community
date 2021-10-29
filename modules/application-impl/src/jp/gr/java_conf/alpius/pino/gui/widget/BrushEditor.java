@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.window.impl;
+package jp.gr.java_conf.alpius.pino.gui.widget;
 
-import javafx.scene.Node;
-import javafx.scene.control.Label;
-import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
+import javafx.scene.control.Skin;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
+import jp.gr.java_conf.alpius.pino.ui.conrtols.Editor;
+import jp.gr.java_conf.alpius.pino.gui.widget.skin.BrushEditorSkin;
 
-public class DefaultBrushViewGraphicVisitor implements GraphicManager.BrushViewGraphicVisitor {
-    public Node visit(Brush brush) {
-        return new Label(brush.getName());
-    }
-
-    public String toString() {
-        return "default";
+public class BrushEditor extends Editor<Brush> {
+    @Override
+    protected Skin<?> createDefaultSkin() {
+        return new BrushEditorSkin(this);
     }
 }

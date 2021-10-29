@@ -23,11 +23,10 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
+import jp.gr.java_conf.alpius.pino.gui.RootContainer;
 import jp.gr.java_conf.alpius.pino.input.MouseEvent;
 import jp.gr.java_conf.alpius.pino.project.impl.SelectionManager;
 import jp.gr.java_conf.alpius.pino.tool.Tool;
-import jp.gr.java_conf.alpius.pino.window.impl.JFxWindow;
-import jp.gr.java_conf.alpius.pino.window.impl.RootContainer;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -108,7 +107,7 @@ public final class LassoTool implements Tool {
     }
 
     private static RootContainer getRootContainer() {
-        return ((JFxWindow) Pino.getApp().getWindow()).getRootContainer();
+        return Pino.getApp().getWindow().getRootContainer();
     }
 
     private static Pane getCanvasPane() {

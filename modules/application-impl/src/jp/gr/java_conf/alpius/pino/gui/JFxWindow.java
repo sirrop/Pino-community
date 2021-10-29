@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.window.impl;
+package jp.gr.java_conf.alpius.pino.gui;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
@@ -240,5 +240,9 @@ public class JFxWindow implements jp.gr.java_conf.alpius.pino.window.Window {
 
     public Scene getScene() {
         return scene;
+    }
+
+    public Stage getStage() {
+        return peer;
     }
 }

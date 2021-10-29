@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.window.impl;
+package jp.gr.java_conf.alpius.pino.gui.widget;
 
-import javafx.scene.Parent;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.Pane;
-import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
+import javafx.scene.control.Skin;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
+import jp.gr.java_conf.alpius.pino.ui.conrtols.Editor;
+import jp.gr.java_conf.alpius.pino.gui.widget.skin.LayerEditorSkin;
 
-public interface RootContainer {
-    Parent getContent();
-    Canvas getCanvas();
-    Pane getCanvasPane();
-    LayerEditor getLayerEditor();
-    BrushEditor getBrushEditor();
-    ListView<LayerObject> getLayerView();
-    ListView<Brush> getBrushView();
+public class LayerEditor extends Editor<LayerObject> {
+    @Override
+    protected Skin<?> createDefaultSkin() {
+        return new LayerEditorSkin(this);
+    }
 }

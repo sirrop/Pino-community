@@ -30,7 +30,6 @@ import jp.gr.java_conf.alpius.pino.notification.NotificationType;
 import jp.gr.java_conf.alpius.pino.notification.Publisher;
 import jp.gr.java_conf.alpius.pino.project.impl.SelectionManager;
 import jp.gr.java_conf.alpius.pino.tool.Tool;
-import jp.gr.java_conf.alpius.pino.window.impl.JFxWindow;
 
 public class DrawTool implements Tool {
     private static final DrawTool instance = new DrawTool();
@@ -39,7 +38,7 @@ public class DrawTool implements Tool {
         return instance;
     }
 
-    private final Canvas canvas = ((JFxWindow) Pino.getApp().getWindow()).getRootContainer().getCanvas();
+    private final Canvas canvas = Pino.getApp().getWindow().getRootContainer().getCanvas();
     private final double zoomRate = 0.0025;
     private DrawableLayer target;
     private BrushContext context;

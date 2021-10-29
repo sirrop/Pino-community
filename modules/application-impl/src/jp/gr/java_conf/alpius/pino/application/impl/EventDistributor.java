@@ -20,12 +20,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
+import jp.gr.java_conf.alpius.pino.gui.JFxWindow;
 import jp.gr.java_conf.alpius.pino.notification.Notification;
 import jp.gr.java_conf.alpius.pino.notification.NotificationType;
 import jp.gr.java_conf.alpius.pino.notification.Publisher;
 import jp.gr.java_conf.alpius.pino.tool.Tool;
 import jp.gr.java_conf.alpius.pino.tool.ToolManager;
-import jp.gr.java_conf.alpius.pino.window.impl.JFxWindow;
 
 /**
  * イベントを適切に分配する役割を持つクラスです。

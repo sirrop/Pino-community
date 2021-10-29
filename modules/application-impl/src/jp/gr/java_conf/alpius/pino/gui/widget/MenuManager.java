@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.window.impl;
+package jp.gr.java_conf.alpius.pino.gui.widget;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import jp.gr.java_conf.alpius.pino.application.impl.BrushManager;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
+import jp.gr.java_conf.alpius.pino.graphics.brush.Eraser;
 import jp.gr.java_conf.alpius.pino.graphics.brush.GaussianBlur;
 import jp.gr.java_conf.alpius.pino.graphics.brush.MeanBlur;
-import jp.gr.java_conf.alpius.pino.graphics.brush.Eraser;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Pencil;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.ImageLayer;
@@ -75,7 +75,7 @@ public final class MenuManager {
                             return;
                         }
                         layer.setName(newName);
-                        var root = ((JFxWindow) Pino.getApp().getWindow()).getRootContainer();
+                        var root = Pino.getApp().getWindow().getRootContainer();
                         root.getLayerEditor().refresh();
                         root.getLayerView().refresh();
                     });
@@ -161,7 +161,7 @@ public final class MenuManager {
 
     private static void syncLayerSelection(int index) {
         Pino.getApp().getProject().getActiveModel().activate(index);
-        ((JFxWindow) Pino.getApp().getWindow()).getRootContainer().getLayerView().getSelectionModel().clearAndSelect(index);
+        Pino.getApp().getWindow().getRootContainer().getLayerView().getSelectionModel().clearAndSelect(index);
     }
 
     private void initBrushEditor() {
@@ -183,7 +183,7 @@ public final class MenuManager {
                             return;
                         }
                         brush.setName(newName);
-                        var root = ((JFxWindow) Pino.getApp().getWindow()).getRootContainer();
+                        var root = Pino.getApp().getWindow().getRootContainer();
                         root.getBrushEditor().refresh();
                         root.getBrushView().refresh();
                     });
@@ -258,7 +258,7 @@ public final class MenuManager {
 
     private static void syncBrushSelection(int index) {
         BrushManager.getInstance().getActiveModel().activate(index);
-        ((JFxWindow) Pino.getApp().getWindow()).getRootContainer().getBrushView().getSelectionModel().clearAndSelect(index);
+        Pino.getApp().getWindow().getRootContainer().getBrushView().getSelectionModel().clearAndSelect(index);
     }
 
     public ContextMenu getLayerEditorMenu() {

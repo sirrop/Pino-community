@@ -19,12 +19,11 @@ package jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.Action;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionEvent;
-import jp.gr.java_conf.alpius.pino.window.impl.JFxWindow;
 
 public class HorizontalFlip implements Action {
     @Override
     public void performAction(ActionEvent e) {
-        var canvas = ((JFxWindow) Pino.getApp().getWindow()).getRootContainer().getCanvas();
+        var canvas = Pino.getApp().getWindow().getRootContainer().getCanvas();
         if (canvas.getWidth() != 0) canvas.setScaleX(canvas.getScaleX() * -1);
     }
 }

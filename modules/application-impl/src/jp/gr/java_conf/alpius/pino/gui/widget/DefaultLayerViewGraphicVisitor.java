@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.window.impl;
+package jp.gr.java_conf.alpius.pino.gui.widget;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;

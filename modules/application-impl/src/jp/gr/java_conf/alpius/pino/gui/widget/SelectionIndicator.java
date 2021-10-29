@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.window.impl;
+package jp.gr.java_conf.alpius.pino.gui.widget;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Region;
@@ -22,6 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
+import jp.gr.java_conf.alpius.pino.gui.RootContainer;
 import jp.gr.java_conf.alpius.pino.project.impl.SelectionManager;
 
 import java.awt.geom.IllegalPathStateException;
@@ -123,7 +124,7 @@ public class SelectionIndicator extends Region implements Disposable {
     }
 
     private static RootContainer getRootContainer() {
-        return ((JFxWindow) Pino.getApp().getWindow()).getRootContainer();
+        return Pino.getApp().getWindow().getRootContainer();
     }
 
     private static Canvas getCanvas() {

@@ -18,11 +18,10 @@ package jp.gr.java_conf.alpius.pino.tool.plugin;
 
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
+import jp.gr.java_conf.alpius.pino.gui.RootContainer;
+import jp.gr.java_conf.alpius.pino.gui.widget.LayerEditor;
 import jp.gr.java_conf.alpius.pino.input.MouseEvent;
 import jp.gr.java_conf.alpius.pino.tool.Tool;
-import jp.gr.java_conf.alpius.pino.window.impl.JFxWindow;
-import jp.gr.java_conf.alpius.pino.window.impl.LayerEditor;
-import jp.gr.java_conf.alpius.pino.window.impl.RootContainer;
 
 import java.util.Optional;
 
@@ -71,7 +70,7 @@ public class MoveLayerTool implements Tool {
     }
 
     private static RootContainer getRootContainer() {
-        return ((JFxWindow) Pino.getApp().getWindow()).getRootContainer();
+        return Pino.getApp().getWindow().getRootContainer();
     }
 
     private static LayerEditor getEditor() {

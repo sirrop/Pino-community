@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.window.impl.skin;
+package jp.gr.java_conf.alpius.pino.gui.widget.skin;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -22,7 +22,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.StackPane;
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
-import jp.gr.java_conf.alpius.pino.window.impl.LayerEditor;
+import jp.gr.java_conf.alpius.pino.gui.widget.LayerEditor;
 
 public class LayerEditorSkin extends SkinBase<LayerEditor> {
     private final StackPane placeholder = new StackPane(new Label("No layer is selected."));
