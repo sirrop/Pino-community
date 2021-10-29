@@ -17,6 +17,7 @@
 package jp.gr.java_conf.alpius.pino.io.serializable.action;
 
 import javafx.stage.FileChooser;
+import jp.gr.java_conf.alpius.pino.annotation.Beta;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
 import jp.gr.java_conf.alpius.pino.io.serializable.project.ProjectProxy;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.Action;
@@ -26,6 +27,7 @@ import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 
+@Beta
 public class SerializeProject implements Action {
     @Override
     public void performAction(ActionEvent e) {

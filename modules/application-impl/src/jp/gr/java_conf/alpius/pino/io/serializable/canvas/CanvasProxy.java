@@ -16,12 +16,14 @@
 
 package jp.gr.java_conf.alpius.pino.io.serializable.canvas;
 
+import jp.gr.java_conf.alpius.pino.annotation.Beta;
 import jp.gr.java_conf.alpius.pino.graphics.canvas.Canvas;
 import jp.gr.java_conf.alpius.pino.graphics.canvas.internal.GeneralCanvas;
 
 import java.io.Serial;
 import java.io.Serializable;
 
+@Beta
 public abstract class CanvasProxy implements Serializable {
     public static CanvasProxy create(Canvas canvas) {
         if (canvas instanceof GeneralCanvas general) {

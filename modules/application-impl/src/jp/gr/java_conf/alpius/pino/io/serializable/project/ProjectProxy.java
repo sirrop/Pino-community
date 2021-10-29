@@ -17,6 +17,7 @@
 package jp.gr.java_conf.alpius.pino.io.serializable.project;
 
 import javafx.collections.ObservableList;
+import jp.gr.java_conf.alpius.pino.annotation.Beta;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
 import jp.gr.java_conf.alpius.pino.io.serializable.layer.LayerProxy;
 import jp.gr.java_conf.alpius.pino.project.Project;
@@ -27,6 +28,7 @@ import java.io.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Beta
 public class ProjectProxy implements Serializable {
     @Serial
     private static final long serialVersionUID = -2677378551349971288L;

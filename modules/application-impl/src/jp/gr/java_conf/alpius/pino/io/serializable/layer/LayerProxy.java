@@ -16,6 +16,7 @@
 
 package jp.gr.java_conf.alpius.pino.io.serializable.layer;
 
+import jp.gr.java_conf.alpius.pino.annotation.Beta;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
 import jp.gr.java_conf.alpius.pino.io.serializable.canvas.CanvasProxy;
@@ -24,6 +25,7 @@ import jp.gr.java_conf.alpius.pino.io.serializable.composite.CompositeProxy;
 import java.io.*;
 import java.util.Objects;
 
+@Beta
 public abstract class LayerProxy implements Serializable {
     public static LayerProxy create(LayerObject layer) {
         if (layer == null) return null;
