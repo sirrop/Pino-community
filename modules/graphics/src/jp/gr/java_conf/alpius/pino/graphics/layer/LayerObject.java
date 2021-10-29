@@ -29,6 +29,7 @@ import jp.gr.java_conf.alpius.pino.memento.Memento;
 import jp.gr.java_conf.alpius.pino.memento.MementoBase;
 import jp.gr.java_conf.alpius.pino.memento.Originator;
 import jp.gr.java_conf.alpius.pino.util.Strings;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.awt.*;
 import java.beans.PropertyChangeListener;
@@ -268,7 +269,9 @@ public abstract class LayerObject implements Disposable, Originator {
 
     private Parent parent;
 
-    final void setParent(Parent parent) {
+    // todo: ヘルパークラスを作成し、internalにしてください
+    @ApiStatus.Internal
+    public final void setParent(Parent parent) {
         if (this.parent != parent) {
             var old = this.parent;
             this.parent = parent;
@@ -306,11 +309,15 @@ public abstract class LayerObject implements Disposable, Originator {
 
     private Canvas canvas;
 
-    Canvas getCanvas() {
+    // todo: ヘルパークラスを作成する
+    @ApiStatus.Internal
+    public Canvas getCanvas() {
         return canvas;
     }
 
-    final void setCanvas(Canvas canvas) {
+    // todo: ヘルパークラスを作成する
+    @ApiStatus.Internal
+    public final void setCanvas(Canvas canvas) {
         this.canvas = Objects.requireNonNull(canvas);
     }
 

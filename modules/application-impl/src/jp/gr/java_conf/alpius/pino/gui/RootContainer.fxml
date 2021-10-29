@@ -26,11 +26,13 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <VBox fx:id="content" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="jp.gr.java_conf.alpius.pino.gui.PinoRootContainer" prefHeight="800" prefWidth="1200.0">
     <!-- メニューバー -->
-    <MenuBar fx:id="menuBar">
+    <MenuBar fx:id="menuBar" id="menu-bar">
         <Menu text="ファイル(_F)">
             <ActionMenuItem text="プロジェクトを新規作成" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.MakeProject" />
+            <ActionMenuItem text="開く" action="jp.gr.java_conf.alpius.pino.io.serializable.action.DeserializeProject" />
             <ActionMenuItem text="閉じる" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.CloseProject" />
             <ActionMenuItem text="出力" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Output" />
+            <ActionMenuItem text="保存" action="jp.gr.java_conf.alpius.pino.io.serializable.action.SerializeProject" />
             <ActionMenuItem text="設定" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ShowOptionsAction" />
             <ActionMenuItem text="終了" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Exit" />
         </Menu>
@@ -43,45 +45,45 @@
     </MenuBar>
 
     <!-- ツールバー -->
-    <ToolBar fx:id="toolBar" id="toolBar">
+    <ToolBar fx:id="toolBar" id="tool-bar">
         <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ActivateDrawTool">
             <graphic>
-                <FontIcon iconLiteral="mdi2l-lead-pencil" />
+                <FontIcon id="pencil" iconLiteral="mdi2l-lead-pencil" />
             </graphic>
         </ActionButton>
         <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ActivateHandTool">
             <graphic>
-                <FontIcon iconLiteral="mdi2a-arrow-all" />
+                <FontIcon id="move" iconLiteral="mdi2a-arrow-all" />
             </graphic>
         </ActionButton>
         <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Undo">
             <graphic>
-                <FontIcon iconLiteral="mdi2u-undo" />
+                <FontIcon id="undo" iconLiteral="mdi2u-undo" />
             </graphic>
         </ActionButton>
         <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Redo">
             <graphic>
-                <FontIcon iconLiteral="mdi2r-redo" />
+                <FontIcon id="redo" iconLiteral="mdi2r-redo" />
             </graphic>
         </ActionButton>
         <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.HorizontalFlip">
             <graphic>
-                <FontIcon iconLiteral="mdi2s-swap-horizontal" />
+                <FontIcon id="swap" iconLiteral="mdi2s-swap-horizontal" />
             </graphic>
         </ActionButton>
         <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ActivateRectangleLassoTool">
             <graphic>
-                <FontIcon iconLiteral="mdi2r-rectangle-outline" />
+                <FontIcon id="rect-lasso" iconLiteral="mdi2r-rectangle-outline" />
             </graphic>
         </ActionButton>
         <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ActivateLassoTool">
             <graphic>
-                <FontIcon iconLiteral="mdi2l-lasso" />
+                <FontIcon id="lasso" iconLiteral="mdi2l-lasso" />
             </graphic>
         </ActionButton>
         <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ActivateMoveLayerTool">
             <graphic>
-                <FontIcon iconLiteral="mdi2h-hand-right" />
+                <FontIcon id="hand" iconLiteral="mdi2h-hand-right" />
             </graphic>
         </ActionButton>
     </ToolBar>
@@ -89,7 +91,7 @@
     <HBox fx:id="contentPane" VBox.vgrow="ALWAYS">
         <SplitPane HBox.hgrow="ALWAYS" dividerPositions="0.25,0.75">
             <SplitPane orientation="VERTICAL" dividerPositions="0.4">
-                <BrushEditor fx:id="brushEditor">
+                <BrushEditor fx:id="brushEditor" id="brush-editor">
                     <placeholder>
                         <Label text="No brush is selected" />
                     </placeholder>

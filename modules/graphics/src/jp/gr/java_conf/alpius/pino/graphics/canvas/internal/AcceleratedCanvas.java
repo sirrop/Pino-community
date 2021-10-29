@@ -14,15 +14,28 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.graphics.canvas;
+package jp.gr.java_conf.alpius.pino.graphics.canvas.internal;
+
+import jp.gr.java_conf.alpius.pino.annotation.Beta;
+import jp.gr.java_conf.alpius.pino.graphics.canvas.Canvas;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 import java.util.Objects;
 
-final class GeneralCanvas implements Canvas {
+@Beta
+public final class AcceleratedCanvas implements Canvas {
+    public AcceleratedCanvas() {
+        gc = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                .getDefaultScreenDevice()
+                .getDefaultConfiguration();
+    }
+
     private Paint background = TRANSPARENT;
-    private BufferedImage offscreenImage;
+    private final GraphicsConfiguration gc;
+    private VolatileImage offscreenImage;
+
     private final Object lock = new Object();
 
     @Override
@@ -46,11 +59,11 @@ final class GeneralCanvas implements Canvas {
         }
 
         synchronized (lock) {
-            var newData = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB_PRE);
+            var newData = gc.createCompatibleVolatileImage(w, h, Transparency.TRANSLUCENT);
             var g = newData.createGraphics();
             g.setComposite(AlphaComposite.Src);
             g.setPaint(background);
-            g.drawRect(0, 0, newData.getWidth(), newData.getHeight());
+            g.fillRect(0, 0, newData.getWidth(), newData.getHeight());
             if (offscreenImage != null) {
                 g.setComposite(AlphaComposite.SrcOver);
                 g.drawImage(offscreenImage, 0, 0, null);
@@ -78,34 +91,23 @@ final class GeneralCanvas implements Canvas {
 
     @Override
     public Image createCompatibleImage(int w, int h, int transparency, Paint background) {
-        BufferedImage res = switch (transparency) {
-            case Transparency.BITMASK, Transparency.TRANSLUCENT -> new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB_PRE);
-            case Transparency.OPAQUE -> new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-            default -> throw new IllegalArgumentException("Unknown transparency: " + transparency);
-        };
-        if (background != TRANSPARENT) {
-            var g = res.createGraphics();
-            g.setComposite(AlphaComposite.Src);
-            g.setPaint(background);
-            g.fillRect(0, 0, w, h);
-            g.dispose();
-        }
+        var res = gc.createCompatibleVolatileImage(w, h, transparency);
+        var g = res.createGraphics();
+        g.setComposite(AlphaComposite.Src);
+        g.setPaint(background);
+        g.fillRect(0, 0, w, h);
+        g.dispose();
         return res;
     }
 
     @Override
     public BufferedImage snapshot() {
-        BufferedImage result;
-        result = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB_PRE);
-        var g = result.createGraphics();
-        g.drawImage(offscreenImage, 0, 0, null);
-        g.dispose();
-        return result;
+        return offscreenImage.getSnapshot();
     }
 
     @Override
     public void dispose() {
-        offscreenImage.flush();
         background = null;
+        offscreenImage.flush();
     }
 }

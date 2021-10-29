@@ -15,6 +15,8 @@
  */
 
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
+import jp.gr.java_conf.alpius.pino.io.serializable.action.DeserializeProject;
+import jp.gr.java_conf.alpius.pino.io.serializable.action.SerializeProject;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.Action;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.*;
 import jp.gr.java_conf.alpius.pino.gui.widget.DefaultBrushEditorGraphicVisitor;
@@ -61,7 +63,7 @@ module pino.application.impl {
     provides GraphicManager.BrushViewGraphicVisitor with DefaultBrushViewGraphicVisitor;
     provides Action
             with    ActivateDrawTool, ActivateHandTool, ActivateLassoTool, ActivateRectangleLassoTool, ActivateMoveLayerTool,
-                    MakeProject, CloseProject, Output, ShowOptionsAction, Exit,
+                    MakeProject, DeserializeProject, CloseProject, Output, SerializeProject, ShowOptionsAction, Exit,
                     ClearSelection,
                     Undo, Redo,
                     HorizontalFlip, VerticalFlip;

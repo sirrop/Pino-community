@@ -141,6 +141,7 @@ public class PinoProject implements Project {
         canvas.dispose();
         children.clear();
         container = null;
+        Disposer.dispose(lastDisposable);
     }
 
     private Map<Key<?>, Object> getUserDataHolder() {

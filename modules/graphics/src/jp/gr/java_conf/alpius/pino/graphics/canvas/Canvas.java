@@ -18,6 +18,8 @@ package jp.gr.java_conf.alpius.pino.graphics.canvas;
 
 import jp.gr.java_conf.alpius.pino.annotation.Beta;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
+import jp.gr.java_conf.alpius.pino.graphics.canvas.internal.AcceleratedCanvas;
+import jp.gr.java_conf.alpius.pino.graphics.canvas.internal.GeneralCanvas;
 import jp.gr.java_conf.alpius.pino.graphics.internal.util.ColorUtils;
 
 import java.awt.*;
