@@ -16,6 +16,8 @@
 
 package jp.gr.java_conf.alpius.pino.graphics.layer;
 
+import jp.gr.java_conf.alpius.pino.beans.Bind;
+import jp.gr.java_conf.alpius.pino.graphics.Graphics2DNoOp;
 import jp.gr.java_conf.alpius.pino.graphics.canvas.Canvas;
 import jp.gr.java_conf.alpius.pino.memento.IncompatibleMementoException;
 import jp.gr.java_conf.alpius.pino.memento.Memento;
@@ -25,8 +27,24 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class DrawableLayer extends LayerObject {
+    // ロック時、描画不可
+    @Bind
+    private volatile boolean locked = false;
+
+    public final boolean isLocked() {
+        return locked;
+    }
+
+    public final void setLocked(boolean value) {
+        if (locked != value) {
+            var old = locked;
+            locked = value;
+            firePropertyChange("locked", old, locked);
+        }
+    }
+
     @Override
-    public Canvas getCanvas() {
+    public final Canvas getCanvas() {
         return super.getCanvas();
     }
 
@@ -35,7 +53,19 @@ public class DrawableLayer extends LayerObject {
         g.drawImage(getCanvas().snapshot(), 0, 0, null);
     }
 
+    /**
+     * このレイヤに描画を行うグラフィックスコンテキストを返します。<br>
+     * このメソッドを使用して返されたグラフィックスコンテキストは、レイヤの座標とキャンバスの座標を補正するアフィン変換が設定された状態になります。
+     * ただし、{@link DrawableLayer#isLocked()}がtrueのとき、{@link Graphics2DNoOp}のインスタンスが返され、この場合はアフィン変換は設定されません。<br>
+     * このようなオブジェクトの選択を回避したい場合、{@code getCanvas().createGraphics()}のルートを使用することが出来ます。
+     * この回避ルートを使用してグラフィックスコンテキストを獲得した場合、デフォルトではレイヤーのプロパティが反映されていないことに注意する必要があります。
+     * @return このレイヤーに描画するグラフィックスコンテキスト
+     */
     public Graphics2D createGraphics() {
+        if (isLocked()) {
+            return Graphics2DNoOp.getInstance();
+        }
+
         var g = getCanvas().createGraphics();
         g.translate(-getX(), -getY());
         g.rotate(-getRotate() * Math.PI * 2 / 360);

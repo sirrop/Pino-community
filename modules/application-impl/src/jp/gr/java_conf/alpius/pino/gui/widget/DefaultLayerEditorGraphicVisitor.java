@@ -27,6 +27,7 @@ import javafx.util.converter.NumberStringConverter;
 import jp.gr.java_conf.alpius.pino.application.impl.BlendModeRegistry;
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
 import jp.gr.java_conf.alpius.pino.graphics.CompositeFactory;
+import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.ImageLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
 import jp.gr.java_conf.alpius.pino.graphics.layer.ShapeLayer;
@@ -131,6 +132,12 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
                 clipping
         );
 
+        if (e instanceof DrawableLayer drawable) {
+            CheckBox locked = new CheckBox("ロック");
+            locked.setSelected(drawable.isLocked());
+            locked.selectedProperty().addListener((observable, oldValue, newValue) -> drawable.setLocked(newValue));
+            container.getChildren().add(locked);
+        }
         if (e instanceof ImageLayer image) {
             Button button = new Button("画像を選択");
             button.setOnAction(event -> {
