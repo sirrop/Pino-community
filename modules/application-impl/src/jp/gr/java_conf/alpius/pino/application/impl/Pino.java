@@ -23,6 +23,8 @@ import javafx.scene.image.PixelFormat;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import jp.gr.java_conf.alpius.pino.application.util.AliasManager;
+import jp.gr.java_conf.alpius.pino.application.util.IAliasManager;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
 import jp.gr.java_conf.alpius.pino.disposable.Disposer;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
@@ -62,6 +64,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
     public Pino() {
 
         /* -- register core services -- */
+        services.register(IAliasManager.class, AliasManager.create());
         services.register(BlendModeRegistry.class, new BlendModeRegistry());
         services.register(BrushManager.class, new BrushManager());
         services.register(GraphicManager.class, new GraphicManager());
