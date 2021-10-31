@@ -16,41 +16,28 @@
 
 package jp.gr.java_conf.alpius.pino.gui;
 
-import javafx.beans.property.DoubleProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.ImageCursor;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.ToolBar;
-import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import jp.gr.java_conf.alpius.pino.application.impl.BrushManager;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
 import jp.gr.java_conf.alpius.pino.application.impl.ProjectManager;
-import jp.gr.java_conf.alpius.pino.disposable.Disposable;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
 import jp.gr.java_conf.alpius.pino.gui.widget.*;
 import jp.gr.java_conf.alpius.pino.project.impl.SelectionManager;
-import jp.gr.java_conf.alpius.pino.util.Result;
 
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.function.IntConsumer;
 
 public class PinoRootContainer implements RootContainer {
     @FXML
@@ -67,7 +54,6 @@ public class PinoRootContainer implements RootContainer {
     @FXML
     private Pane canvasPane;
     private SelectionIndicator selectionIndicator;
-    private final BrushWidthIndicator brushWidthIndicator = new BrushWidthIndicator();
 
     @FXML
     private HBox contentPane;
@@ -75,31 +61,6 @@ public class PinoRootContainer implements RootContainer {
     private MenuBar menuBar;
     @FXML
     private ToolBar toolBar;
-
-    // リスナーを除去するDisposable
-    private Disposable listenerDisposable;
-
-    private final PropertyChangeListener widthListener = e -> {
-        if (e.getPropertyName().equals("width")) {
-            brushWidthIndicator.setBrushWidth(Double.parseDouble(e.getNewValue().toString()) / 2);
-        }
-    };
-
-    // ブラシが変更されたときにリスナーを更新する
-    private final IntConsumer updateListener = i -> {
-        if (listenerDisposable != null) {
-            listenerDisposable.dispose();
-        }
-
-        var activeBrush = BrushManager.getInstance().getActiveModel().getActivatedItem();
-        activeBrush.addListener(widthListener);
-
-        listenerDisposable = () -> activeBrush.removeListener(widthListener);
-    };
-
-
-
-
 
     public static RootContainer load() throws IOException {
         FXMLLoader loader = new FXMLLoader();
@@ -115,49 +76,6 @@ public class PinoRootContainer implements RootContainer {
         layerView.setCellFactory(listView -> new LayerCell());
         brushEditor.setContextMenu(MenuManager.getInstance().getBrushEditorMenu());
         brushView.setCellFactory(listView -> new BrushCell());
-
-        // FIXME : カーソルがハードコーディングされています。ソフトコーディングにし、ツール毎にカーソルを変更できるようにしてください
-        Result.tryToRun(() -> Files.newInputStream(Paths.get("resources", "cursor.png")))
-                .map(Image::new)
-                .map(image -> new ImageCursor(image, image.getWidth() / 2, image.getHeight() / 2))
-                .onSuccess(canvasPane::setCursor)
-                .printStackTrace();
-
-        canvasPane.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> canvasPane.getChildren().add(brushWidthIndicator));
-
-        canvasPane.addEventHandler(MouseEvent.MOUSE_MOVED, e -> {
-            brushWidthIndicator.toFront();
-            brushWidthIndicator.setLayoutX(e.getX());
-            brushWidthIndicator.setLayoutY(e.getY());
-        });
-
-        canvasPane.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
-            brushWidthIndicator.toFront();
-            brushWidthIndicator.setLayoutX(e.getX());
-            brushWidthIndicator.setLayoutY(e.getY());
-        });
-
-        canvasPane.addEventHandler(MouseEvent.MOUSE_EXITED, e -> canvasPane.getChildren().remove(brushWidthIndicator));
-
-        BrushManager.getInstance()
-                        .getActiveModel()
-                        .addListener(updateListener);
-
-        updateListener.accept(BrushManager.getInstance().getActiveModel().getActivatedIndex());
-
-        var brush = BrushManager.getInstance().getActiveModel().getActivatedItem();
-
-        for (var desc: brush.getUnmodifiablePropertyList()) {
-            if (desc.getName().equals("width")) {
-                Result.tryToRun(desc::getReadMethod)
-                      .map(getter -> getter.invoke(brush))
-                      .map(value -> Double.parseDouble(value.toString()) / 2)
-                      .onSuccess(brushWidthIndicator::setBrushWidth)
-                      .printStackTrace();
-            }
-        }
-
-        brushWidthIndicator.setStroke(Color.GRAY);
 
         Pino.getApp().getService(ProjectManager.class)
                 .addOnChanged(project -> {
@@ -266,32 +184,6 @@ public class PinoRootContainer implements RootContainer {
                     image.getPixelWriter().setColor(x + j, y + i, c);
                 }
             }
-        }
-    }
-
-    private static final class BrushWidthIndicator extends Region {
-        private final Circle circle = new Circle();
-
-        public void setBrushWidth(double value) {
-            brushWidthProperty().set(value);
-        }
-
-        public double getBrushWidth() {
-            return brushWidthProperty().get();
-        }
-
-        public DoubleProperty brushWidthProperty() {
-            return circle.radiusProperty();
-        }
-
-        public void setStroke(Paint fill) {
-            circle.setStroke(fill);
-        }
-
-        BrushWidthIndicator() {
-            circle.setFill(Color.TRANSPARENT);
-            circle.setStroke(Color.BLACK);
-            getChildren().add(circle);
         }
     }
 }

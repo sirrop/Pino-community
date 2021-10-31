@@ -69,7 +69,6 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         services.register(MenuManager.class, new MenuManager());
         services.register(Publisher.class, new NotificationCenter());
         services.register(ProjectManager.class, initializeProjectMgr(new ProjectManagerImpl()));
-        services.register(OptionScreen.class, OptionScreen.create());
 
     }
 
@@ -103,6 +102,8 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         services.register(ToolManager.class, eventDistributor);
         eventDistributor.activate(DrawTool.getInstance());
         Thread.currentThread().setUncaughtExceptionHandler(new ErrorHandler());
+        services.register(OptionScreen.class, OptionScreen.create());
+        eventDistributor.activate(eventDistributor.getActiveTool());
     }
 
     private void searchActionAndPerform(KeyEvent e) {

@@ -39,7 +39,7 @@ public class OptionScreen extends Control {
                 .addAll(
                         new LookAndFeelOptions(), // 外観
                         new MenuOptions(),        // メニュー
-                        new CursorOptions(),      // カーソル
+                        CursorOptions.create(),   // カーソル
                         new CanvasOptions()       // キャンバス
                 );
         return screen;

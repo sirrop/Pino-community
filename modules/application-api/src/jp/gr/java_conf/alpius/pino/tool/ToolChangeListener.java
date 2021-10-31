@@ -16,11 +16,8 @@
 
 package jp.gr.java_conf.alpius.pino.tool;
 
-public interface ToolManager {
-    void addListener(ToolChangeListener listener);
-    void removeListener(ToolChangeListener listener);
-    void activate(Tool tool);
-    Tool getActiveTool();
-    boolean lock(Object lockKey);
-    boolean unlock(Object lockKey);
+import java.util.EventListener;
+
+public interface ToolChangeListener extends EventListener {
+    void changed(Tool oldTool, Tool newTool);
 }

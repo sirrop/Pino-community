@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.tool;
+package jp.gr.java_conf.alpius.pino.gui.screen.options.cursor;
 
-public interface ToolManager {
-    void addListener(ToolChangeListener listener);
-    void removeListener(ToolChangeListener listener);
-    void activate(Tool tool);
-    Tool getActiveTool();
-    boolean lock(Object lockKey);
-    boolean unlock(Object lockKey);
+import jp.gr.java_conf.alpius.pino.gui.screen.options.CursorOptions;
+
+public final class HandToolCursor {
+    private HandToolCursor() {
+        throw new AssertionError();
+    }
+
+    public static CursorOptions.Cursor create() {
+        return new CursorOptions.Cursor(CursorOptions.Pointer.CROSS_HAIR, CursorOptions.SubPointer.NONE);
+    }
 }

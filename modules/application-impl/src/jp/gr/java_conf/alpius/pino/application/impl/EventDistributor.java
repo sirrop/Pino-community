@@ -25,7 +25,11 @@ import jp.gr.java_conf.alpius.pino.notification.Notification;
 import jp.gr.java_conf.alpius.pino.notification.NotificationType;
 import jp.gr.java_conf.alpius.pino.notification.Publisher;
 import jp.gr.java_conf.alpius.pino.tool.Tool;
+import jp.gr.java_conf.alpius.pino.tool.ToolChangeListener;
 import jp.gr.java_conf.alpius.pino.tool.ToolManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * イベントを適切に分配する役割を持つクラスです。
@@ -34,6 +38,7 @@ public final class EventDistributor implements Disposable, ToolManager {
     private final Canvas canvas;
     private Tool activeTool;
     private Object lockKey;
+    private final List<ToolChangeListener> listeners = new ArrayList<>();
 
     EventDistributor(JFxWindow window) {
         canvas = window.getRootContainer().getCanvas();
@@ -105,7 +110,18 @@ public final class EventDistributor implements Disposable, ToolManager {
     }
 
     @Override
+    public void addListener(ToolChangeListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(ToolChangeListener listener) {
+        listeners.remove(listener);
+    }
+
+    @Override
     public void activate(Tool tool) {
+        var old = activeTool;
         var success = trySetActiveTool(tool);
         if (!success) {
             Notification notification = new Notification(
@@ -118,6 +134,9 @@ public final class EventDistributor implements Disposable, ToolManager {
             return;
         }
         activeTool = tool;
+        for (var listener: listeners) {
+            listener.changed(old, tool);
+        }
     }
 
     @Override
