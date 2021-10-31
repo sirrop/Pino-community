@@ -21,7 +21,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.scene.ImageCursor;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
@@ -75,16 +75,22 @@ public class CursorOptions extends Option implements ToolChangeListener {
 
     @Override
     public Node createNode() {
+        var pane = new StackPane();
         var container = new VBox(5);
         container.getChildren().addAll(
                 toolCursorMap.keySet()
                         .stream()
-                        .map(string -> Pino.getApp().getService(IAliasManager.class).getAlias(string).orElse(string))
-                        .sorted()
-                        .map(Label::new)
+                        .map(string -> new String[] {string, Pino.getApp().getService(IAliasManager.class).getAlias(string).orElse(string)})
+                        .sorted(Comparator.comparing(a -> a[1]))
+                        .map(str -> {
+                            var link = new Hyperlink(str[1]);
+                            link.setOnAction(e -> pane.getChildren().setAll(toolCursorMap.get(str[0]).createNode()));
+                            return link;
+                        })
                         .collect(Collectors.toList())
         );
-        return container;
+        pane.getChildren().setAll(container);
+        return pane;
     }
 
     @Override
@@ -135,10 +141,10 @@ public class CursorOptions extends Option implements ToolChangeListener {
     }
 
     public static class ImagePointer extends Pointer {
-        private final javafx.scene.Cursor cursor;
+        private javafx.scene.Cursor cursor;
 
         public ImagePointer(Image image, double x, double y) {
-            cursor = new ImageCursor(image, x, y);
+            initPointer(image, x, y);
         }
 
         public ImagePointer(Image image) {
@@ -152,6 +158,11 @@ public class CursorOptions extends Option implements ToolChangeListener {
         public ImagePointer(BufferedImage image, double x, double y) {
             this(SwingFXUtils.toFXImage(image, null), x, y);
         }
+
+        protected void initPointer(Image image, double x, double y) {
+            cursor = new ImageCursor(image, x, y);
+        }
+
 
         @Override
         javafx.scene.Cursor getCursor() {
@@ -174,12 +185,20 @@ public class CursorOptions extends Option implements ToolChangeListener {
     }
 
     public static class Cursor {
-        private final Pointer pointer;
-        private final List<SubPointer> subPointers;
+        private Pointer pointer;
+        private List<SubPointer> subPointers;
         private List<Node> subPointerCache;
 
         public Cursor(Pointer pointer, SubPointer... subPointers) {
             this.pointer = Objects.requireNonNull(pointer);
+            this.subPointers = newCollection(subPointers);
+        }
+
+        public void setPointer(Pointer pointer) {
+            this.pointer = Objects.requireNonNull(pointer);
+        }
+
+        public void setSubPointers(SubPointer... subPointers) {
             this.subPointers = newCollection(subPointers);
         }
 

@@ -18,11 +18,17 @@ package jp.gr.java_conf.alpius.pino.gui.screen.options.cursor;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.Node;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.util.converter.NumberStringConverter;
 import jp.gr.java_conf.alpius.pino.application.impl.BrushManager;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
 import jp.gr.java_conf.alpius.pino.gui.screen.options.CursorOptions;
@@ -46,7 +52,19 @@ public final class DrawToolCursor {
                 .onFailed(image -> pointer[0] = CursorOptions.Pointer.NONE)
                 .printStackTrace();
 
-        return new CursorOptions.Cursor(pointer[0], new DrawToolSubPointer());
+        var subPointer = new DrawToolSubPointer();
+
+        return new CursorOptions.Cursor(pointer[0], subPointer) {
+            @Override
+            public void onApply() {
+                subPointer.onApply();
+            }
+
+            @Override
+            public void onCancel() {
+                subPointer.onCancel();
+            }
+        };
     }
 
     private static class DrawToolSubPointer implements CursorOptions.SubPointer {
@@ -94,6 +112,56 @@ public final class DrawToolCursor {
         public Node getSubPointer() {
             return brushWidthIndicator;
         }
+
+        private boolean widthDirty = false;
+        private boolean colorDirty = false;
+
+        private float width;
+        private Color color;
+
+        private void markWidthDirty(float value) {
+            widthDirty = true;
+            width = value;
+        }
+
+        private void markColorDirty(Color value) {
+            colorDirty = true;
+            color = value;
+        }
+
+        public void onApply() {
+            if (widthDirty) {
+                brushWidthIndicator.setStrokeWidth(width);
+            }
+            if (colorDirty) {
+                brushWidthIndicator.setStroke(color);
+            }
+        }
+
+        public void onCancel() {
+
+        }
+
+        @Override
+        public Node createNode() {
+            VBox container = new VBox(5);
+
+            Label strokeLabel = new Label("ストロークの幅");
+            TextField field = new TextField();
+            TextFormatter<Number> formatter = new TextFormatter<>(new NumberStringConverter(), brushWidthIndicator.getStrokeWidth());
+            formatter.valueProperty().addListener((observable, oldValue, newValue) -> markWidthDirty(newValue.floatValue()));
+            field.setTextFormatter(formatter);
+
+            Label strokeColor = new Label("ストロークの色");
+
+            ColorPicker picker = new ColorPicker();
+            picker.setValue(brushWidthIndicator.getStroke());
+            picker.valueProperty().addListener((observable, oldValue, newValue) -> markColorDirty(newValue));
+
+            container.getChildren().addAll(new HBox(strokeLabel, field), new HBox(strokeColor, picker));
+
+            return container;
+        }
     }
 
     private static final class BrushWidthIndicator extends Region {
@@ -111,8 +179,20 @@ public final class DrawToolCursor {
             return circle.radiusProperty();
         }
 
-        public void setStroke(Paint fill) {
+        public void setStroke(Color fill) {
             circle.setStroke(fill);
+        }
+
+        public Color getStroke() {
+            return (Color) circle.getStroke();
+        }
+
+        public void setStrokeWidth(double value) {
+            circle.setStrokeWidth(value);
+        }
+
+        public double getStrokeWidth() {
+            return circle.getStrokeWidth();
         }
 
         BrushWidthIndicator() {

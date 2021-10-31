@@ -18,10 +18,7 @@ package jp.gr.java_conf.alpius.pino.gui.screen.options;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Control;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Skin;
+import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.WindowEvent;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
