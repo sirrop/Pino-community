@@ -31,6 +31,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
+import jp.gr.java_conf.alpius.pino.application.util.IAliasManager;
 import jp.gr.java_conf.alpius.pino.gui.screen.options.cursor.DrawToolCursor;
 import jp.gr.java_conf.alpius.pino.gui.screen.options.cursor.HandToolCursor;
 import jp.gr.java_conf.alpius.pino.tool.Tool;
@@ -64,12 +65,12 @@ public class CursorOptions extends Option implements ToolChangeListener {
 
     @Override
     public void onApply() {
-
+        toolCursorMap.values().forEach(Cursor::onApply);
     }
 
     @Override
     public void onCancel() {
-
+        toolCursorMap.values().forEach(Cursor::onCancel);
     }
 
     @Override
@@ -78,6 +79,7 @@ public class CursorOptions extends Option implements ToolChangeListener {
         container.getChildren().addAll(
                 toolCursorMap.keySet()
                         .stream()
+                        .map(string -> Pino.getApp().getService(IAliasManager.class).getAlias(string).orElse(string))
                         .sorted()
                         .map(Label::new)
                         .collect(Collectors.toList())
@@ -246,6 +248,12 @@ public class CursorOptions extends Option implements ToolChangeListener {
                 MOUSE_DRAGGED = null;
                 MOUSE_EXITED = null;
             }
+        }
+
+        public void onApply() {
+        }
+
+        public void onCancel() {
         }
     }
 
