@@ -62,7 +62,7 @@ module pino.application.impl {
     provides GraphicManager.BrushEditorGraphicVisitor with DefaultBrushEditorGraphicVisitor;
     provides GraphicManager.BrushViewGraphicVisitor with DefaultBrushViewGraphicVisitor;
     provides Action
-            with    ActivateDrawTool, ActivateHandTool, ActivateLassoTool, ActivateRectangleLassoTool, ActivateMoveLayerTool,
+            with    ActivateDrawTool, ActivateHandTool, ActivateLassoTool, ActivateRectangleLassoTool, ActivateMoveLayerTool, ActivateEyedropperTool,
                     MakeProject, DeserializeProject, CloseProject, Output, SerializeProject, ShowOptionsAction, Exit,
                     ClearSelection,
                     Undo, Redo,

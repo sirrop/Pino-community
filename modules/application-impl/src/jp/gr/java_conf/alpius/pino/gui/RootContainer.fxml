@@ -51,6 +51,11 @@
                 <FontIcon id="pencil" iconLiteral="mdi2l-lead-pencil" />
             </graphic>
         </ActionButton>
+        <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ActivateEyedropperTool">
+            <graphic>
+                <FontIcon id="eyedropper" iconLiteral="mdi2e-eyedropper" />
+            </graphic>
+        </ActionButton>
         <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ActivateHandTool">
             <graphic>
                 <FontIcon id="move" iconLiteral="mdi2a-arrow-all" />
