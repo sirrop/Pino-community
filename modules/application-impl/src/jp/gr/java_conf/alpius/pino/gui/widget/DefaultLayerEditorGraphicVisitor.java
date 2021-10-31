@@ -133,10 +133,14 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
         );
 
         if (e instanceof DrawableLayer drawable) {
+            CheckBox opacityProtect = new CheckBox("透明度保護※不具合あり");
+            opacityProtect.setSelected(drawable.isOpacityProtected());
+            opacityProtect.selectedProperty().addListener((observable, oldValue, newValue) -> drawable.setOpacityProtected(newValue));
+
             CheckBox locked = new CheckBox("ロック");
             locked.setSelected(drawable.isLocked());
             locked.selectedProperty().addListener((observable, oldValue, newValue) -> drawable.setLocked(newValue));
-            container.getChildren().add(locked);
+            container.getChildren().addAll(opacityProtect, locked);
         }
         if (e instanceof ImageLayer image) {
             Button button = new Button("画像を選択");

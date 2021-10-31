@@ -19,6 +19,9 @@ package jp.gr.java_conf.alpius.pino.io.serializable.layer;
 import jp.gr.java_conf.alpius.pino.annotation.Beta;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serial;
 
 
@@ -29,12 +32,33 @@ public class DrawableLayerProxy extends LayerProxy {
 
     public DrawableLayerProxy(DrawableLayer layer) {
         super(layer);
+        locked = layer.isLocked();
+        opacityProtected = layer.isOpacityProtected();
     }
+
+    private transient boolean locked;
+    private transient boolean opacityProtected;
 
     @Override
     public DrawableLayer createLayer(int w, int h) {
         DrawableLayer layer = new DrawableLayer();
         initializeLayer(layer, w, h);
+        layer.setLocked(locked);
+        layer.setOpacityProtected(opacityProtected);
         return layer;
+    }
+
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeBoolean(locked);
+        out.writeBoolean(opacityProtected);
+    }
+
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        locked = in.readBoolean();
+        opacityProtected = in.readBoolean();
     }
 }
