@@ -45,4 +45,20 @@ public class MouseEvent extends InputEvent {
     public double getScreenY() {
         return screenY;
     }
+
+    public MouseEvent withX(double x) {
+        return new MouseEvent(getSource(), x, y, screenX, screenY);
+    }
+
+    public MouseEvent withY(double y) {
+        return new MouseEvent(getSource(), x, y, screenX, screenY);
+    }
+
+    public MouseEvent withScreenX(double screenX) {
+        return new MouseEvent(getSource(), x, y, screenX, screenY);
+    }
+
+    public MouseEvent withScreenY(double screenY) {
+        return new MouseEvent(getSource(), x, y, screenX, screenY);
+    }
 }

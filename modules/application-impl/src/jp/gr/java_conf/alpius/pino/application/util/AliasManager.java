@@ -18,6 +18,7 @@ package jp.gr.java_conf.alpius.pino.application.util;
 
 import jp.gr.java_conf.alpius.pino.tool.plugin.DrawTool;
 import jp.gr.java_conf.alpius.pino.tool.plugin.HandTool;
+import jp.gr.java_conf.alpius.pino.tool.plugin.Ruler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,7 @@ public final class AliasManager implements IAliasManager{
         var res = new AliasManager();
         res.register(DrawTool.class.getName()).as("描画ツール");
         res.register(HandTool.class.getName()).as("移動");
+        res.register(Ruler.class.getName()).as("定規");
         return res;
     }
 

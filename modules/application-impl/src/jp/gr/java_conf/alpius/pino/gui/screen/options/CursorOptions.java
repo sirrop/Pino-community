@@ -39,6 +39,7 @@ import jp.gr.java_conf.alpius.pino.tool.ToolChangeListener;
 import jp.gr.java_conf.alpius.pino.tool.ToolManager;
 import jp.gr.java_conf.alpius.pino.tool.plugin.DrawTool;
 import jp.gr.java_conf.alpius.pino.tool.plugin.HandTool;
+import jp.gr.java_conf.alpius.pino.tool.plugin.Ruler;
 
 import java.awt.image.BufferedImage;
 import java.util.*;
@@ -49,6 +50,7 @@ public class CursorOptions extends Option implements ToolChangeListener {
         var res = new CursorOptions();
         res.register(DrawTool.class.getName(), DrawToolCursor.create());
         res.register(HandTool.class.getName(), HandToolCursor.create());
+        res.register(Ruler.class.getName(), res.toolCursorMap.get(DrawTool.class.getName()));
         return res;
     }
 
