@@ -116,6 +116,7 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
 
         var clipping = new CheckBox();
         clipping.setText("下のレイヤーでクリッピング");
+        clipping.setSelected(e.getClip() != null);
         clipping.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 var project = Pino.getApp().getProject();
