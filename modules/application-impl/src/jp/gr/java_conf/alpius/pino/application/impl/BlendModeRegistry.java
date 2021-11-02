@@ -42,6 +42,10 @@ public class BlendModeRegistry {
         register(SOFT_LIGHT);
         register(DIFFERENCE);
         register(EXCLUSION);
+        register(LINEAR_BURN);
+        register(VIVID_LIGHT);
+        register(PIN_LIGHT);
+        register(DIVIDE);
     }
 
     private final ObservableList<CompositeFactory> registeredBlendMode = FXCollections.observableArrayList();

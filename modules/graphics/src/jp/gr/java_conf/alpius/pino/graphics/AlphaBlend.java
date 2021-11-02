@@ -16,7 +16,7 @@
 
 package jp.gr.java_conf.alpius.pino.graphics;
 
-import jp.gr.java_conf.alpius.pino.graphics.internal.graphics.SimpleAlphaBlendContext;
+import jp.gr.java_conf.alpius.pino.graphics.internal.graphics.blend.SimpleAlphaBlendContext;
 
 import java.awt.*;
 import java.awt.image.ColorModel;
@@ -50,7 +50,12 @@ public final class AlphaBlend implements Composite {
         HARD_LIGHT,
         SOFT_LIGHT,
         DIFFERENCE,
-        EXCLUSION;
+        EXCLUSION,
+        LINEAR_BURN,
+        VIVID_LIGHT,
+        LINEAR_LIGHT,
+        PIN_LIGHT,
+        DIVIDE;
 
         public Composite createComposite(float opacity) {
             return getInstance(this, opacity);

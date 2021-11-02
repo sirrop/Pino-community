@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.graphics.internal.graphics;
+package jp.gr.java_conf.alpius.pino.graphics.internal.graphics.blend;
 
 import jp.gr.java_conf.alpius.pino.graphics.AlphaBlend;
 
