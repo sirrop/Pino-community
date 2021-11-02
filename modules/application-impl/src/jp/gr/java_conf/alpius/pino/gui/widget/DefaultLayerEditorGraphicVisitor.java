@@ -26,6 +26,8 @@ import javafx.stage.FileChooser;
 import javafx.util.converter.NumberStringConverter;
 import jp.gr.java_conf.alpius.pino.application.impl.BlendModeRegistry;
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
+import jp.gr.java_conf.alpius.pino.application.impl.Pino;
+import jp.gr.java_conf.alpius.pino.application.util.IAliasManager;
 import jp.gr.java_conf.alpius.pino.graphics.CompositeFactory;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.ImageLayer;
@@ -117,6 +119,30 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
         blendMode.setItems(BlendModeRegistry.getInstance().getAvailableBlendModeList());
         blendMode.setValue(e.getCompositeFactory());
         blendMode.valueProperty().addListener((observable, oldValue, newValue) -> e.setCompositeFactory(newValue));
+        blendMode.setButtonCell(new ListCell<>() {
+            @Override
+            public void updateItem(CompositeFactory item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(Pino.getApp().getService(IAliasManager.class).getAlias(item.toString()).orElse(item.toString()));
+                }
+            }
+        });
+        blendMode.setCellFactory(listView -> new ListCell<>() {
+            @Override
+            public void updateItem(CompositeFactory item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(Pino.getApp().getService(IAliasManager.class).getAlias(item.toString()).orElse(item.toString()));
+                }
+            }
+        });
 
         container.getChildren().setAll(
                 name,
