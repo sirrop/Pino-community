@@ -16,6 +16,8 @@
 
 package jp.gr.java_conf.alpius.pino.gui.widget;
 
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -113,7 +115,25 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
         });
 
         var clipping = new CheckBox();
-        clipping.setText("下のレイヤーでクリッピング ※未対応");
+        clipping.setText("下のレイヤーでクリッピング");
+        clipping.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                var project = Pino.getApp().getProject();
+                var layer = (ObservableList<LayerObject>) project.getLayers();
+                ListChangeListener<? super LayerObject> listener = c -> {
+                    var layerIndex = layer.indexOf(e);
+                    if (layerIndex == layer.size() - 1) {
+                        e.setClip(null);
+                    } else {
+                        e.setClip(layer.get(layerIndex + 1));
+                    }
+                };
+                layer.addListener(listener);
+                listener.onChanged(null);
+            } else {
+                e.setClip(null);
+            }
+        });
 
         var blendMode = new ComboBox<CompositeFactory>();
         blendMode.setItems(BlendModeRegistry.getInstance().getAvailableBlendModeList());

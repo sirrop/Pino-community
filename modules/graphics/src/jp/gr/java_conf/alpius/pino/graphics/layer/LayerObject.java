@@ -333,15 +333,31 @@ public abstract class LayerObject implements Disposable, Originator {
         if (x > maxX || y > maxY) return;
 
         if (!visible || (ignoreRough & rough) || opacity == 0f) return;
-        g.translate(x, y);
-        g.rotate(getRotate() * Math.PI * 2 / 360);
-        g.scale(scaleX, scaleY);
-        g.setClip(aoi);
-        g.setComposite(getCompositeFactory().createComposite(opacity));
-        renderContent(g, aoi, ignoreRough);
-        g.translate(-x, -y);
-        g.rotate(-getRotate() * Math.PI * 2 / 360);
-        g.scale(1 / scaleX, 1 / scaleY);
+
+        if (clip != null) {
+            var clip = this.clip.getCanvas().createCompatibleImage(Transparency.TRANSLUCENT);
+            var g2d = (Graphics2D) clip.getGraphics();
+            this.clip.render(g2d, aoi, ignoreRough);
+            g2d.translate(x, y);
+            g2d.rotate(getRotate() * Math.PI * 2 / 360);
+            g2d.scale(scaleX, scaleY);
+            g2d.setClip(aoi);
+            g2d.setComposite(AlphaComposite.SrcIn);
+            renderContent(g2d, aoi, ignoreRough);
+            g.setComposite(getCompositeFactory().createComposite(opacity));
+            g.drawImage(clip, 0, 0, null);
+            g2d.dispose();
+        } else {
+            g.translate(x, y);
+            g.rotate(getRotate() * Math.PI * 2 / 360);
+            g.scale(scaleX, scaleY);
+            g.setClip(aoi);
+            g.setComposite(getCompositeFactory().createComposite(opacity));
+            renderContent(g, aoi, ignoreRough);
+            g.translate(-x, -y);
+            g.rotate(-getRotate() * Math.PI * 2 / 360);
+            g.scale(1 / scaleX, 1 / scaleY);
+        }
     }
 
     abstract void renderContent(Graphics2D g, Shape aoi, boolean ignoreRough);
