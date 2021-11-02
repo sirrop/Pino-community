@@ -74,6 +74,25 @@ public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEdi
             });
 
             container.getChildren().addAll(labeled("幅", width), labeled("不透明度", opacity));
+        } else if (brush instanceof Marker watercolor) {
+            var width = slider(slider -> {
+                slider.setBlockIncrement(1);
+                slider.setValue(watercolor.getWidth());
+                slider.valueProperty().addListener((observable, oldValue, newValue) -> watercolor.setWidth(newValue.floatValue()));
+            });
+
+            var opacity = slider(slider -> {
+                slider.setMin(0);
+                slider.setMax(100);
+                slider.setBlockIncrement(1);
+                slider.setValue(watercolor.getOpacity() * 100);
+                slider.valueProperty().addListener((observable, oldValue, newValue) -> watercolor.setOpacity(newValue.floatValue() / 100));
+            });
+
+            var colorPicker = new ColorPicker();
+            colorPicker.setValue(asFxColor(watercolor.getColor()));
+            colorPicker.valueProperty().addListener((observable, oldValue, newValue) -> watercolor.setColor(asAwtColor(newValue)));
+            container.getChildren().addAll(labeled("幅", width), labeled("不透明度", opacity), colorPicker);
         } else if (brush instanceof MeanBlur blur) {
             var width = slider(it -> {
                 it.setBlockIncrement(1);
