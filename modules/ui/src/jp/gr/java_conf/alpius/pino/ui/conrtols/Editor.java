@@ -22,6 +22,10 @@ import javafx.scene.Node;
 import javafx.scene.control.Control;
 
 public class Editor<T> extends Control {
+    public Editor() {
+        getStyleClass().add("editor");
+    }
+
     private ObjectProperty<T> item;
 
     public final T getItem() {

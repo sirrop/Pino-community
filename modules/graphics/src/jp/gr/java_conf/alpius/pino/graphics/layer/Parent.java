@@ -26,7 +26,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class Parent extends LayerObject {
-    private final List<LayerObject> children = new ArrayList<>();
+    private final List<LayerObject> children;
+
+    public Parent(List<LayerObject> children) {
+        this.children = children;
+    }
 
     protected List<LayerObject> getChildren() {
         return children;

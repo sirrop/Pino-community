@@ -15,15 +15,27 @@
  */
 
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
+import jp.gr.java_conf.alpius.pino.io.serializable.action.DeserializeProject;
+import jp.gr.java_conf.alpius.pino.io.serializable.action.SerializeProject;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.Action;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.*;
-import jp.gr.java_conf.alpius.pino.window.impl.DefaultBrushEditorGraphicVisitor;
-import jp.gr.java_conf.alpius.pino.window.impl.DefaultBrushViewGraphicVisitor;
-import jp.gr.java_conf.alpius.pino.window.impl.DefaultLayerEditorGraphicVisitor;
-import jp.gr.java_conf.alpius.pino.window.impl.DefaultLayerViewGraphicVisitor;
+import jp.gr.java_conf.alpius.pino.gui.widget.DefaultBrushEditorGraphicVisitor;
+import jp.gr.java_conf.alpius.pino.gui.widget.DefaultBrushViewGraphicVisitor;
+import jp.gr.java_conf.alpius.pino.gui.widget.DefaultLayerEditorGraphicVisitor;
+import jp.gr.java_conf.alpius.pino.gui.widget.DefaultLayerViewGraphicVisitor;
 
 module pino.application.impl {
     exports jp.gr.java_conf.alpius.pino.application.impl;
+    exports jp.gr.java_conf.alpius.pino.gui;
+    exports jp.gr.java_conf.alpius.pino.gui.screen.options;
+    exports jp.gr.java_conf.alpius.pino.gui.screen.options.skin;
+    exports jp.gr.java_conf.alpius.pino.gui.widget;
+    exports jp.gr.java_conf.alpius.pino.gui.widget.skin;
+    exports jp.gr.java_conf.alpius.pino.project.impl;
+    exports jp.gr.java_conf.alpius.pino.tool.plugin;
+    exports jp.gr.java_conf.alpius.pino.ui.actionSystem;
+    exports jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin;
+
 
     requires pino.application.api;
     requires pino.graphics;
@@ -33,9 +45,10 @@ module pino.application.impl {
     requires javafx.swing;
     requires org.controlsfx.controls;
 
-    opens jp.gr.java_conf.alpius.pino.window.impl to javafx.graphics, javafx.fxml;
     opens jp.gr.java_conf.alpius.pino.application.impl to javafx.fxml, javafx.graphics;
     opens jp.gr.java_conf.alpius.pino.ui.actionSystem to javafx.fxml;
+    opens jp.gr.java_conf.alpius.pino.gui to javafx.graphics, javafx.fxml;
+    opens jp.gr.java_conf.alpius.pino.gui.widget to javafx.fxml, javafx.graphics;
 
     uses jp.gr.java_conf.alpius.pino.application.impl.GraphicManager.LayerEditorGraphicVisitor;
     uses jp.gr.java_conf.alpius.pino.application.impl.GraphicManager.LayerViewGraphicVisitor;
@@ -49,7 +62,9 @@ module pino.application.impl {
     provides GraphicManager.BrushEditorGraphicVisitor with DefaultBrushEditorGraphicVisitor;
     provides GraphicManager.BrushViewGraphicVisitor with DefaultBrushViewGraphicVisitor;
     provides Action
-            with    ActivateDrawTool, ActivateHandTool,
-                    MakeProject, CloseProject, Output, Exit,
-                    Undo, Redo;
+            with    ActivateDrawTool, ActivateHandTool, ActivateLassoTool, ActivateRectangleLassoTool, ActivateMoveLayerTool, ActivateEyedropperTool,
+                    MakeProject, DeserializeProject, CloseProject, Output, SerializeProject, ShowOptionsAction, Exit,
+                    ClearSelection,
+                    Undo, Redo,
+                    HorizontalFlip, VerticalFlip;
 }

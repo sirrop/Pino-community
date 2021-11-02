@@ -21,7 +21,6 @@ import jp.gr.java_conf.alpius.pino.application.impl.Pino;
 import jp.gr.java_conf.alpius.pino.input.MouseEvent;
 import jp.gr.java_conf.alpius.pino.input.ScrollEvent;
 import jp.gr.java_conf.alpius.pino.tool.Tool;
-import jp.gr.java_conf.alpius.pino.window.impl.JFxWindow;
 
 public class HandTool implements Tool {
     private static final HandTool instance = new HandTool();
@@ -32,7 +31,7 @@ public class HandTool implements Tool {
 
     private double x;
     private double y;
-    private final Canvas canvas = ((JFxWindow) Pino.getApp().getWindow()).getRootContainer().getCanvas();
+    private final Canvas canvas = Pino.getApp().getWindow().getRootContainer().getCanvas();
     private final double zoomRate = 0.0025;
 
     private void init(MouseEvent e) {

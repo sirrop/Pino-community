@@ -28,8 +28,8 @@ import jp.gr.java_conf.alpius.pino.input.MouseEvent;
 import jp.gr.java_conf.alpius.pino.notification.Notification;
 import jp.gr.java_conf.alpius.pino.notification.NotificationType;
 import jp.gr.java_conf.alpius.pino.notification.Publisher;
+import jp.gr.java_conf.alpius.pino.project.impl.SelectionManager;
 import jp.gr.java_conf.alpius.pino.tool.Tool;
-import jp.gr.java_conf.alpius.pino.window.impl.JFxWindow;
 
 public class DrawTool implements Tool {
     private static final DrawTool instance = new DrawTool();
@@ -38,7 +38,7 @@ public class DrawTool implements Tool {
         return instance;
     }
 
-    private final Canvas canvas = ((JFxWindow) Pino.getApp().getWindow()).getRootContainer().getCanvas();
+    private final Canvas canvas = Pino.getApp().getWindow().getRootContainer().getCanvas();
     private final double zoomRate = 0.0025;
     private DrawableLayer target;
     private BrushContext context;
@@ -82,10 +82,14 @@ public class DrawTool implements Tool {
                                     .getActivatedItem();
 
         if (layer instanceof DrawableLayer drawable) {
+            if (drawable.isLocked()) notifyLocked();
+
             context = BrushManager.getInstance()
                                     .getActiveModel()
                                     .getActivatedItem()
                                     .createContext(drawable);
+            var selection = Pino.getApp().getProject().getService(SelectionManager.class).get();
+            context.clip(selection);
             builder = MementoElementBuilder.builder(drawable).savePreviousState();
             context.onStart(new DrawEvent(drawable, DrawEvent.Type.ON_START, e.getX(), e.getY()));
             target = drawable;
@@ -120,6 +124,16 @@ public class DrawTool implements Tool {
 
     private boolean projectExists() {
         return Pino.getApp().getProject() != null;
+    }
+
+    private void notifyLocked() {
+        Notification notification = new Notification(
+                "レイヤーがロックされています", /* title */
+                "ロックされたレイヤーに描画することは出来ません\nロックを解除するか、ロックされていない描画レイヤを選択してください", /* body */
+                null,  /* icon */
+                NotificationType.INFO  /* type */
+        );
+        Pino.getApp().getService(Publisher.class).publish(notification);
     }
 
     @Override

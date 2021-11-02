@@ -1,0 +1,21 @@
+<component name="ArtifactManager">
+  <artifact name="application-impl:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/application_impl_jar</output-path>
+    <root id="root">
+      <element id="archive" name="application-impl.jar">
+        <element id="module-output" name="application-impl" />
+        <element id="module-output" name="application-api" />
+        <element id="module-output" name="graphics" />
+        <element id="module-output" name="core" />
+        <element id="module-output" name="ui" />
+      </element>
+      <element id="file-copy" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/20.1.0/annotations-20.1.0.jar" />
+      <element id="library" level="application" name="javafx16" />
+      <element id="library" level="project" name="org.kordamp.ikonli:ikonli-javafx:12.2.0" />
+      <element id="library" level="project" name="com.google.guava:guava:30.1.1-jre" />
+      <element id="library" level="project" name="org.kordamp.ikonli:ikonli-materialdesign2-pack:12.2.0" />
+      <element id="library" level="project" name="org.controlsfx:controlsfx:11.1.0" />
+      <element id="file-copy" path="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.20/lombok-1.18.20.jar" />
+    </root>
+  </artifact>
+</component>

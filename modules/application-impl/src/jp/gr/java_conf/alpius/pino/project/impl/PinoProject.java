@@ -19,6 +19,8 @@ package jp.gr.java_conf.alpius.pino.project.impl;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import jp.gr.java_conf.alpius.pino.disposable.Disposable;
+import jp.gr.java_conf.alpius.pino.disposable.Disposer;
 import jp.gr.java_conf.alpius.pino.graphics.canvas.Canvas;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
@@ -46,6 +48,8 @@ public class PinoProject implements Project {
     private Map<Key<?>, Object> userData;
 
     private final ActiveModel<LayerObject> activeModel;
+
+    private final Disposable lastDisposable = Disposer.newDisposable();
 
 
     /**
@@ -81,6 +85,9 @@ public class PinoProject implements Project {
         this.profile = Objects.requireNonNull(profile);
         activeModel.activate(0);
         getChildren().addAll(Layers.create(DrawableLayer::new, getWidth(), getHeight()));
+        SelectionManagerImpl selectionManager = new SelectionManagerImpl();
+        getContainer().register(SelectionManager.class, selectionManager);
+        Disposer.registerDisposable(lastDisposable, selectionManager);
     }
 
     @Override
@@ -134,6 +141,7 @@ public class PinoProject implements Project {
         canvas.dispose();
         children.clear();
         container = null;
+        Disposer.dispose(lastDisposable);
     }
 
     private Map<Key<?>, Object> getUserDataHolder() {

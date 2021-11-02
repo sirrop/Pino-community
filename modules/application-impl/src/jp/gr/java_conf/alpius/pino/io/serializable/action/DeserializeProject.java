@@ -1,0 +1,53 @@
+/*
+ * Copyright [2021] [shiro]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package jp.gr.java_conf.alpius.pino.io.serializable.action;
+
+import javafx.stage.FileChooser;
+import jp.gr.java_conf.alpius.pino.annotation.Beta;
+import jp.gr.java_conf.alpius.pino.application.impl.Pino;
+import jp.gr.java_conf.alpius.pino.io.serializable.project.ProjectProxy;
+import jp.gr.java_conf.alpius.pino.ui.actionSystem.Action;
+import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionEvent;
+
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
+@Beta
+public class DeserializeProject implements Action {
+    @Override
+    public void performAction(ActionEvent e) {
+        FileChooser fc = new FileChooser();
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("jsp", "*.jsp"));
+        var file = fc.showOpenDialog(Pino.getApp().getWindow().getStage());
+
+        if (file != null) {
+            try (var out = new ObjectInputStream(
+                    new BufferedInputStream(
+                            new FileInputStream(file)
+                    )
+            )) {
+                var proxy = (ProjectProxy) out.readObject();
+                var project = proxy.createProject();
+                Pino.getApp().setProjectAndDispose(project);
+            } catch (IOException | ClassNotFoundException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+    }
+}

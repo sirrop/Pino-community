@@ -26,7 +26,6 @@ import java.nio.file.Paths;
 import java.util.Locale;
 
 public class AlphaBlendTest {
-
     @Test
     public void runTest() throws Exception {
         for (AlphaBlend.Mode mode: AlphaBlend.Mode.values()) {
@@ -35,7 +34,7 @@ public class AlphaBlendTest {
     }
 
     private void composeTest(AlphaBlend.Mode mode) throws Exception {
-        composeTest(AlphaBlend.getInstance(mode), Paths.get("test", "resources", mode.name().toLowerCase(Locale.ROOT).replace('_', '-') + ".png"));
+        composeTest(AlphaBlend.getInstance(mode), Paths.get("test", "image", mode.name().toLowerCase(Locale.ROOT).replace('_', '-') + ".png"));
     }
 
     private void composeTest(AlphaBlend blend, Path output) throws IOException {

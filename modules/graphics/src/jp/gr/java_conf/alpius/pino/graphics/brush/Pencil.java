@@ -140,7 +140,7 @@ final class PencilContext extends BrushContextBase<Pencil> {
         copy = canvas.createCompatibleImage(Transparency.TRANSLUCENT);
         offscreen = canvas.createCompatibleImage(Transparency.TRANSLUCENT);
         var g = (Graphics2D) copy.getGraphics();
-        getTarget().render(g, new Rectangle(w, h), false);
+        g.drawImage(canvas.snapshot(), 0, 0, null);
         g.dispose();
 
         offscreenG = (Graphics2D) offscreen.getGraphics();

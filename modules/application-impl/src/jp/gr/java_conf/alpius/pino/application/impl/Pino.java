@@ -20,9 +20,20 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.image.PixelFormat;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import jp.gr.java_conf.alpius.pino.application.util.AliasManager;
+import jp.gr.java_conf.alpius.pino.application.util.IAliasManager;
+import jp.gr.java_conf.alpius.pino.disposable.Disposable;
+import jp.gr.java_conf.alpius.pino.disposable.Disposer;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
+import jp.gr.java_conf.alpius.pino.gui.JFxWindow;
+import jp.gr.java_conf.alpius.pino.gui.PinoRootContainer;
+import jp.gr.java_conf.alpius.pino.gui.RootContainer;
+import jp.gr.java_conf.alpius.pino.gui.screen.options.OptionScreen;
+import jp.gr.java_conf.alpius.pino.gui.widget.MenuManager;
 import jp.gr.java_conf.alpius.pino.history.History;
 import jp.gr.java_conf.alpius.pino.notification.Publisher;
 import jp.gr.java_conf.alpius.pino.project.Project;
@@ -30,36 +41,37 @@ import jp.gr.java_conf.alpius.pino.service.MutableServiceContainer;
 import jp.gr.java_conf.alpius.pino.service.SimpleServiceContainer;
 import jp.gr.java_conf.alpius.pino.tool.ToolManager;
 import jp.gr.java_conf.alpius.pino.tool.plugin.DrawTool;
+import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionEvent;
+import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionUtils;
 import jp.gr.java_conf.alpius.pino.util.ActiveModel;
 import jp.gr.java_conf.alpius.pino.util.Key;
-import jp.gr.java_conf.alpius.pino.window.Window;
-import jp.gr.java_conf.alpius.pino.window.impl.JFxWindow;
-import jp.gr.java_conf.alpius.pino.window.impl.MenuManager;
-import jp.gr.java_conf.alpius.pino.window.impl.PinoRootContainer;
-import jp.gr.java_conf.alpius.pino.window.impl.RootContainer;
 
 import java.awt.*;
 import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static jp.gr.java_conf.alpius.pino.internal.InternalLogger.log;
-
 public class Pino extends Application implements jp.gr.java_conf.alpius.pino.application.Application {
     private static Pino app;
+
+    private final Disposable lastDisposable = Disposer.newDisposable("Application Internal Disposable");
 
     public Pino() {
 
         /* -- register core services -- */
+        services.register(IAliasManager.class, AliasManager.create());
+        services.register(BlendModeRegistry.class, new BlendModeRegistry());
         services.register(BrushManager.class, new BrushManager());
         services.register(GraphicManager.class, new GraphicManager());
         services.register(History.class, new HistoryImpl(100));
         services.register(MenuManager.class, new MenuManager());
         services.register(Publisher.class, new NotificationCenter());
+        services.register(ProjectManager.class, initializeProjectMgr(new ProjectManagerImpl()));
 
     }
 
@@ -68,7 +80,6 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
     private JFxWindow window;
     private final MutableServiceContainer services = new SimpleServiceContainer();
     private final Map<Object, Object> userData = new HashMap<>();
-    private Project project;
     private RepaintTimer timer;
     private EventDistributor eventDistributor;
 
@@ -84,17 +95,32 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         container.getBrushView().setItems((ObservableList<Brush>) BrushManager.getInstance().getBrushList());
 
         window.setRootContainer(container);
+        Optional.ofNullable(RootContainer.class.getResource("style.css"))
+                        .ifPresent(url -> window.getScene().getStylesheets().add(url.toExternalForm()));
+        window.getScene().addEventHandler(KeyEvent.KEY_PRESSED, this::searchActionAndPerform);
         window.setTitle("Pino Paint");
+        primaryStage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> exit());
         window.show();
         eventDistributor = new EventDistributor(window);
         services.register(ToolManager.class, eventDistributor);
         eventDistributor.activate(DrawTool.getInstance());
+        Thread.currentThread().setUncaughtExceptionHandler(new ErrorHandler());
+        services.register(OptionScreen.class, OptionScreen.create());
+        eventDistributor.activate(eventDistributor.getActiveTool());
+    }
+
+    private void searchActionAndPerform(KeyEvent e) {
+        for (var binding: KeyBinding.getKeyConfigs()) {
+            if (binding.getKey().match(e)) {
+                ActionUtils.findByCanonicalName(binding.getValue())
+                        .ifPresent(action -> action.performAction(new ActionEvent(e.getSource())));
+            }
+        }
     }
 
     @Override
     public void stop() {
-        timer.stop();
-        eventDistributor.dispose();
+
     }
 
     public static Pino getApp() {
@@ -107,7 +133,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
     }
 
     @Override
-    public Window getWindow() {
+    public JFxWindow getWindow() {
         return window;
     }
 
@@ -131,6 +157,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
 
     @Override
     public void exit() {
+        Disposer.dispose(this);
         Platform.exit();
     }
 
@@ -150,32 +177,25 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         userData.put(key, value);
     }
 
-    public void setProjectAndDispose(Project project) {
-        timer.stop();
-        initProject(project);
-        var old = this.project;
-        this.project = project;
-        if (old != null) {
-            old.dispose();
-        }
-        updateCanvas();
-        timer.start();
+    private ProjectManager initializeProjectMgr(ProjectManager mgr) {
+        mgr.addBeforeChange(project -> {
+            timer.stop();
+            initProject(project);
+        });
+        mgr.addOnChanged(project -> {
+            updateCanvas(project);
+            timer.start();
+        });
+        Disposer.registerDisposable(lastDisposable, mgr);
+        return mgr;
     }
 
-    /**
-     * 古いProjectの破棄は、呼び出し元の役割です。
-     * @param project project
-     */
-    public void setProject(Project project) {
-        timer.stop();
-        initProject(project);
-        this.project = project;
-        updateCanvas();
-        timer.start();
+    public void setProjectAndDispose(Project project) {
+        getService(ProjectManager.class).setAndDispose(project);
     }
 
     public Project getProject() {
-        return project;
+        return getService(ProjectManager.class).get();
     }
 
     private void initProject(Project project) {
@@ -205,22 +225,20 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
 
     @Override
     public void dispose() {
-        if (project != null) {
-            project.dispose();
-        }
+        timer.stop();
+        eventDistributor.dispose();
+        Disposer.dispose(lastDisposable);
     }
 
-    private void updateCanvas() {
+    private void updateCanvas(Project project) {
         var container = window.getRootContainer();
         var canvas = container.getCanvas();
         if (project == null) {
             canvas.setWidth(0);
             canvas.setHeight(0);
-            log("canvas has been updated! [width: %d, height: %d]", 0, 0);
         } else {
             canvas.setWidth(project.getWidth());
             canvas.setHeight(project.getHeight());
-            log("canvas has been updated! [width: %d, height: %d]", project.getWidth(), project.getHeight());
         }
     }
 
@@ -229,6 +247,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
      * Canvasの再描画を行います
      */
     void repaint() {
+        var project = getService(ProjectManager.class).get();
         var canvas = project.getCanvas();
         var layers = project.getLayers();
         var g = canvas.createGraphics();

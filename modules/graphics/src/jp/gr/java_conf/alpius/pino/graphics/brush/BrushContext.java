@@ -19,7 +19,12 @@ package jp.gr.java_conf.alpius.pino.graphics.brush;
 import jp.gr.java_conf.alpius.pino.graphics.brush.event.DrawEvent;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
 
+import java.awt.*;
+
 public interface BrushContext extends Disposable {
+    void clip(Shape shape);
+    void setClip(Shape shape);
+    Shape getClip();
     void onStart(DrawEvent e);
     void onDrawing(DrawEvent e);
     void onFinished(DrawEvent e);

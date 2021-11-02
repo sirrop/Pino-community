@@ -22,11 +22,10 @@ import jp.gr.java_conf.alpius.pino.graphics.canvas.Canvas;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.Raster;
 
 public interface FilterContext extends Disposable {
     void filter(Canvas target);
-    Rectangle2D getBounds(Raster src);
+    Rectangle2D getBounds(Canvas src);
     void getPoint2D(Point2D srcPt, Point2D dstPt);
     RenderingHints getRenderingHints();
 }

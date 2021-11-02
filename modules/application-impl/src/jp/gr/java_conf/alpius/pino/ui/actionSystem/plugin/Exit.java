@@ -16,13 +16,13 @@
 
 package jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin;
 
-import javafx.application.Platform;
+import jp.gr.java_conf.alpius.pino.application.impl.Pino;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.Action;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.ActionEvent;
 
 public class Exit implements Action {
     @Override
     public void performAction(ActionEvent e) {
-        Platform.exit();
+        Pino.getApp().exit();
     }
 }

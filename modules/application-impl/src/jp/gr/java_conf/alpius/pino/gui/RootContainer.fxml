@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright [2021] [shiro]
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import jp.gr.java_conf.alpius.pino.ui.actionSystem.*?>
+<?import jp.gr.java_conf.alpius.pino.gui.widget.BrushEditor?>
+<?import jp.gr.java_conf.alpius.pino.gui.widget.LayerEditor?>
+<?import org.controlsfx.control.StatusBar?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<VBox fx:id="content" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="jp.gr.java_conf.alpius.pino.gui.PinoRootContainer" prefHeight="800" prefWidth="1200.0">
+    <!-- メニューバー -->
+    <MenuBar fx:id="menuBar" id="menu-bar">
+        <Menu text="ファイル(_F)">
+            <ActionMenuItem text="プロジェクトを新規作成" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.MakeProject" />
+            <ActionMenuItem text="開く" action="jp.gr.java_conf.alpius.pino.io.serializable.action.DeserializeProject" />
+            <ActionMenuItem text="閉じる" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.CloseProject" />
+            <ActionMenuItem text="出力" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Output" />
+            <ActionMenuItem text="保存" action="jp.gr.java_conf.alpius.pino.io.serializable.action.SerializeProject" />
+            <ActionMenuItem text="設定" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ShowOptionsAction" />
+            <ActionMenuItem text="終了" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Exit" />
+        </Menu>
+        <Menu text="編集(_E)">
+            <ActionMenuItem text="ひとつ戻る" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Undo" />
+            <ActionMenuItem text="ひとつ進める" action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Redo" />
+        </Menu>
+        <Menu text="フィルタ(_F)">
+        </Menu>
+    </MenuBar>
+
+    <!-- ツールバー -->
+    <ToolBar fx:id="toolBar" id="tool-bar">
+        <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ActivateDrawTool">
+            <graphic>
+                <FontIcon id="pencil" iconLiteral="mdi2l-lead-pencil" />
+            </graphic>
+        </ActionButton>
+        <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ActivateEyedropperTool">
+            <graphic>
+                <FontIcon id="eyedropper" iconLiteral="mdi2e-eyedropper" />
+            </graphic>
+        </ActionButton>
+        <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ActivateHandTool">
+            <graphic>
+                <FontIcon id="move" iconLiteral="mdi2a-arrow-all" />
+            </graphic>
+        </ActionButton>
+        <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Undo">
+            <graphic>
+                <FontIcon id="undo" iconLiteral="mdi2u-undo" />
+            </graphic>
+        </ActionButton>
+        <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.Redo">
+            <graphic>
+                <FontIcon id="redo" iconLiteral="mdi2r-redo" />
+            </graphic>
+        </ActionButton>
+        <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.HorizontalFlip">
+            <graphic>
+                <FontIcon id="swap" iconLiteral="mdi2s-swap-horizontal" />
+            </graphic>
+        </ActionButton>
+        <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ActivateRectangleLassoTool">
+            <graphic>
+                <FontIcon id="rect-lasso" iconLiteral="mdi2r-rectangle-outline" />
+            </graphic>
+        </ActionButton>
+        <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ActivateLassoTool">
+            <graphic>
+                <FontIcon id="lasso" iconLiteral="mdi2l-lasso" />
+            </graphic>
+        </ActionButton>
+        <ActionButton action="jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.ActivateMoveLayerTool">
+            <graphic>
+                <FontIcon id="hand" iconLiteral="mdi2h-hand-right" />
+            </graphic>
+        </ActionButton>
+    </ToolBar>
+
+    <HBox fx:id="contentPane" VBox.vgrow="ALWAYS">
+        <SplitPane HBox.hgrow="ALWAYS" dividerPositions="0.25,0.75">
+            <SplitPane orientation="VERTICAL" dividerPositions="0.4">
+                <BrushEditor fx:id="brushEditor" id="brush-editor">
+                    <placeholder>
+                        <Label text="No brush is selected" />
+                    </placeholder>
+                </BrushEditor>
+                <ListView fx:id="brushView">
+                    <placeholder>
+                        <Label text="No brush preset" />
+                    </placeholder>
+                </ListView>
+            </SplitPane>
+            <Pane fx:id="canvasPane" id="canvas-pane">
+                <Canvas fx:id="canvas"/>
+            </Pane>
+            <SplitPane orientation="VERTICAL" dividerPositions="0.4">
+                <LayerEditor fx:id="layerEditor" id="editor">
+                    <placeholder>
+                        <Label text="No layer is selected" />
+                    </placeholder>
+                </LayerEditor>
+                <ListView fx:id="layerView" id="layer-view">
+                    <placeholder>
+                        <Label text="No project" />
+                    </placeholder>
+                </ListView>
+            </SplitPane>
+        </SplitPane>
+    </HBox>
+
+    <!-- ステータスバー -->
+    <StatusBar visible="false" managed="false" />
+</VBox>

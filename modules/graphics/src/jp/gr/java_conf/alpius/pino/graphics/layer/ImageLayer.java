@@ -57,9 +57,7 @@ public final class ImageLayer extends LayerObject {
         if (image == null) {
             return;
         }
-
-        Rectangle rect = aoi.getBounds();
-        g.drawImage(image, rect.x - (int) getX(), rect.y - (int) getY(), rect.width, rect.height, null);
+        g.drawImage(image, 0, 0, null);
     }
 
     @Override

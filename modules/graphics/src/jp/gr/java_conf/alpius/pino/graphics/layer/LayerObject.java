@@ -29,6 +29,7 @@ import jp.gr.java_conf.alpius.pino.memento.Memento;
 import jp.gr.java_conf.alpius.pino.memento.MementoBase;
 import jp.gr.java_conf.alpius.pino.memento.Originator;
 import jp.gr.java_conf.alpius.pino.util.Strings;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.awt.*;
 import java.beans.PropertyChangeListener;
@@ -268,7 +269,9 @@ public abstract class LayerObject implements Disposable, Originator {
 
     private Parent parent;
 
-    final void setParent(Parent parent) {
+    // todo: ヘルパークラスを作成し、internalにしてください
+    @ApiStatus.Internal
+    public final void setParent(Parent parent) {
         if (this.parent != parent) {
             var old = this.parent;
             this.parent = parent;
@@ -306,11 +309,15 @@ public abstract class LayerObject implements Disposable, Originator {
 
     private Canvas canvas;
 
-    Canvas getCanvas() {
+    // todo: ヘルパークラスを作成する
+    @ApiStatus.Internal
+    public Canvas getCanvas() {
         return canvas;
     }
 
-    final void setCanvas(Canvas canvas) {
+    // todo: ヘルパークラスを作成する
+    @ApiStatus.Internal
+    public final void setCanvas(Canvas canvas) {
         this.canvas = Objects.requireNonNull(canvas);
     }
 
@@ -326,15 +333,31 @@ public abstract class LayerObject implements Disposable, Originator {
         if (x > maxX || y > maxY) return;
 
         if (!visible || (ignoreRough & rough) || opacity == 0f) return;
-        g.translate(x, y);
-        g.rotate(getRotate() * Math.PI * 2 / 360);
-        g.scale(scaleX, scaleY);
-        g.setClip(aoi);
-        g.setComposite(getCompositeFactory().createComposite(opacity));
-        renderContent(g, aoi, ignoreRough);
-        g.translate(-x, -y);
-        g.rotate(-getRotate() * Math.PI * 2 / 360);
-        g.scale(1 / scaleX, 1 / scaleY);
+
+        if (clip != null) {
+            var clip = this.clip.getCanvas().createCompatibleImage(Transparency.TRANSLUCENT);
+            var g2d = (Graphics2D) clip.getGraphics();
+            this.clip.render(g2d, aoi, ignoreRough);
+            g2d.translate(x, y);
+            g2d.rotate(getRotate() * Math.PI * 2 / 360);
+            g2d.scale(scaleX, scaleY);
+            g2d.setClip(aoi);
+            g2d.setComposite(AlphaComposite.SrcIn);
+            renderContent(g2d, aoi, ignoreRough);
+            g.setComposite(getCompositeFactory().createComposite(opacity));
+            g.drawImage(clip, 0, 0, null);
+            g2d.dispose();
+        } else {
+            g.translate(x, y);
+            g.rotate(getRotate() * Math.PI * 2 / 360);
+            g.scale(scaleX, scaleY);
+            g.setClip(aoi);
+            g.setComposite(getCompositeFactory().createComposite(opacity));
+            renderContent(g, aoi, ignoreRough);
+            g.translate(-x, -y);
+            g.rotate(-getRotate() * Math.PI * 2 / 360);
+            g.scale(1 / scaleX, 1 / scaleY);
+        }
     }
 
     abstract void renderContent(Graphics2D g, Shape aoi, boolean ignoreRough);
@@ -353,6 +376,34 @@ public abstract class LayerObject implements Disposable, Originator {
     @Override
     public Memento<?> createMemento() {
         return new MyMemento(this);
+    }
+
+    public DrawableLayer toDrawable() {
+        var drawable = new DrawableLayer();
+        if (this.canvas == null) {
+            throw new IllegalStateException("canvas == null");
+        }
+        drawable.setCanvas(canvas);
+
+        var g = drawable.createGraphics();
+        g.addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
+        render(g, new Rectangle(canvas.getWidth(), canvas.getHeight()), false);
+        g.dispose();
+
+        if (!name.equals(getClass().getSimpleName())) {
+            drawable.setName(name);
+        }
+        drawable.setVisible(visible);
+        drawable.setRough(rough);
+        drawable.setCompositeFactory(compositeFactory);
+        if (parent != null) {
+            drawable.setParent(parent);
+            int index = parent.getChildren().indexOf(this);
+            parent.getChildren().set(index, drawable);
+        }
+
+
+        return drawable;
     }
 
     /**

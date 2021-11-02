@@ -16,10 +16,12 @@
 
 package jp.gr.java_conf.alpius.pino.application;
 
+import java.util.Objects;
+
 public final class ApplicationConfig {
     public static final boolean verbose;
 
     static {
-        verbose = System.getProperty("pino.trace").equals("verbose");
+        verbose = Objects.equals(System.getProperty("pino.trace"), "verbose");
     }
 }

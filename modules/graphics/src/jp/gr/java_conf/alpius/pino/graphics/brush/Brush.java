@@ -25,6 +25,8 @@ import java.beans.PropertyDescriptor;
 import java.util.List;
 
 public interface Brush {
+    String getName();
+    void setName(String name);
     List<PropertyDescriptor> getUnmodifiablePropertyList();
     void addListener(PropertyChangeListener listener);
     default void addListener(PropertyChangeListener listener, Disposable parent) {
