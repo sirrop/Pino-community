@@ -17,6 +17,7 @@
 package jp.gr.java_conf.alpius.pino.bootstrap;
 
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
+import jp.gr.java_conf.alpius.pino.logging.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +32,7 @@ public class Main {
 
     private static final int STARTUP_FAILED = 1;
 
-    private static LocalDateTime startUp;
+    public static LocalDateTime startUp;
 
     public static void main(String[] args) {
         startUp = LocalDateTime.now(ZoneId.of("Asia/Tokyo"));
@@ -45,8 +46,8 @@ public class Main {
         }
     }
 
-    private static void bootstrap(String[] args) {
-
+    private static void bootstrap(String[] args) throws Exception {
+        Logger.initLogger();
     }
 
     private static void showMessage(String title, Throwable cause) {
