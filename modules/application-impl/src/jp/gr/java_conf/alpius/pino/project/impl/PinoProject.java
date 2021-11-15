@@ -24,7 +24,6 @@ import jp.gr.java_conf.alpius.pino.disposable.Disposer;
 import jp.gr.java_conf.alpius.pino.graphics.canvas.Canvas;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
-import jp.gr.java_conf.alpius.pino.graphics.layer.Layers;
 import jp.gr.java_conf.alpius.pino.project.Project;
 import jp.gr.java_conf.alpius.pino.service.MutableServiceContainer;
 import jp.gr.java_conf.alpius.pino.service.SimpleServiceContainer;
@@ -84,7 +83,7 @@ public class PinoProject implements Project {
         activeModel = new ProjectActiveModel(this);
         this.profile = Objects.requireNonNull(profile);
         activeModel.activate(0);
-        getChildren().addAll(Layers.create(DrawableLayer::new, getWidth(), getHeight()));
+        getChildren().addAll(new DrawableLayer(Canvas.createGeneral(getWidth(), getHeight())));
         SelectionManagerImpl selectionManager = new SelectionManagerImpl();
         getContainer().register(SelectionManager.class, selectionManager);
         Disposer.registerDisposable(lastDisposable, selectionManager);
