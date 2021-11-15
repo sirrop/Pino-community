@@ -18,15 +18,7 @@ package jp.gr.java_conf.alpius.pino.bootstrap;
 
 import java.util.List;
 
-public final class Flags {
-    public final boolean showVersion;
-
-    private Flags(
-            boolean showVersion
-    ) {
-        this.showVersion = showVersion;
-    }
-
+record Flags(boolean showVersion) {
     public static Flags parse(String... args) {
         List<String> flags = List.of(args);
         return new Flags(flags.contains("--version"));

@@ -40,7 +40,7 @@ public class Main {
 
         var flags = Flags.parse(args);
 
-        if (flags.showVersion) {
+        if (flags.showVersion()) {
             System.out.println("Pino for Desktop: " + Version.CURRENT_VERSION);
             System.exit(0);
         }
