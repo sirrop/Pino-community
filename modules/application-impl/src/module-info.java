@@ -51,6 +51,8 @@ module pino.application.impl {
     opens jp.gr.java_conf.alpius.pino.ui.actionSystem to javafx.fxml;
     opens jp.gr.java_conf.alpius.pino.gui to javafx.graphics, javafx.fxml;
     opens jp.gr.java_conf.alpius.pino.gui.widget to javafx.fxml, javafx.graphics;
+    exports jp.gr.java_conf.alpius.pino.bootstrap;
+    opens jp.gr.java_conf.alpius.pino.bootstrap to javafx.fxml, javafx.graphics;
 
     uses jp.gr.java_conf.alpius.pino.application.impl.GraphicManager.LayerEditorGraphicVisitor;
     uses jp.gr.java_conf.alpius.pino.application.impl.GraphicManager.LayerViewGraphicVisitor;

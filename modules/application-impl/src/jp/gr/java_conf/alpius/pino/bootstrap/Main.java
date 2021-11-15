@@ -17,6 +17,7 @@
 package jp.gr.java_conf.alpius.pino.bootstrap;
 
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
+import jp.gr.java_conf.alpius.pino.application.impl.Version;
 import jp.gr.java_conf.alpius.pino.logging.Logger;
 
 import javax.swing.*;
@@ -36,6 +37,13 @@ public class Main {
 
     public static void main(String[] args) {
         startUp = LocalDateTime.now(ZoneId.of("Asia/Tokyo"));
+
+        var flags = Flags.parse(args);
+
+        if (flags.showVersion) {
+            System.out.println("Pino for Desktop: " + Version.CURRENT_VERSION);
+            System.exit(0);
+        }
 
         try {
             bootstrap(args);
