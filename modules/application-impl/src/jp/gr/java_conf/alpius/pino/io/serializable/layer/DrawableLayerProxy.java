@@ -18,11 +18,13 @@ package jp.gr.java_conf.alpius.pino.io.serializable.layer;
 
 import jp.gr.java_conf.alpius.pino.annotation.Beta;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
+import jp.gr.java_conf.alpius.pino.io.serializable.canvas.CanvasProxy;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
+import java.util.Objects;
 
 
 @Beta
@@ -34,14 +36,16 @@ public class DrawableLayerProxy extends LayerProxy {
         super(layer);
         locked = layer.isLocked();
         opacityProtected = layer.isOpacityProtected();
+        canvasProxy = CanvasProxy.create(layer.getCanvas());
     }
 
     private transient boolean locked;
     private transient boolean opacityProtected;
+    private transient CanvasProxy canvasProxy;
 
     @Override
     public DrawableLayer createLayer(int w, int h) {
-        DrawableLayer layer = new DrawableLayer();
+        DrawableLayer layer = new DrawableLayer(canvasProxy.createCanvas(w, h));
         initializeLayer(layer, w, h);
         layer.setLocked(locked);
         layer.setOpacityProtected(opacityProtected);
@@ -53,6 +57,7 @@ public class DrawableLayerProxy extends LayerProxy {
         out.defaultWriteObject();
         out.writeBoolean(locked);
         out.writeBoolean(opacityProtected);
+        out.writeObject(canvasProxy);
     }
 
     @Serial
@@ -60,5 +65,6 @@ public class DrawableLayerProxy extends LayerProxy {
         in.defaultReadObject();
         locked = in.readBoolean();
         opacityProtected = in.readBoolean();
+        canvasProxy = (CanvasProxy) Objects.requireNonNull(in.readObject());
     }
 }

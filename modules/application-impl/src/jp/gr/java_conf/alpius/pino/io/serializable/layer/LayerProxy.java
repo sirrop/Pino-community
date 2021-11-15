@@ -19,7 +19,6 @@ package jp.gr.java_conf.alpius.pino.io.serializable.layer;
 import jp.gr.java_conf.alpius.pino.annotation.Beta;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
-import jp.gr.java_conf.alpius.pino.io.serializable.canvas.CanvasProxy;
 import jp.gr.java_conf.alpius.pino.io.serializable.composite.CompositeProxy;
 
 import java.io.*;
@@ -56,7 +55,6 @@ public abstract class LayerProxy implements Serializable {
     private transient double scaleY;
     private transient LayerProxy clip;
     private transient ParentProxy parent;
-    private transient CanvasProxy canvas;
 
 
     protected LayerProxy(LayerObject layer) {
@@ -72,7 +70,6 @@ public abstract class LayerProxy implements Serializable {
                 .withScaleY(layer.getScaleY())
                 .withClip(LayerProxy.create(layer.getClip()))
                 .withParent((ParentProxy) LayerProxy.create(layer.getParent()))
-                .withCanvas(CanvasProxy.create(layer.getCanvas()))
                 .initialize();
     }
 
@@ -106,7 +103,6 @@ public abstract class LayerProxy implements Serializable {
         if (parent != null) {
             layer.setParent(parent.createLayer(w, h));
         }
-        layer.setCanvas(canvas.createCanvas(w, h));
     }
 
     @Serial
@@ -124,7 +120,6 @@ public abstract class LayerProxy implements Serializable {
         out.writeDouble(scaleY);
         out.writeObject(clip);
         out.writeObject(parent);
-        out.writeObject(canvas);
     }
 
     @Serial
@@ -142,7 +137,6 @@ public abstract class LayerProxy implements Serializable {
         var scaleY = in.readDouble();
         var clip = (LayerProxy) in.readObject();
         var parent = (ParentProxy) in.readObject();
-        var canvas = (CanvasProxy) in.readObject();
 
         initializer().withName(name)
                 .withOpacity(opacity)
@@ -156,7 +150,6 @@ public abstract class LayerProxy implements Serializable {
                 .withScaleY(scaleY)
                 .withClip(clip)
                 .withParent(parent)
-                .withCanvas(canvas)
                 .initialize();
     }
 
@@ -178,7 +171,6 @@ public abstract class LayerProxy implements Serializable {
         private double scaleY;
         private LayerProxy clip;
         private ParentProxy parent;
-        private CanvasProxy canvas;
 
         public void initialize() {
             Objects.requireNonNull(name, "name == null");
@@ -189,7 +181,6 @@ public abstract class LayerProxy implements Serializable {
             checkIsNaNOrInfinite(rotate, "rotate");
             checkIsNaNOrInfinite(scaleX, "scaleX");
             checkIsNaNOrInfinite(scaleY, "scaleY");
-            Objects.requireNonNull(canvas, "canvas == null");
             if (opacity < 0 || 1 < opacity) {
                 throw new IllegalArgumentException("opacity < 0 || 1 < opacity");
             }
@@ -212,7 +203,6 @@ public abstract class LayerProxy implements Serializable {
             proxy.scaleY = scaleY;
             proxy.clip = clip;
             proxy.parent = parent;
-            proxy.canvas = canvas;
 
             proxy.state = State.INITIALIZED;
         }
@@ -292,11 +282,6 @@ public abstract class LayerProxy implements Serializable {
 
         public Initializer withParent(ParentProxy parent) {
             this.parent = parent;
-            return this;
-        }
-
-        public Initializer withCanvas(CanvasProxy canvas) {
-            this.canvas = canvas;
             return this;
         }
     }

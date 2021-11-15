@@ -32,17 +32,13 @@ import jp.gr.java_conf.alpius.pino.util.Strings;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Layerの基底となるクラスです。
- * <p>
- *     Canvasはコンストラクタが呼び出されたタイミングでは使用することが出来ません。Canvasが必要な初期化は、{@link LayerObject#init()}に記述してください。
- * </p>
- */
+
 public abstract class LayerObject implements Disposable, Originator {
     /* -- Beans Utilities -- */
     private BeanPeer<? extends LayerObject> beanPeer;
@@ -307,20 +303,6 @@ public abstract class LayerObject implements Disposable, Originator {
         }
     }
 
-    private Canvas canvas;
-
-    // todo: ヘルパークラスを作成する
-    @ApiStatus.Internal
-    public Canvas getCanvas() {
-        return canvas;
-    }
-
-    // todo: ヘルパークラスを作成する
-    @ApiStatus.Internal
-    public final void setCanvas(Canvas canvas) {
-        this.canvas = Objects.requireNonNull(canvas);
-    }
-
     protected void init() {
     }
 
@@ -335,7 +317,7 @@ public abstract class LayerObject implements Disposable, Originator {
         if (!visible || (ignoreRough & rough) || opacity == 0f) return;
 
         if (clip != null) {
-            var clip = this.clip.getCanvas().createCompatibleImage(Transparency.TRANSLUCENT);
+            var clip = new BufferedImage(maxX, maxY, BufferedImage.TYPE_INT_ARGB_PRE);
             var g2d = (Graphics2D) clip.getGraphics();
             this.clip.render(g2d, aoi, ignoreRough);
             g2d.translate(x, y);
@@ -378,12 +360,9 @@ public abstract class LayerObject implements Disposable, Originator {
         return new MyMemento(this);
     }
 
-    public DrawableLayer toDrawable() {
-        var drawable = new DrawableLayer();
-        if (this.canvas == null) {
-            throw new IllegalStateException("canvas == null");
-        }
-        drawable.setCanvas(canvas);
+    public DrawableLayer toDrawable(Canvas canvas) {
+        Objects.requireNonNull(canvas, "canvas == null");
+        var drawable = new DrawableLayer(canvas);
 
         var g = drawable.createGraphics();
         g.addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
@@ -427,7 +406,6 @@ public abstract class LayerObject implements Disposable, Originator {
             scaleY = m.scaleY;
             clip = m.clip;
             parent = m.parent;
-            canvas = m.canvas;
         } else {
             throw new IncompatibleMementoException("\"memento\" is not compatible to LayerObject.");
         }
@@ -446,7 +424,6 @@ public abstract class LayerObject implements Disposable, Originator {
         final double scaleY;
         final LayerObject clip;
         final Parent parent;
-        final Canvas canvas;
 
         public MyMemento(LayerObject layer) {
             super(layer, null);
@@ -462,7 +439,6 @@ public abstract class LayerObject implements Disposable, Originator {
             scaleY = layer.scaleY;
             clip = layer.clip;
             parent = layer.parent;
-            canvas = layer.canvas;
         }
     }
 }

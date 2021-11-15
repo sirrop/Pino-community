@@ -36,6 +36,7 @@ import java.awt.image.renderable.RenderableImage;
 import java.nio.ByteBuffer;
 import java.text.AttributedCharacterIterator;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
@@ -43,6 +44,10 @@ import java.util.zip.Inflater;
 
 public class DrawableLayer extends LayerObject {
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
+
+    public DrawableLayer(Canvas canvas) {
+        this.canvas = Objects.requireNonNull(canvas, "canvas == null");
+    }
 
     @Bind
     private boolean opacityProtected = false;
@@ -75,9 +80,10 @@ public class DrawableLayer extends LayerObject {
         }
     }
 
-    @Override
+    private final Canvas canvas;
+
     public final Canvas getCanvas() {
-        return super.getCanvas();
+        return canvas;
     }
 
     @Override
