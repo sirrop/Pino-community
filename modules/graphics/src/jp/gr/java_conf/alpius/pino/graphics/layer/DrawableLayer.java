@@ -16,6 +16,7 @@
 
 package jp.gr.java_conf.alpius.pino.graphics.layer;
 
+import com.google.common.flogger.FluentLogger;
 import jp.gr.java_conf.alpius.pino.beans.Bind;
 import jp.gr.java_conf.alpius.pino.graphics.DelegatingGraphics2D;
 import jp.gr.java_conf.alpius.pino.graphics.Graphics2DNoOp;
@@ -41,6 +42,8 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 public class DrawableLayer extends LayerObject {
+    private static final FluentLogger log = FluentLogger.forEnclosingClass();
+
     @Bind
     private boolean opacityProtected = false;
 
@@ -104,10 +107,12 @@ public class DrawableLayer extends LayerObject {
     }
 
     public Memento<?> createMemento() {
+        log.atFine().log("name=%s", getName());
         return new MyMemento(this, super.createMemento());
     }
 
     public void restore(Memento<?> memento) {
+        log.atFine().log("name=%s", getName());
         if (memento instanceof MyMemento m) {
             super.restore(m.getParent());
             var g = createGraphics();
@@ -115,7 +120,7 @@ public class DrawableLayer extends LayerObject {
             try {
                 g.drawImage(m.getData(), 0, 0, null);
             } catch (DataFormatException e) {
-                throw new RuntimeException(e);
+                log.atWarning().withCause(e).log();
             }
             g.dispose();
         } else {
@@ -165,9 +170,9 @@ public class DrawableLayer extends LayerObject {
         public BufferedImage getData() throws DataFormatException {
             int size = width * height;
             int[] pixels = new int[size];
-            var buffer = ByteBuffer.wrap(decompress(data, size * 4));
+            var buffer = ByteBuffer.wrap(decompress(data, size * 4)).rewind();
             for (int i = 0; i < size; ++i) {
-                pixels[i] = buffer.get();
+                pixels[i] = buffer.getInt();
             }
             var res = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
             res.setRGB(0, 0, width, height, pixels, 0, width);

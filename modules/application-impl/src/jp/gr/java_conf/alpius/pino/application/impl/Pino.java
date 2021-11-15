@@ -16,6 +16,7 @@
 
 package jp.gr.java_conf.alpius.pino.application.impl;
 
+import com.google.common.flogger.FluentLogger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -25,6 +26,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import jp.gr.java_conf.alpius.pino.application.util.AliasManager;
 import jp.gr.java_conf.alpius.pino.application.util.IAliasManager;
+import jp.gr.java_conf.alpius.pino.bootstrap.Main;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
 import jp.gr.java_conf.alpius.pino.disposable.Disposer;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
@@ -47,6 +49,7 @@ import jp.gr.java_conf.alpius.pino.util.ActiveModel;
 import jp.gr.java_conf.alpius.pino.util.Key;
 
 import java.awt.*;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Map;
@@ -57,6 +60,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Pino extends Application implements jp.gr.java_conf.alpius.pino.application.Application {
+    private static final FluentLogger log = FluentLogger.forEnclosingClass();
     private static Pino app;
 
     private final Disposable lastDisposable = Disposer.newDisposable("Application Internal Disposable");
@@ -85,6 +89,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        log.atInfo().log();
         window = new JFxWindow(primaryStage);
         timer = new RepaintTimer(fps, this);
         RootContainer container = PinoRootContainer.load();
@@ -107,6 +112,8 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         Thread.currentThread().setUncaughtExceptionHandler(new ErrorHandler());
         services.register(OptionScreen.class, OptionScreen.create());
         eventDistributor.activate(eventDistributor.getActiveTool());
+
+        log.atInfo().log("Application started at %s", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(Main.startUp));
     }
 
     private void searchActionAndPerform(KeyEvent e) {
@@ -130,6 +137,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
     @Override
     public void init() {
         app = this;
+        log.atInfo().log("initialization completed");
     }
 
     @Override
@@ -158,6 +166,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
     @Override
     public void exit() {
         Disposer.dispose(this);
+        log.atInfo().log("All children were disposed.");
         Platform.exit();
     }
 

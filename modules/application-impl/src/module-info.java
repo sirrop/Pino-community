@@ -40,6 +40,8 @@ module pino.application.impl {
     requires pino.application.api;
     requires pino.graphics;
     requires pino.ui;
+    requires java.logging;
+    requires flogger;
     requires javafx.fxml;
     requires javafx.controls;
     requires javafx.swing;

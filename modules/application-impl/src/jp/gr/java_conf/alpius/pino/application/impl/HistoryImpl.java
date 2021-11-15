@@ -16,6 +16,7 @@
 
 package jp.gr.java_conf.alpius.pino.application.impl;
 
+import com.google.common.flogger.FluentLogger;
 import jp.gr.java_conf.alpius.pino.history.History;
 import jp.gr.java_conf.alpius.pino.history.HistoryElement;
 import jp.gr.java_conf.alpius.pino.notification.Notification;
@@ -26,6 +27,7 @@ import java.util.LinkedList;
 import java.util.Objects;
 
 final class HistoryImpl implements History {
+    private static final FluentLogger log = FluentLogger.forEnclosingClass();
     private final LinkedList<HistoryElement> undoStack = new LinkedList<>();
     private final LinkedList<HistoryElement> redoStack = new LinkedList<>();
 
@@ -90,6 +92,7 @@ final class HistoryImpl implements History {
 
     @Override
     public void redo() {
+        log.atFine().log();
         if (hasNext()) {
             var e = redoStack.removeLast();
             e.redo();

@@ -16,6 +16,7 @@
 
 package jp.gr.java_conf.alpius.pino.tool.plugin;
 
+import com.google.common.flogger.FluentLogger;
 import javafx.scene.canvas.Canvas;
 import jp.gr.java_conf.alpius.pino.application.impl.BrushManager;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
@@ -32,6 +33,7 @@ import jp.gr.java_conf.alpius.pino.project.impl.SelectionManager;
 import jp.gr.java_conf.alpius.pino.tool.Tool;
 
 public class DrawTool implements Tool {
+    private static final FluentLogger log = FluentLogger.forEnclosingClass();
     private static final DrawTool instance = new DrawTool();
 
     public static DrawTool getInstance() {
