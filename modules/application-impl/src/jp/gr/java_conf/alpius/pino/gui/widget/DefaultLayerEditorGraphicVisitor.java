@@ -83,12 +83,16 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
         rough.selectedProperty().addListener((obs, oldValue, newValue) -> e.setRough(newValue));
 
         var x = slider(it -> {
+            it.setMin(-1000);
+            it.setMax(1000);
             it.setValue(e.getX());
             it.setBlockIncrement(1);
             it.valueProperty().addListener((obs, oldvalue, newvalue) -> e.setX(newvalue.doubleValue()));
         });
 
         var y = slider(it -> {
+            it.setMin(-1000);
+            it.setMax(1000);
             it.setValue(e.getY());
             it.setBlockIncrement(1);
             it.valueProperty().addListener((obs, oldValue, newValue) -> e.setY(newValue.doubleValue()));
@@ -103,12 +107,16 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
         });
 
         var scaleX = slider(it -> {
+            it.setMin(0);
+            it.setMax(500);
             it.setBlockIncrement(1);
             it.setValue(e.getScaleX() * 100);
             it.valueProperty().addListener((obs, oldValue, newValue) -> e.setScaleX(newValue.doubleValue() / 100));
         });
 
         var scaleY = slider(it -> {
+            it.setMin(0);
+            it.setMax(500);
             it.setBlockIncrement(1);
             it.setValue(e.getScaleY() * 100);
             it.valueProperty().addListener((obs, oldValue, newValue) -> e.setScaleY(newValue.doubleValue() / 100));

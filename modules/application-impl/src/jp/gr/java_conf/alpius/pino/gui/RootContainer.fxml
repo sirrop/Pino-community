@@ -126,5 +126,5 @@
     </HBox>
 
     <!-- ステータスバー -->
-    <StatusBar visible="false" managed="false" />
+    <StatusBar fx:id="statusBar" managed="false" />
 </VBox>

@@ -24,6 +24,7 @@ import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
 import jp.gr.java_conf.alpius.pino.gui.widget.BrushEditor;
 import jp.gr.java_conf.alpius.pino.gui.widget.LayerEditor;
+import org.controlsfx.control.StatusBar;
 
 public interface RootContainer {
     Parent getContent();
@@ -33,4 +34,5 @@ public interface RootContainer {
     BrushEditor getBrushEditor();
     ListView<LayerObject> getLayerView();
     ListView<Brush> getBrushView();
+    StatusBar getStatusBar();
 }
