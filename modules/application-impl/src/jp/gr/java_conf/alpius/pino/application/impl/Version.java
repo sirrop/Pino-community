@@ -17,16 +17,38 @@
 package jp.gr.java_conf.alpius.pino.application.impl;
 
 public final class Version implements Comparable<Version> {
-    public static final Version CURRENT_VERSION = new Version(0, 2, 2);
+    /**
+     * 実装予定の機能について、未実装が存在する状態
+     */
+    public static final String VS_ALPHA = "alpha";
+
+    /**
+     * 実装予定の機能について、実装は完了しているがテストが不十分である状態
+     */
+    public static final String VS_BETA = "beta";
+
+    /**
+     * 十分なテストが行われ、安定に動作する状態
+     */
+    public static final String VS_RC = "RC";
+
+    /**
+     * 公開版であることを表す状態
+     */
+    public static final String VS_GA = "GA";
+
+    public static final Version CURRENT_VERSION = new Version(0, 2, 3, VS_ALPHA);
 
     private final int major;
     private final int minor;
     private final int patch;
+    private final String state;
 
-    Version(int major, int minor, int patch) {
+    Version(int major, int minor, int patch, String state) {
         this.major = major;
         this.minor = minor;
         this.patch = patch;
+        this.state = state;
     }
 
     public int getMajorVersion() {
@@ -39,6 +61,10 @@ public final class Version implements Comparable<Version> {
 
     public int getPatchVersion() {
         return patch;
+    }
+
+    public String getState() {
+        return state;
     }
 
     @Override
@@ -65,6 +91,6 @@ public final class Version implements Comparable<Version> {
     }
 
     public String toString() {
-        return String.format("%d.%d.%d", major, minor, patch);
+        return String.format("%d.%d.%d-%s", major, minor, patch, state);
     }
 }
