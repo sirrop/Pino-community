@@ -25,6 +25,7 @@ import jp.gr.java_conf.alpius.pino.graphics.brush.event.DrawEvent;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 public final class Pencil extends AbstractBrush {
     @Bind
@@ -191,7 +192,10 @@ final class PencilContext extends BrushContextBase<Pencil> {
     public void onDrawing(DrawEvent e) {
         push(e);
         renderOffscreen();
+        var affine = getTransform();
+        setTransform(new AffineTransform());
         drawImage(offscreen, 0, 0, null);
+        setTransform(affine);
     }
 
     private static class IntArrayList {
