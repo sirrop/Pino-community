@@ -16,6 +16,8 @@
 
 package jp.gr.java_conf.alpius.pino.application.impl;
 
+import java.util.Objects;
+
 public final class Version implements Comparable<Version> {
     /**
      * 実装予定の機能について、未実装が存在する状態
@@ -35,7 +37,7 @@ public final class Version implements Comparable<Version> {
     /**
      * 公開版であることを表す状態
      */
-    public static final String VS_GA = "GA";
+    public static final String VS_GA = "";
 
     public static final Version CURRENT_VERSION = new Version(0, 2, 5, VS_ALPHA);
 
@@ -91,6 +93,10 @@ public final class Version implements Comparable<Version> {
     }
 
     public String toString() {
-        return String.format("%d.%d.%d-%s", major, minor, patch, state);
+        if (Objects.equals(state, VS_GA)) {
+            return String.format("%d.%d.%d", major, minor, patch);
+        } else {
+            return String.format("%d.%d.%d-%s", major, minor, patch, state);
+        }
     }
 }
