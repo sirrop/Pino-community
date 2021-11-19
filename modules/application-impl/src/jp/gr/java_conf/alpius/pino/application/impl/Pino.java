@@ -207,6 +207,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         return getService(ProjectManager.class).get();
     }
 
+    @SuppressWarnings("unchecked")
     private void initProject(Project project) {
         if (project == null) {
             window.getRootContainer()
@@ -223,7 +224,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
                 .setItem(activeModel.getActivatedItem());
         window.getRootContainer()
                 .getLayerView()
-                .setItems((ObservableList<LayerObject>) project.getLayers());
+                .setItems((ObservableList<LayerObject>) project.getChildren());  // PinoProjectがgetChildren()で返すListはObservableListです
     }
 
     private void layerChanged(ActiveModel<LayerObject> activeModel) {
@@ -258,7 +259,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
     void repaint() {
         var project = getService(ProjectManager.class).get();
         var canvas = project.getCanvas();
-        var layers = project.getLayers();
+        var layers = project.getChildren();
         var g = canvas.createGraphics();
         var aoi = new Rectangle(canvas.getWidth(), canvas.getHeight());
         g.setComposite(AlphaComposite.Src);

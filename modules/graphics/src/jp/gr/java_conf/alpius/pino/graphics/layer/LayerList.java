@@ -14,20 +14,9 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.io.serializable.layer;
+package jp.gr.java_conf.alpius.pino.graphics.layer;
 
-import jp.gr.java_conf.alpius.pino.graphics.layer.ParentBase;
+import java.util.List;
 
-import java.io.Serial;
-
-public abstract class ParentProxy extends LayerProxy {
-    @Serial
-    private static final long serialVersionUID = -1794086762675317674L;
-
-    protected ParentProxy(ParentBase layer) {
-        super(layer);
-    }
-
-    @Override
-    public abstract ParentBase createLayer(int w, int h);
+public interface LayerList extends List<LayerObject> {
 }

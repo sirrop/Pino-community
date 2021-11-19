@@ -19,6 +19,7 @@ package jp.gr.java_conf.alpius.pino.io.serializable.layer;
 import jp.gr.java_conf.alpius.pino.annotation.Beta;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
+import jp.gr.java_conf.alpius.pino.graphics.layer.ParentBase;
 import jp.gr.java_conf.alpius.pino.io.serializable.composite.CompositeProxy;
 
 import java.io.*;
@@ -69,7 +70,7 @@ public abstract class LayerProxy implements Serializable {
                 .withScaleX(layer.getScaleX())
                 .withScaleY(layer.getScaleY())
                 .withClip(LayerProxy.create(layer.getClip()))
-                .withParent((ParentProxy) LayerProxy.create(layer.getParent()))
+                .withParent((ParentProxy) LayerProxy.create((ParentBase) layer.getParent()))
                 .initialize();
     }
 

@@ -41,7 +41,7 @@ public class Output implements Action {
             BufferedImage snap = new BufferedImage(p.getWidth(), p.getHeight(), BufferedImage.TYPE_INT_ARGB_PRE);
             var g = snap.createGraphics();
             var aoi = new Rectangle(p.getWidth(), p.getHeight());
-            var itr = p.getLayers().listIterator(p.getLayers().size());
+            var itr = p.getChildren().listIterator(p.getChildren().size());
             while (itr.hasPrevious()) {
                 var previous = itr.previous();
                 previous.render(g, aoi, true);

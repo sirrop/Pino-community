@@ -83,7 +83,7 @@ public final class MenuManager {
             var activeModel = p.getActiveModel();
             var index = activeModel.getActivatedIndex();
             var original = activeModel.getActivatedItem();
-            p.getLayers().set(index, original.toDrawable(Canvas.createGeneral(p.getWidth(), p.getHeight())));
+            p.getChildren().set(index, original.toDrawable(Canvas.createGeneral(p.getWidth(), p.getHeight())));
         });
         layerEditor.getItems().setAll(rename, convertLayer);
     }
@@ -112,11 +112,11 @@ public final class MenuManager {
         delete.setOnAction(e -> {
             var p = Pino.getApp().getProject();
             var index = p.getActiveModel().getActivatedIndex();
-            p.getLayers().remove(index);
+            p.getChildren().remove(index);
             if (index > 0) {
                 --index;
             } else {
-                if (p.getLayers().size() == 0) {
+                if (p.getChildren().size() == 0) {
                     index = -1;
                 }
             }
@@ -128,8 +128,8 @@ public final class MenuManager {
             var p = Pino.getApp().getProject();
             var index = p.getActiveModel().getActivatedIndex();
             if (index != 0) {
-                var layer = p.getLayers().remove(index);
-                p.getLayers().add(index - 1, layer);
+                var layer = p.getChildren().remove(index);
+                p.getChildren().add(index - 1, layer);
                 syncLayerSelection(index - 1);
             }
         });
@@ -138,9 +138,9 @@ public final class MenuManager {
         down.setOnAction(e -> {
             var p = Pino.getApp().getProject();
             var index = p.getActiveModel().getActivatedIndex();
-            if (index != p.getLayers().size() - 1) {
-                var layer = p.getLayers().remove(index);
-                p.getLayers().add(index + 1, layer);
+            if (index != p.getChildren().size() - 1) {
+                var layer = p.getChildren().remove(index);
+                p.getChildren().add(index + 1, layer);
                 syncLayerSelection(index + 1);
             }
         });
@@ -151,7 +151,7 @@ public final class MenuManager {
         return e -> {
             var p = Pino.getApp().getProject();
             var index = p.getActiveModel().getActivatedIndex();
-            p.getLayers().add(index, constructor.get());
+            p.getChildren().add(index, constructor.get());
             syncLayerSelection(index);
         };
     }

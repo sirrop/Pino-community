@@ -37,7 +37,7 @@ public class LayerCell extends ListCell<LayerObject> {
             LayerObject item = getItem();
             if (newValue && item != null) {
                 var project = Pino.getApp().getProject();
-                var index = project.getLayers().indexOf(item);
+                var index = project.getChildren().indexOf(item);
                 project.getActiveModel().activate(index);
             }
         });

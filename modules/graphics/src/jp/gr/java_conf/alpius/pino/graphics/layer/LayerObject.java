@@ -37,9 +37,12 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyDescriptor;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.IntSupplier;
 
 
 public abstract class LayerObject implements Disposable, Originator {
+    final DepthManager depthManager = new DepthManager(this);
+
     /* -- Beans Utilities -- */
     private BeanPeer<? extends LayerObject> beanPeer;
 
@@ -271,8 +274,18 @@ public abstract class LayerObject implements Disposable, Originator {
         if (this.parent != parent) {
             var old = this.parent;
             this.parent = parent;
+            if (parent == null) {
+                depthManager.clear();
+            } else {
+                depthManager.markDirty();
+            }
+            setParentPriv(parent);
             firePropertyChange("parent", old, parent);
         }
+    }
+
+    // for parent
+    void setParentPriv(Parent parent) {
     }
 
     public final Parent getParent() {
@@ -350,6 +363,10 @@ public abstract class LayerObject implements Disposable, Originator {
 
     public <R> R accept(LayerVisitor<R> visitor) {
         return visitor.visit(this);
+    }
+
+    public int getDepth() {
+        return depthManager.getAsInt();
     }
 
     /**
@@ -439,6 +456,52 @@ public abstract class LayerObject implements Disposable, Originator {
             scaleY = layer.scaleY;
             clip = layer.clip;
             parent = layer.parent;
+        }
+    }
+
+    /**
+     * このLayerObjectの深さを管理します。
+     */
+    static class DepthManager implements IntSupplier {
+        private final LayerObject layer;
+        private boolean dirty = true;
+        private int depth;
+
+        public DepthManager(LayerObject layer) {
+            this.layer = layer;
+        }
+
+        /**
+         * LayerObjectの深さが1以外になったことを通知します
+         */
+        public synchronized void markDirty() {
+            dirty = true;
+        }
+
+        /**
+         * LayerObjectの深さが0になったことを通知します
+         */
+        public synchronized void clear() {
+            dirty = false;
+            depth = 0;
+        }
+
+        private int computeDepth() {
+            Parent parent = layer.getParent();
+            if (parent == null) {
+                return 0;
+            } else {
+                return parent.getDepth() + 1;
+            }
+        }
+
+        @Override
+        public int getAsInt() {
+            if (dirty) {
+                dirty = false;
+                depth = computeDepth();
+            }
+            return depth;
         }
     }
 }

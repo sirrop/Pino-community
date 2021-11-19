@@ -56,6 +56,7 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
         return res;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Node visit(LayerObject e) {
         VBox container = new VBox(3);
@@ -128,7 +129,7 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
         clipping.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 var project = Pino.getApp().getProject();
-                var layer = (ObservableList<LayerObject>) project.getLayers();
+                var layer = (ObservableList<LayerObject>) project.getChildren();
                 ListChangeListener<? super LayerObject> listener = c -> {
                     var layerIndex = layer.indexOf(e);
                     if (layerIndex == layer.size() - 1) {
