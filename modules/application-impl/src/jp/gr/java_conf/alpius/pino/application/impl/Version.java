@@ -37,7 +37,7 @@ public final class Version implements Comparable<Version> {
      */
     public static final String VS_GA = "GA";
 
-    public static final Version CURRENT_VERSION = new Version(0, 2, 4, VS_ALPHA);
+    public static final Version CURRENT_VERSION = new Version(0, 2, 5, VS_ALPHA);
 
     private final int major;
     private final int minor;

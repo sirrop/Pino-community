@@ -342,14 +342,13 @@ public abstract class LayerObject implements Disposable, Originator {
             g.drawImage(clip, 0, 0, null);
             g2d.dispose();
         } else {
+            var affine = g.getTransform();
             g.translate(x, y);
             g.rotate(getRotate() * Math.PI * 2 / 360);
             g.scale(scaleX, scaleY);
             g.setComposite(getCompositeFactory().createComposite(opacity));
             renderContent(g, aoi, ignoreRough);
-            g.translate(-x, -y);
-            g.rotate(-getRotate() * Math.PI * 2 / 360);
-            g.scale(1 / scaleX, 1 / scaleY);
+            g.setTransform(affine);
         }
     }
 
