@@ -19,9 +19,12 @@ package jp.gr.java_conf.alpius.pino.gui.widget;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
+import jp.gr.java_conf.alpius.pino.application.impl.Pino;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
+import jp.gr.java_conf.alpius.pino.graphics.layer.Parent;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -55,6 +58,23 @@ public class DefaultLayerViewGraphicVisitor implements GraphicManager.LayerViewG
         layer.addListener(new WeakPropertyChangeListener(container, layer, listener));
         low.getChildren().setAll(visible, opacity, rough);
         container.getChildren().setAll(new VBox(name, low));
+
+        for (int i = 0, depth = layer.getDepth(); i < depth; i++) {
+            var indent = new StackPane();
+            indent.setMaxWidth(15);
+            container.getChildren().add(0, indent);
+        }
+
+        if (layer instanceof Parent parent) {
+            var vBox = new VBox();
+            vBox.getChildren().add(container);
+            var gmgr = Pino.getApp().getService(GraphicManager.class);
+            for (var l: parent.getChildren()) {
+                vBox.getChildren().add(gmgr.getCellGraphic(l));
+            }
+            return vBox;
+        }
+
         return container;
     }
 

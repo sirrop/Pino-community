@@ -17,7 +17,7 @@
 package jp.gr.java_conf.alpius.pino.application.impl;
 
 public final class Version implements Comparable<Version> {
-    public static final Version CURRENT_VERSION = new Version(0, 2, 0);
+    public static final Version CURRENT_VERSION = new Version(0, 2, 1);
 
     private final int major;
     private final int minor;

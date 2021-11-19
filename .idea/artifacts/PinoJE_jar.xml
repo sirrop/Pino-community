@@ -1,0 +1,40 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PinoJE:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PinoJE_jar</output-path>
+    <root id="archive" name="PinoJE.jar">
+      <element id="module-output" name="PinoJE" />
+      <element id="module-output" name="graphics" />
+      <element id="module-output" name="core" />
+      <element id="module-output" name="application-api" />
+      <element id="module-output" name="application-impl" />
+      <element id="module-output" name="ui" />
+      <element id="module-output" name="pinogl" />
+      <element id="module-output" name="pinogl-backend-java2d" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/flogger/flogger-system-backend/0.7.1/flogger-system-backend-0.7.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/flogger/flogger/0.7.1/flogger-0.7.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/checkerframework/checker-compat-qual/2.5.3/checker-compat-qual-2.5.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/kordamp/ikonli/ikonli-javafx/12.2.0/ikonli-javafx-12.2.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/kordamp/ikonli/ikonli-core/12.2.0/ikonli-core-12.2.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/kordamp/ikonli/ikonli-materialdesign2-pack/12.2.0/ikonli-materialdesign2-pack-12.2.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/20.1.0/annotations-20.1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.20/lombok-1.18.20.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/controlsfx/controlsfx/11.1.0/controlsfx-11.1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/ダウンロード/openjfx-16_linux-x64_bin-sdk/javafx-sdk-16/lib/src.zip" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/ダウンロード/openjfx-16_linux-x64_bin-sdk/javafx-sdk-16/lib/javafx-swt.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/ダウンロード/openjfx-16_linux-x64_bin-sdk/javafx-sdk-16/lib/javafx.web.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/ダウンロード/openjfx-16_linux-x64_bin-sdk/javafx-sdk-16/lib/javafx.base.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/ダウンロード/openjfx-16_linux-x64_bin-sdk/javafx-sdk-16/lib/javafx.fxml.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/ダウンロード/openjfx-16_linux-x64_bin-sdk/javafx-sdk-16/lib/javafx.media.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/ダウンロード/openjfx-16_linux-x64_bin-sdk/javafx-sdk-16/lib/javafx.swing.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/ダウンロード/openjfx-16_linux-x64_bin-sdk/javafx-sdk-16/lib/javafx.controls.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/ダウンロード/openjfx-16_linux-x64_bin-sdk/javafx-sdk-16/lib/javafx.graphics.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/guava/guava/30.1.1-jre/guava-30.1.1-jre.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/checkerframework/checker-qual/3.8.0/checker-qual-3.8.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/errorprone/error_prone_annotations/2.5.1/error_prone_annotations-2.5.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

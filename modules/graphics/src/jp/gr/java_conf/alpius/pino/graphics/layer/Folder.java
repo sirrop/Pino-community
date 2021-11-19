@@ -16,10 +16,15 @@
 
 package jp.gr.java_conf.alpius.pino.graphics.layer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Folder extends ParentBase {
     public Folder(List<LayerObject> children) {
         super(children);
+    }
+
+    public Folder() {
+        super(new ArrayList<>());
     }
 }

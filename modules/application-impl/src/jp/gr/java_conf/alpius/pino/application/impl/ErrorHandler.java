@@ -30,6 +30,5 @@ class ErrorHandler implements Thread.UncaughtExceptionHandler {
                 NotificationType.ERROR
         );
         Pino.getApp().getService(Publisher.class).publish(notification);
-        e.printStackTrace();
     }
 }
