@@ -22,6 +22,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -44,11 +45,24 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEditorGraphicVisitor {
     private static final double DEFAULT_LABEL_PREF_WIDTH = 60;
     private static final double DEFAULT_TEXTFIELD_PREF_WIDTH = 60;
+
+    private static final BiConsumer<Pane, LayerObject> NOP = (pane, layerObject) -> {};
+
+    private static final Map<Class<?>, BiConsumer<Pane, LayerObject>> CONSUMER_MAP = Map.of(
+            Drawable.KEY, new Drawable(),
+            Image.KEY, new Image(),
+
+            Rect.KEY, new Rect(),
+            EllipseVisit.KEY, new EllipseVisit(),
+            TextVisit.KEY, new TextVisit()
+    );
 
     private static Label label(String text) {
         var res = new Label(text);
@@ -188,86 +202,7 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
                 clipping
         );
 
-        if (e instanceof DrawableLayer drawable) {
-            CheckBox opacityProtect = new CheckBox("透明度保護※不具合あり");
-            opacityProtect.setSelected(drawable.isOpacityProtected());
-            opacityProtect.selectedProperty().addListener((observable, oldValue, newValue) -> drawable.setOpacityProtected(newValue));
-
-            CheckBox locked = new CheckBox("ロック");
-            locked.setSelected(drawable.isLocked());
-            locked.selectedProperty().addListener((observable, oldValue, newValue) -> drawable.setLocked(newValue));
-            container.getChildren().addAll(opacityProtect, locked);
-        }
-        if (e instanceof ImageLayer image) {
-            Button button = new Button("画像を選択");
-            button.setOnAction(event -> {
-                FileChooser fc = new FileChooser();
-                var file = fc.showOpenDialog(null);
-                if (file != null) {
-                    image.setImage(readImage(file));
-                }
-            });
-            container.getChildren().add(button);
-        }
-
-        if (e instanceof ShapeLayer shape) {
-            if (e instanceof Rectangle rectangle) {
-                var widthLabel = label("幅");
-                var heightLabel = label("高さ");
-
-                var widthSlider = slider(it -> {
-                    it.setBlockIncrement(1);
-                    it.setValue(rectangle.getWidth());
-                    it.valueProperty().addListener((observable, oldValue, newValue) -> rectangle.setWidth(Math.round(newValue.floatValue())));
-                });
-                var heightSlider = slider(it -> {
-                    it.setBlockIncrement(1);
-                    it.setValue(rectangle.getHeight());
-                    it.valueProperty().addListener((observable, oldValue, newValue) -> rectangle.setHeight(Math.round(newValue.floatValue())));
-                });
-
-                container.getChildren()
-                        .addAll(3,
-                                List.of(
-                                        new HBox(widthLabel, widthSlider),
-                                        new HBox(heightLabel, heightSlider))
-
-                        );
-            }
-            if (e instanceof Ellipse ellipse) {
-                var widthLabel = label("幅");
-                var heightLabel = label("高さ");
-
-                var widthSlider = slider(it -> {
-                    it.setBlockIncrement(1);
-                    it.setValue(ellipse.getWidth());
-                    it.valueProperty().addListener((observable, oldValue, newValue) -> ellipse.setWidth(Math.round(newValue.floatValue())));
-                });
-                var heightSlider = slider(it -> {
-                    it.setBlockIncrement(1);
-                    it.setValue(ellipse.getHeight());
-                    it.valueProperty().addListener((observable, oldValue, newValue) -> ellipse.setHeight(Math.round(newValue.floatValue())));
-                });
-
-                container.getChildren()
-                        .addAll(3,
-                                List.of(
-                                        new HBox(widthLabel, widthSlider),
-                                        new HBox(heightLabel, heightSlider))
-
-                        );
-            }
-            if (e instanceof Text text) {
-                var inputLabel = label("入力");
-                TextField input = new TextField(text.getText());
-                input.textProperty().addListener((observable, oldValue, newValue) -> text.setText(newValue));
-                container.getChildren().add(7, new HBox(inputLabel, input));
-            }
-            ColorPicker fillPicker = new ColorPicker(toFxColor(shape.getFill()));
-            fillPicker.valueProperty().addListener((observable, oldValue, newValue) -> shape.setFill(toAwtColor(newValue)));
-            var label = label("色");
-            container.getChildren().add(new HBox(label, fillPicker));
-        }
+        CONSUMER_MAP.getOrDefault(e.getClass(), NOP).accept(container, e);
 
         return container;
     }
@@ -336,5 +271,128 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
     private static String drop(String string, int num) {
         if (num <= 0) return string;
         return string.substring(0, string.length() - num);
+    }
+
+    private static abstract class ConcreteVisitor<E extends LayerObject> implements BiConsumer<Pane, LayerObject> {
+        @SuppressWarnings("unchecked")
+        @Override
+        public void accept(Pane container, LayerObject layer) {
+            visit(container, (E) layer);
+        }
+
+        public abstract void visit(Pane container, E e);
+    }
+
+    private static class Drawable extends ConcreteVisitor<DrawableLayer> {
+        public static final Class<?> KEY = DrawableLayer.class;
+
+        @Override
+        public void visit(Pane container, DrawableLayer drawable) {
+            CheckBox opacityProtect = new CheckBox("透明度保護※不具合あり");
+            opacityProtect.setSelected(drawable.isOpacityProtected());
+            opacityProtect.selectedProperty().addListener((observable, oldValue, newValue) -> drawable.setOpacityProtected(newValue));
+
+            CheckBox locked = new CheckBox("ロック");
+            locked.setSelected(drawable.isLocked());
+            locked.selectedProperty().addListener((observable, oldValue, newValue) -> drawable.setLocked(newValue));
+            container.getChildren().addAll(opacityProtect, locked);
+        }
+    }
+
+    private static class Image extends ConcreteVisitor<ImageLayer> {
+        public static final Class<?> KEY = ImageLayer.class;
+        @Override
+        public void visit(Pane container, ImageLayer image) {
+            Button button = new Button("画像を選択");
+            button.setOnAction(event -> {
+                FileChooser fc = new FileChooser();
+                var file = fc.showOpenDialog(null);
+                if (file != null) {
+                    image.setImage(readImage(file));
+                }
+            });
+            container.getChildren().add(button);
+        }
+    }
+
+    private static abstract class Shape<S extends ShapeLayer> extends ConcreteVisitor<S> {
+        @Override
+        public final void visit(Pane container, S shape) {
+            doVisit(container, shape);
+            ColorPicker fillPicker = new ColorPicker(toFxColor(shape.getFill()));
+            fillPicker.valueProperty().addListener((observable, oldValue, newValue) -> shape.setFill(toAwtColor(newValue)));
+            var label = label("色");
+            container.getChildren().add(new HBox(label, fillPicker));
+        }
+
+        protected abstract void doVisit(Pane container, S s);
+    }
+
+    private static class Rect extends Shape<Rectangle> {
+        public static final Class<?> KEY = Rectangle.class;
+
+        @Override
+        protected void doVisit(Pane container, Rectangle rectangle) {
+            var widthLabel = label("幅");
+            var heightLabel = label("高さ");
+
+            var widthSlider = slider(it -> {
+                it.setBlockIncrement(1);
+                it.setValue(rectangle.getWidth());
+                it.valueProperty().addListener((observable, oldValue, newValue) -> rectangle.setWidth(Math.round(newValue.floatValue())));
+            });
+            var heightSlider = slider(it -> {
+                it.setBlockIncrement(1);
+                it.setValue(rectangle.getHeight());
+                it.valueProperty().addListener((observable, oldValue, newValue) -> rectangle.setHeight(Math.round(newValue.floatValue())));
+            });
+
+            container.getChildren()
+                    .addAll(3,
+                            List.of(
+                                    new HBox(widthLabel, widthSlider),
+                                    new HBox(heightLabel, heightSlider))
+
+                    );
+        }
+    }
+
+    private static class EllipseVisit extends Shape<Ellipse> {
+        public static final Class<?> KEY = Ellipse.class;
+        @Override
+        protected void doVisit(Pane container, Ellipse ellipse) {
+            var widthLabel = label("幅");
+            var heightLabel = label("高さ");
+
+            var widthSlider = slider(it -> {
+                it.setBlockIncrement(1);
+                it.setValue(ellipse.getWidth());
+                it.valueProperty().addListener((observable, oldValue, newValue) -> ellipse.setWidth(Math.round(newValue.floatValue())));
+            });
+            var heightSlider = slider(it -> {
+                it.setBlockIncrement(1);
+                it.setValue(ellipse.getHeight());
+                it.valueProperty().addListener((observable, oldValue, newValue) -> ellipse.setHeight(Math.round(newValue.floatValue())));
+            });
+
+            container.getChildren()
+                    .addAll(3,
+                            List.of(
+                                    new HBox(widthLabel, widthSlider),
+                                    new HBox(heightLabel, heightSlider))
+
+                    );
+        }
+    }
+
+    private static class TextVisit extends Shape<Text> {
+        public static final Class<?> KEY = Text.class;
+        @Override
+        protected void doVisit(Pane container, Text text) {
+            var inputLabel = label("入力");
+            TextField input = new TextField(text.getText());
+            input.textProperty().addListener((observable, oldValue, newValue) -> text.setText(newValue));
+            container.getChildren().add(7, new HBox(inputLabel, input));
+        }
     }
 }
