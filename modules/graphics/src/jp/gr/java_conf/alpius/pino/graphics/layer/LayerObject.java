@@ -336,7 +336,6 @@ public abstract class LayerObject implements Disposable, Originator {
             g2d.translate(x, y);
             g2d.rotate(getRotate() * Math.PI * 2 / 360);
             g2d.scale(scaleX, scaleY);
-            g2d.setClip(aoi);
             g2d.setComposite(AlphaComposite.SrcIn);
             renderContent(g2d, aoi, ignoreRough);
             g.setComposite(getCompositeFactory().createComposite(opacity));
@@ -346,7 +345,6 @@ public abstract class LayerObject implements Disposable, Originator {
             g.translate(x, y);
             g.rotate(getRotate() * Math.PI * 2 / 360);
             g.scale(scaleX, scaleY);
-            g.setClip(aoi);
             g.setComposite(getCompositeFactory().createComposite(opacity));
             renderContent(g, aoi, ignoreRough);
             g.translate(-x, -y);
