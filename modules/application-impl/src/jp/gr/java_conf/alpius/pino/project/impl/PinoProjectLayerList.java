@@ -17,9 +17,6 @@
 package jp.gr.java_conf.alpius.pino.project.impl;
 
 
-import javafx.beans.InvalidationListener;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ModifiableObservableListBase;
 import javafx.collections.ObservableList;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerList;
@@ -28,16 +25,14 @@ import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
 import java.util.*;
 
 public class PinoProjectLayerList extends ModifiableObservableListBase<LayerObject> implements LayerList, ObservableList<LayerObject>, RandomAccess {
-    private final ObservableList<LayerObject> backingList;
-    private final List<InvalidationListener> invalidationListeners = new ArrayList<>();
-    private final List<ListChangeListener<? super LayerObject>> changeListeners = new ArrayList<>();
+    private final List<LayerObject> backingList;
 
     public PinoProjectLayerList(Collection<? extends LayerObject> c) {
-        backingList = FXCollections.observableArrayList(c);
+        backingList = new ArrayList<>(c);
     }
 
     public PinoProjectLayerList() {
-        backingList = FXCollections.observableArrayList();
+        backingList = new ArrayList<>();
     }
 
     public LayerObject get(int index) {

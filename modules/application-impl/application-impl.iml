@@ -18,5 +18,14 @@
     <orderEntry type="library" name="javafx16" level="application" />
     <orderEntry type="library" name="google.flogger" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="google.flogger.system.backend" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/annotations/20.1.0/annotations-20.1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
