@@ -3,7 +3,7 @@ package jp.gr.java_conf.alpius.pino.graphics;
 import jp.gr.java_conf.alpius.pino.graphics.angle.Angle;
 import jp.gr.java_conf.alpius.pino.graphics.angle.StandardAngleUnit;
 import jp.gr.java_conf.alpius.pino.graphics.geom.ArcType;
-import jp.gr.java_conf.alpius.pino.graphics.paint.Paint;
+import jp.gr.java_conf.alpius.pino.graphics.paint.PaintContext;
 import jp.gr.java_conf.alpius.pino.graphics.transform.Transform;
 
 public interface Graphics extends GraphicsResource {
@@ -23,12 +23,12 @@ public interface Graphics extends GraphicsResource {
     Graphics setTransform(Transform transform);
     Transform getTransform();
 
-    Graphics drawPoint(int x, int y, Paint paint);
-    Graphics drawText(String string, int x, int y, Paint paint);
-    Graphics drawLine(int x0, int y0, int x1, int y1, Paint paint);
-    Graphics drawRect(int x, int y, int w, int h, Paint paint);
-    Graphics drawOval(int x, int y, int w, int h, Paint paint);
-    Graphics drawArc(int x, int y, int w, int h, double startRad, double arcExtent, ArcType type, Paint paint);
-    Graphics drawArc(int x, int y, int w, int h, Angle start, Angle extent, ArcType type, Paint paint);
-    Graphics drawRoundRect(int x, int y, int w, int h, int arcWidth, int arcHeight);
+    Graphics drawPoint(int x, int y, PaintContext paint);
+    Graphics drawText(String string, int x, int y, PaintContext paint);
+    Graphics drawLine(int x0, int y0, int x1, int y1, PaintContext paint);
+    Graphics drawRect(int x, int y, int w, int h, PaintContext paint);
+    Graphics drawOval(int x, int y, int w, int h, PaintContext paint);
+    Graphics drawArc(int x, int y, int w, int h, double startRad, double arcExtent, ArcType type, PaintContext paint);
+    Graphics drawArc(int x, int y, int w, int h, Angle start, Angle extent, ArcType type, PaintContext paint);
+    Graphics drawRoundRect(int x, int y, int w, int h, int arcWidth, int arcHeight, PaintContext paint);
 }

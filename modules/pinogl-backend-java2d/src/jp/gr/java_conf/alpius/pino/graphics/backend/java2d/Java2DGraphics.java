@@ -5,7 +5,7 @@ import jp.gr.java_conf.alpius.pino.graphics.Image;
 import jp.gr.java_conf.alpius.pino.graphics.angle.Angle;
 import jp.gr.java_conf.alpius.pino.graphics.angle.StandardAngleUnit;
 import jp.gr.java_conf.alpius.pino.graphics.geom.ArcType;
-import jp.gr.java_conf.alpius.pino.graphics.paint.Paint;
+import jp.gr.java_conf.alpius.pino.graphics.paint.PaintContext;
 import jp.gr.java_conf.alpius.pino.graphics.transform.Transform;
 
 import java.awt.*;
@@ -82,42 +82,42 @@ public class Java2DGraphics implements Graphics {
     }
 
     @Override
-    public Graphics drawPoint(int x, int y, Paint paint) {
+    public Graphics drawPoint(int x, int y, PaintContext paint) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
-    public Graphics drawText(String string, int x, int y, Paint paint) {
+    public Graphics drawText(String string, int x, int y, PaintContext paint) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
-    public Graphics drawLine(int x0, int y0, int x1, int y1, Paint paint) {
+    public Graphics drawLine(int x0, int y0, int x1, int y1, PaintContext paint) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
-    public Graphics drawRect(int x, int y, int w, int h, Paint paint) {
+    public Graphics drawRect(int x, int y, int w, int h, PaintContext paint) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
-    public Graphics drawOval(int x, int y, int w, int h, Paint paint) {
+    public Graphics drawOval(int x, int y, int w, int h, PaintContext paint) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
-    public Graphics drawArc(int x, int y, int w, int h, double startRad, double arcExtent, ArcType type, Paint paint) {
+    public Graphics drawArc(int x, int y, int w, int h, double startRad, double arcExtent, ArcType type, PaintContext paint) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
-    public Graphics drawArc(int x, int y, int w, int h, Angle start, Angle extent, ArcType type, Paint paint) {
+    public Graphics drawArc(int x, int y, int w, int h, Angle start, Angle extent, ArcType type, PaintContext paint) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
-    public Graphics drawRoundRect(int x, int y, int w, int h, int arcWidth, int arcHeight) {
+    public Graphics drawRoundRect(int x, int y, int w, int h, int arcWidth, int arcHeight, PaintContext paint) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 }
