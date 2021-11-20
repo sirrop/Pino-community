@@ -16,6 +16,8 @@
 
 package jp.gr.java_conf.alpius.pino.graphics.geom;
 
+import java.util.Objects;
+
 public record Point2D(double x, double y) {
     public static final Point2D ZERO = new Point2D(0, 0);
 
@@ -24,6 +26,14 @@ public record Point2D(double x, double y) {
             return ZERO;
         }
         return new Point2D(x, y);
+    }
+
+    @Override
+    public String toString() {
+        return "Point2D{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
     }
 
     public Point2D add(double x, double y) {
@@ -44,5 +54,18 @@ public record Point2D(double x, double y) {
 
     public Point2D multiply(double factor) {
         return at(this.x * factor, this.y * factor);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point2D point2D = (Point2D) o;
+        return Double.compare(point2D.x, x) == 0 && Double.compare(point2D.y, y) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }
