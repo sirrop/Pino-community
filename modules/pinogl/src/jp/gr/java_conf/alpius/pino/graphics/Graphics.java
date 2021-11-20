@@ -24,7 +24,6 @@ public interface Graphics extends GraphicsResource {
     Transform getTransform();
 
     Graphics drawPoint(int x, int y, PaintContext paint);
-    Graphics drawText(String string, int x, int y, PaintContext paint);
     Graphics drawLine(int x0, int y0, int x1, int y1, PaintContext paint);
     Graphics drawRect(int x, int y, int w, int h, PaintContext paint);
     Graphics drawOval(int x, int y, int w, int h, PaintContext paint);
