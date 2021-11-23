@@ -30,6 +30,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.converter.NumberStringConverter;
 import jp.gr.java_conf.alpius.pino.application.impl.BrushManager;
+import jp.gr.java_conf.alpius.pino.application.impl.Pino;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
 import jp.gr.java_conf.alpius.pino.gui.screen.options.CursorOptions;
 import jp.gr.java_conf.alpius.pino.util.Result;
@@ -79,6 +80,9 @@ public final class DrawToolCursor {
             }
         };
 
+        // canvasの拡大率
+        private DoubleProperty scale;
+
         public DrawToolSubPointer() {
             // ブラシが変更されたときにリスナーを更新する
             IntConsumer updateListener = i -> {
@@ -96,16 +100,33 @@ public final class DrawToolCursor {
                     .addListener(updateListener);
             updateListener.accept(BrushManager.getInstance().getActiveModel().getActivatedIndex());
             var brush = BrushManager.getInstance().getActiveModel().getActivatedItem();
+
             for (var desc: brush.getUnmodifiablePropertyList()) {
                 if (desc.getName().equals("width")) {
                     Result.tryToRun(desc::getReadMethod)
                           .map(getter -> getter.invoke(brush))
                           .map(value -> Double.parseDouble(value.toString()) / 2)
+                          .map(value -> value * scale.get())
                           .onSuccess(brushWidthIndicator::setBrushWidth)
                           .printStackTrace();
                 }
             }
             brushWidthIndicator.setStroke(Color.GRAY);
+
+            scale = Pino.getApp().getWindow().getRootContainer().getCanvas().scaleXProperty();
+            scale.addListener((observable, oldValue, newValue) -> {
+                var b = BrushManager.getInstance().getActiveModel().getActivatedItem();
+                for (var desc: b.getUnmodifiablePropertyList()) {
+                    if (desc.getName().equals("width")) {
+                        Result.tryToRun(desc::getReadMethod)
+                                .map(getter -> getter.invoke(b))
+                                .map(value -> Double.parseDouble(value.toString()) / 2)
+                                .map(value -> value * scale.get())
+                                .onSuccess(brushWidthIndicator::setBrushWidth)
+                                .printStackTrace();
+                    }
+                }
+            });
         }
 
         @Override
