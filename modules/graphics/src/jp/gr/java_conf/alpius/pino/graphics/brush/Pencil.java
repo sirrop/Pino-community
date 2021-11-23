@@ -135,8 +135,6 @@ final class PencilContext extends BrushContextBase<Pencil> {
         setComposite(AlphaComposite.Src);
 
         var canvas = getTarget().getCanvas();
-        var w = canvas.getWidth();
-        var h = canvas.getHeight();
 
         copy = canvas.createCompatibleImage(Transparency.TRANSLUCENT);
         offscreen = canvas.createCompatibleImage(Transparency.TRANSLUCENT);
