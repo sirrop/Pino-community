@@ -81,9 +81,11 @@ public final class DrawToolCursor {
         };
 
         // canvasの拡大率
-        private DoubleProperty scale;
+        private final DoubleProperty scale;
 
         public DrawToolSubPointer() {
+            scale = Pino.getApp().getWindow().getRootContainer().getCanvas().scaleXProperty();
+
             // ブラシが変更されたときにリスナーを更新する
             IntConsumer updateListener = i -> {
                 if (listenerDisposable != null) {
@@ -113,7 +115,6 @@ public final class DrawToolCursor {
             }
             brushWidthIndicator.setStroke(Color.GRAY);
 
-            scale = Pino.getApp().getWindow().getRootContainer().getCanvas().scaleXProperty();
             scale.addListener((observable, oldValue, newValue) -> {
                 var b = BrushManager.getInstance().getActiveModel().getActivatedItem();
                 for (var desc: b.getUnmodifiablePropertyList()) {

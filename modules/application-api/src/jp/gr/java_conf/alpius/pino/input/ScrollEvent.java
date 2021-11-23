@@ -16,12 +16,61 @@
 
 package jp.gr.java_conf.alpius.pino.input;
 
-public class ScrollEvent extends InputEvent {
-    private final double deltaY;
+import java.io.Serial;
 
-    public ScrollEvent(Object source, double deltaY) {
+public class ScrollEvent extends InputEvent {
+    @Serial
+    private static final long serialVersionUID = 8818202422570575914L;
+
+    private final double x;
+    private final double y;
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getDeltaX() {
+        return deltaX;
+    }
+
+    public boolean isShiftDown() {
+        return shiftDown;
+    }
+
+    public boolean isCtrlDown() {
+        return ctrlDown;
+    }
+
+    public boolean isAltDown() {
+        return altDown;
+    }
+
+    public boolean isMetaDown() {
+        return metaDown;
+    }
+
+    private final double deltaX;
+    private final double deltaY;
+    private final boolean shiftDown;
+    private final boolean ctrlDown;
+    private final boolean altDown;
+    private final boolean metaDown;
+
+    public ScrollEvent(Object source, double x, double y, double deltaX, double deltaY,
+                       boolean shiftDown, boolean ctrlDown, boolean altDown, boolean metaDown) {
         super(source);
+        this.x = x;
+        this.y = y;
+        this.deltaX = deltaX;
         this.deltaY = deltaY;
+        this.shiftDown = shiftDown;
+        this.ctrlDown = ctrlDown;
+        this.altDown = altDown;
+        this.metaDown = metaDown;
     }
 
     public double getDeltaY() {

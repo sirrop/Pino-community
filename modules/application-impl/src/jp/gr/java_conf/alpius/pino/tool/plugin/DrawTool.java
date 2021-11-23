@@ -119,9 +119,18 @@ public class DrawTool implements Tool {
 
     @Override
     public void scroll(jp.gr.java_conf.alpius.pino.input.ScrollEvent e) {
-        double value = e.getDeltaY() * zoomRate;
-        canvas.setScaleX(canvas.getScaleX() + value);
-        canvas.setScaleY(canvas.getScaleY() + value);
+        if (projectExists()) {
+            if (e.isCtrlDown()) {
+                var value = (e.getDeltaY() + e.getDeltaX()) * zoomRate;
+                canvas.setScaleX(canvas.getScaleX() + value);
+                canvas.setScaleY(canvas.getScaleY() + value);
+            } else {
+                var x = -e.getDeltaX();
+                var y = -e.getDeltaY();
+                canvas.setTranslateX(canvas.getTranslateX() + x);
+                canvas.setTranslateY(canvas.getTranslateY() + y);
+            }
+        }
     }
 
     private boolean projectExists() {
