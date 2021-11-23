@@ -51,7 +51,7 @@ public class LayerCellBehavior extends BehaviorBase<LayerCell> {
         Dragboard dragboard = getNode().getListView().startDragAndDrop(TransferMode.MOVE);
         ClipboardContent content = new ClipboardContent();
         content.putString(sourcePosition);
-        content.putImage(image);
+        dragboard.setDragView(image);
         dragboard.setContent(content);
         e.consume();
     }
@@ -70,7 +70,7 @@ public class LayerCellBehavior extends BehaviorBase<LayerCell> {
             var list = getNode().getListView();
             var items = list.getItems();
             var src = items.remove(srcIdx);
-            items.add(getNode().getIndex(), src);
+            items.add(coerce(getNode().getIndex()).in(0, items.size() - 1), src);
             e.setDropCompleted(true);
         }
         e.consume();
@@ -78,5 +78,25 @@ public class LayerCellBehavior extends BehaviorBase<LayerCell> {
 
     private boolean validate(String integer) {
         return integer.matches("[1-9][0-9]*");
+    }
+
+    private static Coerce coerce(int value) {
+        return new Coerce(value);
+    }
+
+    private static class Coerce {
+        private final int value;
+
+        public Coerce(int value) {
+            this.value = value;
+        }
+
+        public int in(int min, int max) {
+            if (value < min) {
+                return min;
+            } else {
+                return Math.min(value, max);
+            }
+        }
     }
 }
