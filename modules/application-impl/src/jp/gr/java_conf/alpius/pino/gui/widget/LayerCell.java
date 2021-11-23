@@ -17,8 +17,8 @@
 package jp.gr.java_conf.alpius.pino.gui.widget;
 
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.Skin;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import jp.gr.java_conf.alpius.pino.annotation.Internal;
@@ -26,16 +26,14 @@ import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
-import jp.gr.java_conf.alpius.pino.gui.widget.behavior.LayerCellBehavior;
+import jp.gr.java_conf.alpius.pino.gui.widget.skin.LayerCellSkin;
 
 public class LayerCell extends ListCell<LayerObject> {
     private Disposable disposable;
     private final StackPane upperLabel = new StackPane();
     private final StackPane lowerLabel = new StackPane();
-    private final LayerCellBehavior behavior;
 
     public LayerCell() {
-        behavior = new LayerCellBehavior(this);
         upperLabel.setBackground(new Background(new BackgroundFill(Color.SKYBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
         lowerLabel.setBackground(new Background(new BackgroundFill(Color.SKYBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
         upperLabel.setPrefHeight(2);
@@ -69,7 +67,6 @@ public class LayerCell extends ListCell<LayerObject> {
             setText(null);
         } else {
             var graphic = GraphicManager.getInstance().getCellGraphic(item);
-            initGraphic(graphic);
             setGraphic(new VBox(upperLabel, graphic, lowerLabel));
             updateActive();
         }
@@ -91,6 +88,11 @@ public class LayerCell extends ListCell<LayerObject> {
         lowerLabel.setVisible(false);
     }
 
+    @Override
+    protected Skin<?> createDefaultSkin() {
+        return new LayerCellSkin(this);
+    }
+
     private void updateActive() {
         var p = Pino.getApp().getProject();
         if (getItem() == null || p == null) {
@@ -102,8 +104,5 @@ public class LayerCell extends ListCell<LayerObject> {
         } else {
             setBackground(null);
         }
-    }
-
-    private void initGraphic(Node graphic) {
     }
 }

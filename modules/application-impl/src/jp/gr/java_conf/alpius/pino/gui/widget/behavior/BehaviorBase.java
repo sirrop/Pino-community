@@ -20,8 +20,9 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.Node;
+import jp.gr.java_conf.alpius.pino.disposable.Disposable;
 
-public class BehaviorBase<N extends Node> {
+public class BehaviorBase<N extends Node> implements Disposable {
     private final N node;
 
     public BehaviorBase(N node) {
@@ -38,5 +39,10 @@ public class BehaviorBase<N extends Node> {
 
     public <E extends Event> void addEventFilter(EventType<E> type, EventHandler<E> handler) {
         node.addEventFilter(type, handler);
+    }
+
+    @Override
+    public void dispose() {
+
     }
 }
