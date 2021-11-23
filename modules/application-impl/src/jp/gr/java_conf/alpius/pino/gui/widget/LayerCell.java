@@ -27,11 +27,14 @@ import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
+import jp.gr.java_conf.alpius.pino.gui.widget.behavior.LayerCellBehavior;
 
 public class LayerCell extends ListCell<LayerObject> {
     private Disposable disposable;
+    private final LayerCellBehavior behavior;
 
     public LayerCell() {
+        behavior = new LayerCellBehavior(this);
         setContextMenu(MenuManager.getInstance().getLayerCellMenu());
         focusedProperty().addListener((obs, oldValue, newValue) -> {
             LayerObject item = getItem();

@@ -46,6 +46,7 @@ module pino.application.impl {
     requires javafx.controls;
     requires javafx.swing;
     requires org.controlsfx.controls;
+    requires com.google.common;
 
     opens jp.gr.java_conf.alpius.pino.application.impl to javafx.fxml, javafx.graphics;
     opens jp.gr.java_conf.alpius.pino.ui.actionSystem to javafx.fxml;
