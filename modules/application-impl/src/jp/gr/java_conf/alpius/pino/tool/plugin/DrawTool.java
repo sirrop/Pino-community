@@ -114,6 +114,7 @@ public class DrawTool implements Tool {
             context = null;
             Pino.getApp().getService(History.class).add(builder.saveNextState().build());
             builder = null;
+            repaint();
         }
     }
 
@@ -131,6 +132,11 @@ public class DrawTool implements Tool {
                 canvas.setTranslateY(canvas.getTranslateY() + y);
             }
         }
+    }
+
+    private static void repaint() {
+        var app = Pino.getApp();
+        app.getWindow().getRootContainer().getLayerView().refresh();
     }
 
     private boolean projectExists() {
