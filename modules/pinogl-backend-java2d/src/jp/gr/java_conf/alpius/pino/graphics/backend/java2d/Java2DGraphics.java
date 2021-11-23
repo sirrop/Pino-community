@@ -5,6 +5,7 @@ import jp.gr.java_conf.alpius.pino.graphics.Image;
 import jp.gr.java_conf.alpius.pino.graphics.angle.Angle;
 import jp.gr.java_conf.alpius.pino.graphics.angle.StandardAngleUnit;
 import jp.gr.java_conf.alpius.pino.graphics.geom.ArcType;
+import jp.gr.java_conf.alpius.pino.graphics.geom.Shape;
 import jp.gr.java_conf.alpius.pino.graphics.paint.PaintContext;
 import jp.gr.java_conf.alpius.pino.graphics.transform.Transform;
 
@@ -82,12 +83,12 @@ public class Java2DGraphics implements Graphics {
     }
 
     @Override
-    public Graphics drawPoint(int x, int y, PaintContext paint) {
+    public Graphics draw(Shape shape, PaintContext paint) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
-    public Graphics drawText(String string, int x, int y, PaintContext paint) {
+    public Graphics drawPoint(int x, int y, PaintContext paint) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 

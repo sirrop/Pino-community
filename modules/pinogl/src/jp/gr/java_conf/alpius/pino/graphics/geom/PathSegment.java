@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.graphics.backend.generic;
+package jp.gr.java_conf.alpius.pino.graphics.geom;
 
-import jp.gr.java_conf.alpius.pino.graphics.*;
-
-public class GenericRTTexture extends GenericTexture implements RTTexture {
-    public GenericRTTexture(Image image) {
-        super(image);
-    }
-
-    public GenericRTTexture(int w, int h, PixelFormat format, AlphaType type) {
-        this(new Image(w, h, format, type));
-    }
-
-    @Override
-    public Graphics createGraphics() {
-        throw new UnsupportedOperationException("Not implemented yet.");
-    }
+public enum PathSegment {
+    CLOSE,
+    LINE_TO,
+    MOVE_TO,
+    CUBIC_TO,
+    QUAD_TO
 }

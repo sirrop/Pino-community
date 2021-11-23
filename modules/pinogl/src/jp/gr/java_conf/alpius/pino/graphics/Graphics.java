@@ -3,6 +3,7 @@ package jp.gr.java_conf.alpius.pino.graphics;
 import jp.gr.java_conf.alpius.pino.graphics.angle.Angle;
 import jp.gr.java_conf.alpius.pino.graphics.angle.StandardAngleUnit;
 import jp.gr.java_conf.alpius.pino.graphics.geom.ArcType;
+import jp.gr.java_conf.alpius.pino.graphics.geom.Shape;
 import jp.gr.java_conf.alpius.pino.graphics.paint.PaintContext;
 import jp.gr.java_conf.alpius.pino.graphics.transform.Transform;
 
@@ -23,6 +24,7 @@ public interface Graphics extends GraphicsResource {
     Graphics setTransform(Transform transform);
     Transform getTransform();
 
+    Graphics draw(Shape shape, PaintContext paint);
     Graphics drawPoint(int x, int y, PaintContext paint);
     Graphics drawLine(int x0, int y0, int x1, int y1, PaintContext paint);
     Graphics drawRect(int x, int y, int w, int h, PaintContext paint);

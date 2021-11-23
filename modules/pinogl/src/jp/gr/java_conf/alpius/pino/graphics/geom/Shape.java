@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.graphics.backend.generic;
+package jp.gr.java_conf.alpius.pino.graphics.geom;
 
-import jp.gr.java_conf.alpius.pino.graphics.PixelFormat;
-import jp.gr.java_conf.alpius.pino.graphics.ResourceFactory;
-import jp.gr.java_conf.alpius.pino.graphics.backend.Platform;
+import jp.gr.java_conf.alpius.pino.graphics.transform.Affine2D;
+import jp.gr.java_conf.alpius.pino.graphics.transform.Transform;
 
-import java.util.Collection;
+import java.util.Iterator;
 
-public class GenericPlatform extends Platform {
-    public GenericPlatform(GenericDescriptor desc) {
-        super(desc);
+public abstract class Shape implements Iterable<PathElement> {
+    Shape() {
     }
 
-    @Override
-    public ResourceFactory getResourceFactory() {
-        return null;
-    }
+    public abstract Iterator<PathElement> iterator(Transform tx);
 
     @Override
-    public Collection<? extends PixelFormat> getAvailableFormats() {
-        return null;
+    public Iterator<PathElement> iterator() {
+        return iterator(Affine2D.makeIdentity());
     }
 }

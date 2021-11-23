@@ -2,10 +2,12 @@ package jp.gr.java_conf.alpius.pino.graphics.geom;
 
 import jp.gr.java_conf.alpius.pino.graphics.angle.Angle;
 import jp.gr.java_conf.alpius.pino.graphics.angle.StandardAngleUnit;
+import jp.gr.java_conf.alpius.pino.graphics.transform.Transform;
 
+import java.util.Iterator;
 import java.util.Objects;
 
-public final class Arc {
+public final class Arc extends Shape {
     @Override
     public String toString() {
         return "Arc{" +
@@ -43,11 +45,11 @@ public final class Arc {
         return y;
     }
 
-    public double getW() {
+    public double getWidth() {
         return w;
     }
 
-    public double getH() {
+    public double getHeight() {
         return h;
     }
 
@@ -62,32 +64,43 @@ public final class Arc {
     private final double h;
     private final double startRad;
     private final double extentRad;
+    private final ArcType type;
 
     // コンストラクタは非公開です。オブジェクトの作成は、staticメソッドによって提供されます
-    private Arc(double x, double y, double w, double h, double start, double extent) {
+    private Arc(double x, double y, double w, double h, double start, double extent, ArcType type) {
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
         this.startRad = start;
         this.extentRad = extent;
+        this.type = type;
     }
 
-    public static Arc makeWH(double w, double h, Angle start, Angle extent) {
+    public static Arc makeWH(double w, double h, Angle start, Angle extent, ArcType type) {
         var rad = StandardAngleUnit.RAD;
-        return makeWH(w, h, start.getAngle(rad), extent.getAngle(rad));
+        return makeWH(w, h, start.getAngle(rad), extent.getAngle(rad), type);
     }
 
-    public static Arc makeWH(double w, double h, double start, double extent) {
-        return new Arc(0, 0, w, h, start, extent);
+    public static Arc makeWH(double w, double h, double start, double extent, ArcType type) {
+        return new Arc(0, 0, w, h, start, extent, type);
     }
 
-    public static Arc makeXYWH(double x, double y, double w, double h, Angle start, Angle extent) {
+    public static Arc makeXYWH(double x, double y, double w, double h, Angle start, Angle extent, ArcType type) {
         var rad = StandardAngleUnit.RAD;
-        return makeXYWH(x, y, w, h, start.getAngle(rad), extent.getAngle(rad));
+        return makeXYWH(x, y, w, h, start.getAngle(rad), extent.getAngle(rad), type);
     }
 
-    public static Arc makeXYWH(double x, double y, double w, double h, double start, double extent) {
-        return new Arc(x, y, w, h, start, extent);
+    public static Arc makeXYWH(double x, double y, double w, double h, double start, double extent, ArcType type) {
+        return new Arc(x, y, w, h, start, extent, type);
+    }
+
+    @Override
+    public Iterator<PathElement> iterator(Transform tx) {
+        return new ArcIterator(this, tx);
+    }
+
+    public ArcType getType() {
+        return type;
     }
 }
