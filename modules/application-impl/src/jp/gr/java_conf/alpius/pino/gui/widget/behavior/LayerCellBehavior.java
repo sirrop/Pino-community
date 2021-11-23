@@ -35,19 +35,41 @@ public class LayerCellBehavior extends BehaviorBase<LayerCell> {
         addEventHandler(DragEvent.DRAG_DROPPED, this::dragDropped);
     }
 
-    private Image getImage() {
+    private Image getImage(int w, int h, int strokeWidth) {
         LayerObject selectedLayer = getNode().getItem();
         Project p = Pino.getApp().getProject();
         BufferedImage layerImage = new BufferedImage(p.getWidth(), p.getHeight(), BufferedImage.TYPE_INT_ARGB_PRE);
         var g = layerImage.createGraphics();
         selectedLayer.render(g, new Rectangle(p.getWidth(), p.getHeight()), false);
         g.dispose();
-        return SwingFXUtils.toFXImage(layerImage, null);
+        var dimension = computeDimension(layerImage.getWidth(), layerImage.getHeight(), w, h);
+        BufferedImage scaledImage = new BufferedImage(dimension.width + strokeWidth * 2, dimension.height + strokeWidth * 2, BufferedImage.TYPE_INT_ARGB);
+        g = scaledImage.createGraphics();
+        g.setPaint(Color.GRAY);
+        g.fillRect(0, 0, w + strokeWidth * 2, h + strokeWidth * 2);
+        g.setComposite(AlphaComposite.Src);
+        g.drawImage(layerImage.getScaledInstance(dimension.width, dimension.height, java.awt.Image.SCALE_SMOOTH), strokeWidth, strokeWidth, null);
+        g.dispose();
+        return SwingFXUtils.toFXImage(scaledImage, null);
+    }
+
+    private static Dimension computeDimension(int originalWidth, int originalHeight, int preferredWidth, int preferredHeight) {
+        double preferredRatio = ((double) preferredWidth) / preferredHeight;
+        double originalRatio = ((double) originalWidth) / originalHeight;
+        int w, h;
+        if (originalRatio > preferredRatio) {
+            w = preferredWidth;
+            h = (int) Math.round(w / originalRatio);
+        } else {
+            h = preferredHeight;
+            w = (int) Math.round(h * originalRatio);
+        }
+        return new Dimension(w, h);
     }
 
     private void dragDetected(MouseEvent e) {
         String sourcePosition = String.valueOf(getNode().getIndex());
-        Image image = getImage();
+        Image image = getImage(50, 50, 1);
         Dragboard dragboard = getNode().getListView().startDragAndDrop(TransferMode.MOVE);
         ClipboardContent content = new ClipboardContent();
         content.putString(sourcePosition);
