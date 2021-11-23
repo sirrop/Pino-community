@@ -28,10 +28,13 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class LayerCellBehavior extends BehaviorBase<LayerCell> {
+    private static final DataFormat DF_INDEX = new DataFormat("application/index");
+
     public LayerCellBehavior(LayerCell cell) {
         super(cell);
         addEventHandler(MouseEvent.DRAG_DETECTED, this::dragDetected);
         addEventHandler(DragEvent.DRAG_OVER, this::dragOver);
+        addEventHandler(DragEvent.DRAG_EXITED, this::dragExited);
         addEventHandler(DragEvent.DRAG_DROPPED, this::dragDropped);
     }
 
@@ -68,11 +71,11 @@ public class LayerCellBehavior extends BehaviorBase<LayerCell> {
     }
 
     private void dragDetected(MouseEvent e) {
-        String sourcePosition = String.valueOf(getNode().getIndex());
+        int index = getNode().getIndex();
         Image image = getImage(50, 50, 1);
         Dragboard dragboard = getNode().getListView().startDragAndDrop(TransferMode.MOVE);
         ClipboardContent content = new ClipboardContent();
-        content.putString(sourcePosition);
+        content.put(DF_INDEX, index);
         dragboard.setDragView(image);
         dragboard.setContent(content);
         e.consume();
@@ -81,25 +84,45 @@ public class LayerCellBehavior extends BehaviorBase<LayerCell> {
     private void dragOver(DragEvent e) {
         if (e.getGestureSource() == getNode().getListView()) {
             e.acceptTransferModes(TransferMode.MOVE);
+            var node = getNode();
+            var bounds = node.getBoundsInLocal();
+            var y = e.getY();
+            getNode().hideLabel();
+            if (y >= bounds.getCenterY()) {
+                getNode().showLowerLabel();
+            } else {
+                getNode().showUpperLabel();
+            }
         }
+        e.consume();
+    }
+
+    private void dragExited(DragEvent e) {
+        getNode().hideLabel();
         e.consume();
     }
 
     private void dragDropped(DragEvent e) {
         Dragboard dragboard = e.getDragboard();
-        if (dragboard.hasString() && validate(dragboard.getString())) {
-            var srcIdx = Integer.parseInt(dragboard.getString());
+        if (dragboard.getContent(DF_INDEX) != null) {
+            var srcIdx = (int) dragboard.getContent(DF_INDEX);
+            var thisItem = getNode().getItem();
             var list = getNode().getListView();
             var items = list.getItems();
             var src = items.remove(srcIdx);
-            items.add(coerce(getNode().getIndex()).in(0, items.size() - 1), src);
+            var thisIndex = items.indexOf(thisItem);
+            if (e.getY() >= getNode().getBoundsInLocal().getCenterY()) {
+                items.add(coerce(thisIndex + 1).in(0, items.size()), src);
+            } else {
+                items.add(coerce(thisIndex).in(0, items.size()), src);
+            }
             e.setDropCompleted(true);
+            getNode().hideLabel();
+        } else {
+            e.setDropCompleted(false);
         }
+        getNode().getListView().refresh();
         e.consume();
-    }
-
-    private boolean validate(String integer) {
-        return integer.matches("[1-9][0-9]*");
     }
 
     private static Coerce coerce(int value) {

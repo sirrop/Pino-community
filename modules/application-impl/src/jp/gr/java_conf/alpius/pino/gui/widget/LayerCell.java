@@ -19,10 +19,9 @@ package jp.gr.java_conf.alpius.pino.gui.widget;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import jp.gr.java_conf.alpius.pino.annotation.Internal;
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
@@ -31,10 +30,18 @@ import jp.gr.java_conf.alpius.pino.gui.widget.behavior.LayerCellBehavior;
 
 public class LayerCell extends ListCell<LayerObject> {
     private Disposable disposable;
+    private final StackPane upperLabel = new StackPane();
+    private final StackPane lowerLabel = new StackPane();
     private final LayerCellBehavior behavior;
 
     public LayerCell() {
         behavior = new LayerCellBehavior(this);
+        upperLabel.setBackground(new Background(new BackgroundFill(Color.SKYBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+        lowerLabel.setBackground(new Background(new BackgroundFill(Color.SKYBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+        upperLabel.setPrefHeight(2);
+        lowerLabel.setPrefHeight(2);
+        upperLabel.setVisible(false);
+        lowerLabel.setVisible(false);
         setContextMenu(MenuManager.getInstance().getLayerCellMenu());
         focusedProperty().addListener((obs, oldValue, newValue) -> {
             LayerObject item = getItem();
@@ -63,9 +70,25 @@ public class LayerCell extends ListCell<LayerObject> {
         } else {
             var graphic = GraphicManager.getInstance().getCellGraphic(item);
             initGraphic(graphic);
-            setGraphic(graphic);
+            setGraphic(new VBox(upperLabel, graphic, lowerLabel));
             updateActive();
         }
+    }
+
+    @Internal
+    public void showUpperLabel() {
+        upperLabel.setVisible(true);
+    }
+
+    @Internal
+    public void showLowerLabel() {
+        lowerLabel.setVisible(true);
+    }
+
+    @Internal
+    public void hideLabel() {
+        upperLabel.setVisible(false);
+        lowerLabel.setVisible(false);
     }
 
     private void updateActive() {
