@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.graphics.filter;
+package jp.gr.java_conf.alpius.pino.graphics.brush.context;
 
-import java.awt.image.ColorModel;
-
-public interface Filter {
-    FilterContext createContext(ColorModel cm);
+public interface GaussianFunction {
+    float apply(int x, int y);
+    double SQRT_2PI = Math.sqrt(2 * Math.PI);
+    static GaussianFunction create(double deviation) {
+        return (x, y) -> (float) (Math.exp( -(x * x  + y * y) / (2 * deviation * deviation) ) / (SQRT_2PI * deviation));
+    }
 }

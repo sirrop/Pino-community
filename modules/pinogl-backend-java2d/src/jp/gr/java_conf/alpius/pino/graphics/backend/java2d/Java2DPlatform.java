@@ -2,6 +2,8 @@ package jp.gr.java_conf.alpius.pino.graphics.backend.java2d;
 
 import jp.gr.java_conf.alpius.pino.graphics.*;
 import jp.gr.java_conf.alpius.pino.graphics.backend.Platform;
+import jp.gr.java_conf.alpius.pino.graphics.paint.ImagePaintBuilder;
+import jp.gr.java_conf.alpius.pino.graphics.paint.PaintContext;
 import jp.gr.java_conf.alpius.pino.graphics.utils.Checks;
 
 import java.awt.image.BufferedImage;
@@ -37,7 +39,12 @@ public class Java2DPlatform extends Platform implements ResourceFactory {
         var alphaType = image.getAlphaType();
         var texture = new Java2DRTTexture(BufferedImage(w, h, format, alphaType), format, alphaType);
         var g = texture.createGraphics();
-        g.drawImage(image, 0, 0);
+        var paint = new ImagePaintBuilder().setImage(image)
+                .setAntialias(true)
+                .setOpacity(1.0f)
+                .setComposite(Composite.getInstance(BlendMode.SRC))
+                .build();
+        g.drawRect(0, 0, w, h, new PaintContext(paint));
         return texture;
     }
 

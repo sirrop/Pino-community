@@ -25,7 +25,7 @@ public final class PaintContext {
     private final Paint paint;
     private final List<Stroke> strokes;
 
-    private PaintContext(Paint paint, Stroke... strokes) {
+    public PaintContext(Paint paint, Stroke... strokes) {
         this.paint = paint;
         this.strokes = Arrays.asList(strokes);
     }

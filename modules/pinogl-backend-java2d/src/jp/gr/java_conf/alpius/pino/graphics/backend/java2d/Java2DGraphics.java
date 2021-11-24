@@ -1,16 +1,18 @@
 package jp.gr.java_conf.alpius.pino.graphics.backend.java2d;
 
 import jp.gr.java_conf.alpius.pino.graphics.Graphics;
-import jp.gr.java_conf.alpius.pino.graphics.Image;
 import jp.gr.java_conf.alpius.pino.graphics.angle.Angle;
 import jp.gr.java_conf.alpius.pino.graphics.angle.StandardAngleUnit;
 import jp.gr.java_conf.alpius.pino.graphics.geom.ArcType;
 import jp.gr.java_conf.alpius.pino.graphics.geom.Shape;
 import jp.gr.java_conf.alpius.pino.graphics.paint.PaintContext;
+import jp.gr.java_conf.alpius.pino.graphics.paint.stroke.Stroke;
 import jp.gr.java_conf.alpius.pino.graphics.transform.Transform;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Java2DGraphics implements Graphics {
     private final Java2DRTTexture target;
@@ -19,10 +21,6 @@ public class Java2DGraphics implements Graphics {
     public Java2DGraphics(Java2DRTTexture target) {
         this.target = target;
         g = target.getBufferedImage().createGraphics();
-    }
-
-    public Graphics drawImage(Image image, int x, int y) {
-        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     public Graphics drawImage(BufferedImage image, int x, int y) {
@@ -89,17 +87,65 @@ public class Java2DGraphics implements Graphics {
 
     @Override
     public Graphics drawPoint(int x, int y, PaintContext paint) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return drawLine(x, y, x, y, paint);
     }
 
     @Override
     public Graphics drawLine(int x0, int y0, int x1, int y1, PaintContext paint) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        var itr = strokeInitializeIterator(paint);
+        while (itr.hasNext()) {
+            itr.next().run();
+            g.drawLine(x0, y0, x1, y1);
+        }
+        return this;
     }
 
     @Override
     public Graphics drawRect(int x, int y, int w, int h, PaintContext paint) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        if (paint.getPaint() != null) {
+            setFill(paint);
+            g.fillRect(x, y, w, h);
+        }
+        if (!paint.getStrokes().isEmpty()) {
+            var itr = strokeInitializeIterator(paint);
+            while (itr.hasNext()) {
+                itr.next().run();
+                g.drawRect(x, y, w, h);
+            }
+        }
+        return this;
+    }
+
+    private void setFill(PaintContext ctx) {
+        var p = ctx.getPaint();
+        g.setPaint(Java2DUtils.toJava2D(p));
+        g.setComposite(Java2DUtils.toJava2D(p.getComposite(), p.getOpacity()));
+        if (p.isAntialias()) {
+            g.addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
+        } else {
+            g.addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF));
+        }
+    }
+
+    private Iterator<Runnable> strokeInitializeIterator(PaintContext paint) {
+        var list = new ArrayList<Runnable>();
+        for (var stroke: paint.getStrokes()) {
+            list.add(() -> setStroke(stroke));
+        }
+        return list.iterator();
+    }
+
+    private void setStroke(Stroke stroke) {
+        var p = Java2DUtils.toJava2D(stroke.getPaint());
+        var s = Java2DUtils.getBasicStroke(stroke);
+        g.setPaint(p);
+        g.setStroke(s);
+        g.setComposite(Java2DUtils.toJava2D(stroke.getPaint().getComposite(), stroke.getPaint().getOpacity()));
+        if (stroke.getPaint().isAntialias()) {
+            g.addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
+        } else {
+            g.addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF));
+        }
     }
 
     @Override

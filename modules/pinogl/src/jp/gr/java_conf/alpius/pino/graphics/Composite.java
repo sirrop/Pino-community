@@ -40,7 +40,7 @@ public abstract class Composite {
         throw new IllegalArgumentException("composite is not coefficient based.");
     }
 
-    public static Coefficient getBlendMode(Composite composite) {
+    public static BlendMode getBlendMode(Composite composite) {
         throw new IllegalArgumentException("composite doesn't have BlendMode.");
     }
 
