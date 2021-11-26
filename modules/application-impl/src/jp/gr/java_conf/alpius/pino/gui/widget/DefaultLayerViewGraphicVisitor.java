@@ -68,10 +68,16 @@ public class DefaultLayerViewGraphicVisitor implements GraphicManager.LayerViewG
 
         PropertyChangeListener listener = e -> {
             switch (e.getPropertyName()) {
-                case "visible" -> setVisibleText(visible, layer.isVisible());
-                case "rough" -> setRoughText(rough, layer.isRough());
-                case "opacity" -> setOpacityText(opacity, layer.getOpacity());
-                default -> updateImage(image, layer, pThread, pImage);
+                case "visible":
+                    setVisibleText(visible, layer.isVisible());
+                    break;
+                case "rough":
+                    setRoughText(rough, layer.isRough());
+                    break;
+                case "opacity": // ここでbreakしないのは意図的です
+                    setOpacityText(opacity, layer.getOpacity());
+                default:
+                    updateImage(image, layer, pThread, pImage);
             }
         };
 
