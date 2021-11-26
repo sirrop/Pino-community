@@ -16,6 +16,7 @@
 
 package jp.gr.java_conf.alpius.pino.gui.widget;
 
+import com.google.common.flogger.FluentLogger;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -31,23 +32,25 @@ import jp.gr.java_conf.alpius.pino.graphics.layer.Parent;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.ref.WeakReference;
 
 public class DefaultLayerViewGraphicVisitor implements GraphicManager.LayerViewGraphicVisitor {
+    private static final FluentLogger log = FluentLogger.forEnclosingClass();
+
     public Node visit(LayerObject layer) {
         var container = new HBox();
         var wrapper = new HBox(7);
 
+        var pImage = new WritableImage[1];
         var image = new ImageView();
         image.setPreserveRatio(true);
         image.setSmooth(true);
         image.setFitHeight(35);
         image.setFitWidth(35);
 
-        getImageAndSetAsync(image, layer);
+        getImageAndSetAsync(image, layer, pImage);
 
+        var pThread = new Thread[1];
 
         var low = new HBox(3);
 
@@ -68,6 +71,7 @@ public class DefaultLayerViewGraphicVisitor implements GraphicManager.LayerViewG
                 case "visible" -> setVisibleText(visible, layer.isVisible());
                 case "rough" -> setRoughText(rough, layer.isRough());
                 case "opacity" -> setOpacityText(opacity, layer.getOpacity());
+                default -> updateImage(image, layer, pThread, pImage);
             }
         };
 
@@ -95,11 +99,27 @@ public class DefaultLayerViewGraphicVisitor implements GraphicManager.LayerViewG
         return container;
     }
 
-    private static void getImageAndSetAsync(ImageView image, LayerObject layer) {
+    private static void getImageAndSetAsync(ImageView image, LayerObject layer, WritableImage[] pImage) {
         Pino.getApp().runLater(() -> {
-            var offscreen = getImage(layer, null);
+            var offscreen = pImage[0] = getImage(layer, null);
             image.setImage(offscreen);
         });
+    }
+
+    /**
+     * ImageViewのイメージを更新します.
+     */
+    private static void updateImage(ImageView image, LayerObject layer, Thread[] pThread, WritableImage[] pImage) {
+        Thread t = pThread[0];
+        if (t != null && t.isAlive()) {
+            // 前回の更新を中断
+            t.interrupt();
+        }
+        pThread[0] = new ImageUpdateThread(image, layer, pImage, () -> {
+            pThread[0] = null;
+            log.atInfo().log("%sのイメージを更新", layer.getName());
+        });
+        pThread[0].start();
     }
 
     private static void setVisibleText(Label label, boolean isVisible) {
@@ -140,25 +160,28 @@ public class DefaultLayerViewGraphicVisitor implements GraphicManager.LayerViewG
         return "default";
     }
 
-    private static class WeakPropertyChangeListener implements PropertyChangeListener {
-        public WeakPropertyChangeListener(Object parent, LayerObject layer, PropertyChangeListener listener) {
-            ref = new WeakReference<>(parent);
-            this.layer = layer;
-            this.listener = listener;
-        }
-
-        private final WeakReference<?> ref;
+    private static class ImageUpdateThread extends Thread {
+        private final ImageView view;
         private final LayerObject layer;
-        private final PropertyChangeListener listener;
+        private final WritableImage[] pImage;
+        private final Runnable onFinished;
 
+        public ImageUpdateThread(ImageView view, LayerObject layer, WritableImage[] pImage, Runnable onFinished) {
+            this.view = view;
+            this.layer = layer;
+            this.pImage = pImage;
+            this.onFinished = onFinished;
+
+            // このスレッドで起こった例外は無視されます.
+            setUncaughtExceptionHandler((t, e) -> {});
+        }
 
         @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            if (ref.get() == null) {
-                layer.removeListener(this);
-            } else {
-                listener.propertyChange(evt);
-            }
+        public void run() {
+            pImage[0] = getImage(layer, pImage[0]);
+            view.setImage(pImage[0]);
+            onFinished.run();
         }
     }
+
 }

@@ -47,7 +47,7 @@ public final class DrawToolCursor {
 
     public static CursorOptions.Cursor create() {
         CursorOptions.Pointer[] pointer = new CursorOptions.Pointer[1];
-        Result.tryToRun(() -> Files.newInputStream(Paths.get("resources", "cursor.png")))
+        Result.tryToRun(() -> Files.newInputStream(Paths.get("resources", "images", "cursor.png")))
                 .map(Image::new)
                 .onSuccess(image -> pointer[0] = new CursorOptions.ImagePointer(image, image.getWidth() / 2, image.getHeight() / 2))
                 .onFailed(image -> pointer[0] = CursorOptions.Pointer.NONE)
