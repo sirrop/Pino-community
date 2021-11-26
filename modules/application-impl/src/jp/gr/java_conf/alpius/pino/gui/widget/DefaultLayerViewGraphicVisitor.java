@@ -121,10 +121,7 @@ public class DefaultLayerViewGraphicVisitor implements GraphicManager.LayerViewG
             // 前回の更新を中断
             t.interrupt();
         }
-        pThread[0] = new ImageUpdateThread(image, layer, pImage, () -> {
-            pThread[0] = null;
-            log.atInfo().log("%sのイメージを更新", layer.getName());
-        });
+        pThread[0] = new ImageUpdateThread(image, layer, pImage, () -> pThread[0] = null);
         pThread[0].start();
     }
 
