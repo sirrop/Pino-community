@@ -32,6 +32,7 @@ import javafx.util.converter.NumberStringConverter;
 import jp.gr.java_conf.alpius.pino.application.impl.BrushManager;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
+import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 import jp.gr.java_conf.alpius.pino.gui.screen.options.CursorOptions;
 import jp.gr.java_conf.alpius.pino.util.Result;
 
@@ -95,6 +96,8 @@ public final class DrawToolCursor {
                 var activeBrush = BrushManager.getInstance().getActiveModel().getActivatedItem();
                 activeBrush.addListener(widthListener);
 
+                updateBrushWidth(activeBrush);
+
                 listenerDisposable = () -> activeBrush.removeListener(widthListener);
             };
             BrushManager.getInstance()
@@ -102,32 +105,27 @@ public final class DrawToolCursor {
                     .addListener(updateListener);
             updateListener.accept(BrushManager.getInstance().getActiveModel().getActivatedIndex());
             var brush = BrushManager.getInstance().getActiveModel().getActivatedItem();
+            updateBrushWidth(brush);
 
-            for (var desc: brush.getUnmodifiablePropertyList()) {
-                if (desc.getName().equals("width")) {
-                    Result.tryToRun(desc::getReadMethod)
-                          .map(getter -> getter.invoke(brush))
-                          .map(value -> Double.parseDouble(value.toString()) / 2)
-                          .map(value -> value * scale.get())
-                          .onSuccess(brushWidthIndicator::setBrushWidth)
-                          .printStackTrace();
-                }
-            }
             brushWidthIndicator.setStroke(Color.GRAY);
 
             scale.addListener((observable, oldValue, newValue) -> {
                 var b = BrushManager.getInstance().getActiveModel().getActivatedItem();
-                for (var desc: b.getUnmodifiablePropertyList()) {
-                    if (desc.getName().equals("width")) {
-                        Result.tryToRun(desc::getReadMethod)
-                                .map(getter -> getter.invoke(b))
-                                .map(value -> Double.parseDouble(value.toString()) / 2)
-                                .map(value -> value * scale.get())
-                                .onSuccess(brushWidthIndicator::setBrushWidth)
-                                .printStackTrace();
-                    }
-                }
+                updateBrushWidth(b);
             });
+        }
+
+        private void updateBrushWidth(Brush brush) {
+            for (var desc: brush.getUnmodifiablePropertyList()) {
+                if (desc.getName().equals("width")) {
+                    Result.tryToRun(desc::getReadMethod)
+                            .map(getter -> getter.invoke(brush))
+                            .map(value -> Double.parseDouble(value.toString()) / 2)
+                            .map(value -> value * scale.get())
+                            .onSuccess(brushWidthIndicator::setBrushWidth)
+                            .printStackTrace();
+                }
+            }
         }
 
         @Override
