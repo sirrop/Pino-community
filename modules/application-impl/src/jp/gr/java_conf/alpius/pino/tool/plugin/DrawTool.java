@@ -47,8 +47,11 @@ public class DrawTool implements Tool {
     private DrawableLayer target;
     private BrushContext context;
 
+    /** 最後に描画されたスクリーン上の点 */
     private final double[] vec2 = new double[2];
-    private static final double D = 0.01;
+
+    /** 補完が有効になる距離 */
+    private static final double D = 5;
 
     private MementoElementBuilder<DrawableLayer> builder;
 
@@ -72,12 +75,6 @@ public class DrawTool implements Tool {
         var _x = x - vec2[0];
         var _y = y - vec2[1];
         return Math.sqrt(_x * _x + _y * _y);
-    }
-
-    private double computeAndSet(double x, double y) {
-        var l = getDistance(x, y);
-        setPoint(x, y);
-        return l;
     }
 
     @Override
@@ -121,23 +118,35 @@ public class DrawTool implements Tool {
 
     }
 
+    /* FIXME:
+     * この補完は線形です。急な方向転換のには対応できません。
+     */
     private void complementIfNeed(MouseEvent e) {
-        double[] point = new double[2];
-        point[0] = e.getScreenX();
-        point[1] = e.getScreenY();
+        /* Canvas上の点XY */
+        double localX = e.getX();
+        double localY = e.getY();
+
+        /* Screen上の点XY */
+        double[] pointInScreen = new double[2];
+        pointInScreen[0] = e.getScreenX();
+        pointInScreen[1] = e.getScreenY();
+
+        /* 前回描画した点からScreen上の点までの距離 */
         double d;
-        while ((d = getDistance(point[0], point[1])) >= D) {
+        while ((d = getDistance(pointInScreen[0], pointInScreen[1])) >= D) {
             var coeff = D / d;
+
+            /* 補完された座標 */
             double[] vec = {
-                    (point[0] - vec2[0]) * coeff + vec2[0],
-                    (point[1] - vec2[1]) * coeff + vec2[1]
+                    (pointInScreen[0] - vec2[0]) * coeff + vec2[0],
+                    (pointInScreen[1] - vec2[1]) * coeff + vec2[1]
             };
 
-            point[0] = vec2[0] = vec[0];
-            point[1] = vec2[1] = vec[1];
+            vec2[0] = vec[0];
+            vec2[1] = vec[1];
             var context = this.context;
             var target = this.target;
-            runAsync(() -> context.onDrawing(new DrawEvent(target, DrawEvent.Type.ON_DRAWING, e.getX() - point[0] + vec[0], e.getY() - point[1] + vec[1])));
+            runAsync(() -> context.onDrawing(new DrawEvent(target, DrawEvent.Type.ON_DRAWING, localX - pointInScreen[0] + vec[0], localY - pointInScreen[1] + vec[1])));
         }
     }
 
