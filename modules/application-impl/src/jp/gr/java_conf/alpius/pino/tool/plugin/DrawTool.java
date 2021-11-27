@@ -119,7 +119,7 @@ public class DrawTool implements Tool {
     }
 
     /* FIXME:
-     * この補完は線形です。急な方向転換のには対応できません。
+     * この補完は線形です。急な方向転換には対応できません。
      */
     private void complementIfNeed(MouseEvent e) {
         /* Canvas上の点XY */
