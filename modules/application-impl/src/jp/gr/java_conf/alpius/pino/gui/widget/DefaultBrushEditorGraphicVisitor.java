@@ -142,6 +142,25 @@ public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEdi
                 it.valueProperty().addListener((observable, oldValue, newValue) -> blur.setDeviation(newValue.doubleValue()));
             }, 2);
             container.getChildren().addAll(labeled("幅", width), labeled("ぼかしの強さX", kernelWidth), labeled("ぼかしの強さY", kernelHeight), labeled("偏差", deviation));
+        } else if (brush instanceof Airbrush basic) {
+            var width = slider(slider -> {
+                slider.setBlockIncrement(1);
+                slider.setValue(basic.getWidth());
+                slider.valueProperty().addListener((observable, oldValue, newValue) -> basic.setWidth(newValue.floatValue()));
+            });
+
+            var opacity = slider(slider -> {
+                slider.setMin(0);
+                slider.setMax(100);
+                slider.setBlockIncrement(1);
+                slider.setValue(basic.getOpacity() * 100);
+                slider.valueProperty().addListener((observable, oldValue, newValue) -> basic.setOpacity(newValue.floatValue() / 100));
+            });
+
+            var colorPicker = new ColorPicker();
+            colorPicker.setValue(asFxColor(basic.getColor()));
+            colorPicker.valueProperty().addListener((observable, oldValue, newValue) -> basic.setColor(asAwtColor(newValue)));
+            container.getChildren().addAll(labeled("幅", width), labeled("不透明度", opacity) , colorPicker);
         }
         return container;
     }

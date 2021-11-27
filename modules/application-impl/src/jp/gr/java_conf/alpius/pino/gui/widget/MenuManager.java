@@ -204,6 +204,7 @@ public final class MenuManager {
             var marker = new MenuItem("マーカー");
             var blur = new MenuItem("平均化ブラシ");
             var gaussianBlur = new MenuItem("ガウスぼかしブラシ");
+            var airbrush = new MenuItem("エアブラシ");
             pencil.setOnAction(e -> {
                 var mgr = BrushManager.getInstance();
                 int index = mgr.getActiveModel().getActivatedIndex();
@@ -234,7 +235,13 @@ public final class MenuManager {
                 mgr.getBrushList().add(index, new GaussianBlur());
                 syncBrushSelection(index);
             });
-            add.getItems().addAll(pencil, eraser, marker, blur, gaussianBlur);
+            airbrush.setOnAction(e -> {
+                var mgr = BrushManager.getInstance();
+                int index = mgr.getActiveModel().getActivatedIndex();
+                mgr.getBrushList().add(index, new Airbrush());
+                syncBrushSelection(index);
+            });
+            add.getItems().addAll(airbrush, pencil, eraser, marker, blur, gaussianBlur);
         }
 
         var delete = new MenuItem("削除");

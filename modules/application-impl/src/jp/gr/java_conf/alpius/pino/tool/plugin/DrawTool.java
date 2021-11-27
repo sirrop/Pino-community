@@ -86,14 +86,14 @@ public class DrawTool implements Tool {
         if (layer instanceof DrawableLayer drawable) {
             if (drawable.isLocked()) notifyLocked();
 
-            context = BrushManager.getInstance()
+            var context = this.context = BrushManager.getInstance()
                                     .getActiveModel()
                                     .getActivatedItem()
                                     .createContext(drawable);
             var selection = Pino.getApp().getProject().getService(SelectionManager.class).get();
             context.clip(selection);
             builder = MementoElementBuilder.builder(drawable).savePreviousState();
-            context.onStart(new DrawEvent(drawable, DrawEvent.Type.ON_START, e.getX(), e.getY()));
+            runAsync(() -> context.onStart(new DrawEvent(drawable, DrawEvent.Type.ON_START, e.getX(), e.getY())));
             target = drawable;
         }
 
@@ -102,19 +102,26 @@ public class DrawTool implements Tool {
     @Override
     public void mouseDragged(MouseEvent e) {
         if (context != null && target != null) {
-            context.onDrawing(new DrawEvent(target, DrawEvent.Type.ON_DRAWING, e.getX(), e.getY()));
+            var context = this.context;
+            var target = this.target;
+            runAsync(() -> context.onDrawing(new DrawEvent(target, DrawEvent.Type.ON_DRAWING, e.getX(), e.getY())));
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         if (context != null && target != null) {
-            context.onFinished(new DrawEvent(target, DrawEvent.Type.ON_FINISHED, e.getX(), e.getY()));
-            context.dispose();
-            context = null;
-            Pino.getApp().getService(History.class).add(builder.saveNextState().build());
-            builder = null;
-            repaint();
+            var context = this.context;
+            var builder = this.builder;
+            var target = this.target;
+            runAsync(() -> {
+                context.onFinished(new DrawEvent(target, DrawEvent.Type.ON_FINISHED, e.getX(), e.getY()));
+                context.dispose();
+                Pino.getApp().getService(History.class).add(builder.saveNextState().build());
+                repaint();
+            });
+            this.context = null;
+            this.builder = null;
         }
     }
 
@@ -132,6 +139,10 @@ public class DrawTool implements Tool {
                 canvas.setTranslateY(canvas.getTranslateY() + y);
             }
         }
+    }
+
+    private void runAsync(Runnable command) {
+        Pino.getApp().runLater(command);
     }
 
     private static void repaint() {

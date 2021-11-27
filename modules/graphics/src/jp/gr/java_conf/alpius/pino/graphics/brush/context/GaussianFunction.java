@@ -16,10 +16,14 @@
 
 package jp.gr.java_conf.alpius.pino.graphics.brush.context;
 
+@FunctionalInterface
 public interface GaussianFunction {
     float apply(int x, int y);
     double SQRT_2PI = Math.sqrt(2 * Math.PI);
     static GaussianFunction create(double deviation) {
-        return (x, y) -> (float) (Math.exp( -(x * x  + y * y) / (2 * deviation * deviation) ) / (SQRT_2PI * deviation));
+        // 効率化のため、予め計算できる部分をキャッシュしています
+        var deviation2 = deviation * deviation * 2;
+        var sqrt2piTimesDeviation = SQRT_2PI * deviation;
+        return (x, y) -> (float) (Math.exp( -(x * x  + y * y) / deviation2 ) / sqrt2piTimesDeviation);
     }
 }
