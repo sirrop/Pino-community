@@ -243,6 +243,11 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
     private void updateCanvas(Project project) {
         var container = window.getRootContainer();
         var canvas = container.getCanvas();
+        canvas.setScaleX(1);
+        canvas.setScaleY(1);
+        canvas.setTranslateX(0);
+        canvas.setTranslateY(0);
+        canvas.setRotate(0);
         if (project == null) {
             canvas.setWidth(0);
             canvas.setHeight(0);
