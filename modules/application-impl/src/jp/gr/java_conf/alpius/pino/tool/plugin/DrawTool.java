@@ -40,10 +40,15 @@ public class DrawTool implements Tool {
         return instance;
     }
 
+    private static final double DEFAULT_ZOOM_RATE = 0.0025;
+
     private final Canvas canvas = Pino.getApp().getWindow().getRootContainer().getCanvas();
-    private final double zoomRate = 0.0025;
+    private final double zoomRate = DEFAULT_ZOOM_RATE;
     private DrawableLayer target;
     private BrushContext context;
+
+    private final double[] vec2 = new double[2];
+    private static final double D = 0.01;
 
     private MementoElementBuilder<DrawableLayer> builder;
 
@@ -56,6 +61,23 @@ public class DrawTool implements Tool {
             throw new IllegalStateException("selection model is null");
         }
         return !activeModel.getActivatedItem().isVisible();
+    }
+
+    private void setPoint(double x, double y) {
+        vec2[0] = x;
+        vec2[1] = y;
+    }
+
+    private double getDistance(double x, double y) {
+        var _x = x - vec2[0];
+        var _y = y - vec2[1];
+        return Math.sqrt(_x * _x + _y * _y);
+    }
+
+    private double computeAndSet(double x, double y) {
+        var l = getDistance(x, y);
+        setPoint(x, y);
+        return l;
     }
 
     @Override
@@ -85,7 +107,7 @@ public class DrawTool implements Tool {
 
         if (layer instanceof DrawableLayer drawable) {
             if (drawable.isLocked()) notifyLocked();
-
+            setPoint(e.getScreenX(), e.getScreenY());
             var context = this.context = BrushManager.getInstance()
                                     .getActiveModel()
                                     .getActivatedItem()
@@ -99,18 +121,35 @@ public class DrawTool implements Tool {
 
     }
 
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        if (context != null && target != null) {
+    private void complementIfNeed(MouseEvent e) {
+        double[] point = new double[2];
+        point[0] = e.getScreenX();
+        point[1] = e.getScreenY();
+        double d;
+        while ((d = getDistance(point[0], point[1])) >= D) {
+            var coeff = D / d;
+            double[] vec = {
+                    (point[0] - vec2[0]) * coeff + vec2[0],
+                    (point[1] - vec2[1]) * coeff + vec2[1]
+            };
+
+            point[0] = vec2[0] = vec[0];
+            point[1] = vec2[1] = vec[1];
             var context = this.context;
             var target = this.target;
-            runAsync(() -> context.onDrawing(new DrawEvent(target, DrawEvent.Type.ON_DRAWING, e.getX(), e.getY())));
+            runAsync(() -> context.onDrawing(new DrawEvent(target, DrawEvent.Type.ON_DRAWING, e.getX() - point[0] + vec[0], e.getY() - point[1] + vec[1])));
         }
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        if (context != null && target != null) complementIfNeed(e);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         if (context != null && target != null) {
+            complementIfNeed(e);
             var context = this.context;
             var builder = this.builder;
             var target = this.target;
