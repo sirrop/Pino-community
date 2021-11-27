@@ -120,6 +120,8 @@ public class DrawTool implements Tool {
 
     /* FIXME:
      * この補完は線形です。急な方向転換には対応できません。
+     * また、まれに補完が完全でなく、線が途切れる不具合があるようです。
+     * この不具合はアプリの動作が重くなった場合に顕著であり、プロジェクトのサイズを大きくすると頻度が多くなる傾向があります
      */
     private void complementIfNeed(MouseEvent e) {
         /* Canvas上の点XY */
