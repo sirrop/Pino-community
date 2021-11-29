@@ -51,7 +51,18 @@ public class DrawTool implements Tool {
     private final double[] vec2 = new double[2];
 
     /** 補完が有効になる距離 */
-    private static final double D = 5;
+    private double D = 5;
+
+    public void setDistance(double value) {
+        if (value < 1) {
+            throw new IllegalArgumentException();
+        }
+        D = value;
+    }
+
+    public double getDistance() {
+        return D;
+    }
 
     private MementoElementBuilder<DrawableLayer> builder;
 
