@@ -51,4 +51,8 @@ public interface Tool extends Disposable {
 
     default void scrollFinished(ScrollEvent e) {
     }
+
+    default <R> R accept(ToolVisitor<R> visitor) {
+        return visitor.visit(this);
+    }
 }

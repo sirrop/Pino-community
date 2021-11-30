@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.gui.widget;
+package jp.gr.java_conf.alpius.pino.gui.widget.visitor;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.util.converter.NumberStringConverter;
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
 import jp.gr.java_conf.alpius.pino.graphics.brush.*;
 
-import java.util.function.Consumer;
+import static jp.gr.java_conf.alpius.pino.gui.widget.util.Nodes.labeled;
+import static jp.gr.java_conf.alpius.pino.gui.widget.util.Nodes.slider;
 
 public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEditorGraphicVisitor {
-    private static final double DEFAULT_LABEL_PREF_WIDTH = 60;
-    private static final double DEFAULT_TEXTFIELD_PREF_WIDTH = 60;
-
     public Node visit(Brush brush) {
         VBox container = new VBox(3);
         container.setPadding(new Insets(5));
@@ -165,12 +162,6 @@ public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEdi
         return container;
     }
 
-    private static Node labeled(String text, Node labeled) {
-        var label = new Label(text);
-        label.setPrefWidth(DEFAULT_LABEL_PREF_WIDTH);
-        return new HBox(label, labeled);
-    }
-
     private static Color asFxColor(java.awt.Color awt) {
         double a = awt.getAlpha();
         double r = awt.getRed();
@@ -193,50 +184,5 @@ public class DefaultBrushEditorGraphicVisitor implements GraphicManager.BrushEdi
 
     public String toString() {
         return "default";
-    }
-
-    public static Node slider(Consumer<Slider> configurator) {
-        return slider(configurator, 1);
-    }
-
-    public static Node slider(Consumer<Slider> configurator, int mug) {
-        var slider = new Slider();
-        configurator.accept(slider);
-        var incBtn = new Button("+");
-        incBtn.setOnAction(e -> slider.increment());
-        incBtn.getStyleClass().add("increment-button");
-        var decBtn = new Button("-");
-        decBtn.setOnAction(e -> slider.decrement());
-        decBtn.getStyleClass().add("decrement-button");
-        var textField = new TextField();
-        var formatter = new TextFormatter<>(new NumberStringConverter() {
-            @Override
-            public String toString(Number number) {
-                String result = super.toString(number);
-                result = drop(result, getNumDigitsUnderPoint(result) - mug);
-                if (mug == 0 && result.lastIndexOf('.') != -1) {
-                    result = drop(result, 1);
-                }
-                return result;
-            }
-        }, slider.getValue());
-        textField.setTextFormatter(formatter);
-        textField.setPrefWidth(DEFAULT_TEXTFIELD_PREF_WIDTH);
-        formatter.valueProperty().bindBidirectional(slider.valueProperty());
-        return new HBox(slider, decBtn, incBtn, textField);
-    }
-
-    private static int getNumDigitsUnderPoint(String str) {
-        int point = str.indexOf('.');
-        if (point == -1) {
-            return 0;
-        } else {
-            return str.length() - point - 1;
-        }
-    }
-
-    private static String drop(String string, int num) {
-        if (num <= 0) return string;
-        return string.substring(0, string.length() - num);
     }
 }

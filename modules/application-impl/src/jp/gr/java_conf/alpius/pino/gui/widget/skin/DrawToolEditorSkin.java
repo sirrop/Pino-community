@@ -21,9 +21,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import jp.gr.java_conf.alpius.pino.gui.widget.DefaultBrushEditorGraphicVisitor;
 import jp.gr.java_conf.alpius.pino.gui.widget.DrawToolEditor;
 import jp.gr.java_conf.alpius.pino.tool.plugin.DrawTool;
+
+import static jp.gr.java_conf.alpius.pino.gui.widget.util.Nodes.slider;
 
 public class DrawToolEditorSkin extends SkinBase<DrawToolEditor> {
     protected final Label title;
@@ -32,7 +33,7 @@ public class DrawToolEditorSkin extends SkinBase<DrawToolEditor> {
     public DrawToolEditorSkin(DrawToolEditor control) {
         super(control);
         title = new Label("ブラシツール");
-        distance = DefaultBrushEditorGraphicVisitor.slider(it -> {
+        distance = slider(it -> {
             it.setMin(1);
             it.setBlockIncrement(1);
             it.setValue(getTool().getDistance());

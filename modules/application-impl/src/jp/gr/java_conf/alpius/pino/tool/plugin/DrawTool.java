@@ -51,17 +51,17 @@ public class DrawTool implements Tool {
     private final double[] vec2 = new double[2];
 
     /** 補完が有効になる距離 */
-    private double D = 5;
+    private double distance = 5;
 
     public void setDistance(double value) {
         if (value < 1) {
             throw new IllegalArgumentException();
         }
-        D = value;
+        distance = value;
     }
 
     public double getDistance() {
-        return D;
+        return distance;
     }
 
     private MementoElementBuilder<DrawableLayer> builder;
@@ -140,32 +140,37 @@ public class DrawTool implements Tool {
         double localY = e.getY();
 
         /* Screen上の点XY */
-        double[] pointInScreen = new double[2];
-        pointInScreen[0] = e.getScreenX();
-        pointInScreen[1] = e.getScreenY();
+        var screenX = e.getScreenX();
+        var screenY = e.getScreenY();
+
+        var threshold = getDistance();
 
         /* 前回描画した点からScreen上の点までの距離 */
         double d;
-        while ((d = getDistance(pointInScreen[0], pointInScreen[1])) >= D) {
-            var coeff = D / d;
+        while ((d = getDistance(screenX, screenY)) >= threshold) {
+            var coeff = distance / d;
 
             /* 補完された座標 */
             double[] vec = {
-                    (pointInScreen[0] - vec2[0]) * coeff + vec2[0],
-                    (pointInScreen[1] - vec2[1]) * coeff + vec2[1]
+                    (screenX - vec2[0]) * coeff + vec2[0],
+                    (screenY - vec2[1]) * coeff + vec2[1]
             };
 
-            vec2[0] = vec[0];
-            vec2[1] = vec[1];
+            System.arraycopy(vec, 0, vec2, 0, 2);
+
             var context = this.context;
             var target = this.target;
-            runAsync(() -> context.onDrawing(new DrawEvent(target, DrawEvent.Type.ON_DRAWING, localX - pointInScreen[0] + vec[0], localY - pointInScreen[1] + vec[1])));
+
+            var drawEvent = new DrawEvent(target, DrawEvent.Type.ON_DRAWING, localX - screenX + vec[0], localY - screenY + vec[1]);
+            runAsync(() -> context.onDrawing(drawEvent));
         }
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (context != null && target != null) complementIfNeed(e);
+        if (context != null && target != null) {
+            complementIfNeed(e);
+        }
     }
 
     @Override

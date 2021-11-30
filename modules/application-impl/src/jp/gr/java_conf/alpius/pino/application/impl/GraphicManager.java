@@ -21,6 +21,8 @@ import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 import jp.gr.java_conf.alpius.pino.graphics.brush.BrushVisitor;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerVisitor;
+import jp.gr.java_conf.alpius.pino.tool.Tool;
+import jp.gr.java_conf.alpius.pino.tool.ToolVisitor;
 
 import java.util.List;
 import java.util.ServiceLoader;
@@ -39,6 +41,9 @@ public class GraphicManager {
     public interface BrushViewGraphicVisitor extends BrushVisitor<Node> {
     }
 
+    public interface ToolEditorGraphicVisitor extends ToolVisitor<Node> {
+    }
+
     public static GraphicManager getInstance() {
         return Pino.getApp().getService(GraphicManager.class);
     }
@@ -47,12 +52,14 @@ public class GraphicManager {
     final List<LayerViewGraphicVisitor> layerViewGraphicVisitors;
     final List<BrushEditorGraphicVisitor> brushEditorGraphicVisitorList;
     final List<BrushViewGraphicVisitor> brushViewGraphicVisitors;
+    final List<ToolEditorGraphicVisitor> toolEditorGraphicVisitors;
 
     public GraphicManager() {
         layerEditorGraphicVisitors = ServiceLoader.load(LayerEditorGraphicVisitor.class).stream().map(ServiceLoader.Provider::get).collect(Collectors.toList());
         layerViewGraphicVisitors = ServiceLoader.load(LayerViewGraphicVisitor.class).stream().map(ServiceLoader.Provider::get).collect(Collectors.toList());
         brushEditorGraphicVisitorList = ServiceLoader.load(BrushEditorGraphicVisitor.class).stream().map(ServiceLoader.Provider::get).collect(Collectors.toList());
         brushViewGraphicVisitors = ServiceLoader.load(BrushViewGraphicVisitor.class).stream().map(ServiceLoader.Provider::get).collect(Collectors.toList());
+        toolEditorGraphicVisitors = ServiceLoader.load(ToolEditorGraphicVisitor.class).stream().map(ServiceLoader.Provider::get).collect(Collectors.toList());
     }
 
     public Node getEditorGraphic(LayerObject layer) {
@@ -93,6 +100,16 @@ public class GraphicManager {
             }
         }
         throw new RuntimeException("Not found BrushViewGraphicVisitor");
+    }
+
+    public Node getEditorGraphic(Tool tool) {
+        for (var visitor: toolEditorGraphicVisitors) {
+            var graphic = tool.accept(visitor);
+            if (graphic != null) {
+                return graphic;
+            }
+        }
+        throw new RuntimeException("Not found ToolEditorGraphicVisitor");
     }
 
     public static void main(String... args) {

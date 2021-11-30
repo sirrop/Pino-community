@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.gui.widget;
+package jp.gr.java_conf.alpius.pino.gui.widget.util;
 
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
 
@@ -22,7 +22,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.ref.WeakReference;
 
-final class WeakPropertyChangeListener implements PropertyChangeListener {
+public final class WeakPropertyChangeListener implements PropertyChangeListener {
     public WeakPropertyChangeListener(Object parent, LayerObject layer, PropertyChangeListener listener) {
         ref = new WeakReference<>(parent);
         this.layer = layer;

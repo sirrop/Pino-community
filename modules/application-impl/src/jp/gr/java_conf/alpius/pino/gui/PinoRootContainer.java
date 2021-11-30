@@ -42,6 +42,8 @@ import java.io.IOException;
 
 public class PinoRootContainer implements RootContainer {
     @FXML
+    private ToolEditor toolEditor;
+    @FXML
     private StatusBar statusBar;
     @FXML
     private BrushEditor brushEditor;
@@ -122,6 +124,11 @@ public class PinoRootContainer implements RootContainer {
     @Override
     public Pane getCanvasPane() {
         return canvasPane;
+    }
+
+    @Override
+    public ToolEditor getToolEditor() {
+        return toolEditor;
     }
 
     @Override

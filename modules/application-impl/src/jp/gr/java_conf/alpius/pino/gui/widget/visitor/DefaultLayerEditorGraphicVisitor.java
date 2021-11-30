@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.gui.widget;
+package jp.gr.java_conf.alpius.pino.gui.widget.visitor;
 
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -26,7 +26,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-import javafx.util.converter.NumberStringConverter;
 import jp.gr.java_conf.alpius.pino.application.impl.BlendModeRegistry;
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
@@ -46,16 +45,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+
+import static jp.gr.java_conf.alpius.pino.gui.widget.util.Nodes.label;
+import static jp.gr.java_conf.alpius.pino.gui.widget.util.Nodes.slider;
 
 public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEditorGraphicVisitor {
-    private static final double DEFAULT_LABEL_PREF_WIDTH = 60;
-    private static final double DEFAULT_TEXTFIELD_PREF_WIDTH = 60;
 
-    private static final BiConsumer<Pane, LayerObject> NOP = (pane, layerObject) -> {};
+    private static final Null NOP = new Null();
 
-    private static final Map<Class<?>, BiConsumer<Pane, LayerObject>> CONSUMER_MAP = Map.of(
+    private static final Map<Class<?>, Layer<?>> CONSUMER_MAP = Map.of(
             Drawable.KEY, new Drawable(),
             Image.KEY, new Image(),
 
@@ -64,11 +62,6 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
             TextVisit.KEY, new TextVisit()
     );
 
-    private static Label label(String text) {
-        var res = new Label(text);
-        res.setPrefWidth(DEFAULT_LABEL_PREF_WIDTH);
-        return res;
-    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -202,7 +195,7 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
                 clipping
         );
 
-        CONSUMER_MAP.getOrDefault(e.getClass(), NOP).accept(container, e);
+        ((Configurator<LayerObject>) CONSUMER_MAP.getOrDefault(e.getClass(), NOP)).configure(container, e);
 
         return container;
     }
@@ -232,62 +225,19 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
         return "default";
     }
 
-    public static Node slider(Consumer<Slider> configurator) {
-        return slider(configurator, 1);
-    }
+    private static abstract class Layer<L extends LayerObject> implements Configurator<L> {}
 
-    public static Node slider(Consumer<Slider> configurator, int mug) {
-        var slider = new Slider();
-        configurator.accept(slider);
-        var incBtn = new Button("+");
-        incBtn.setOnAction(e -> slider.increment());
-        incBtn.getStyleClass().add("increment-button");
-        var decBtn = new Button("-");
-        decBtn.setOnAction(e -> slider.decrement());
-        decBtn.getStyleClass().add("decrement-button");
-        var textField = new TextField();
-        var formatter = new TextFormatter<>(new NumberStringConverter() {
-            @Override
-            public String toString(Number number) {
-                String result = super.toString(number);
-                return drop(result, getNumDigitsUnderPoint(result) - mug);
-            }
-        }, slider.getValue());
-        textField.setTextFormatter(formatter);
-        textField.setPrefWidth(DEFAULT_TEXTFIELD_PREF_WIDTH);
-        formatter.valueProperty().bindBidirectional(slider.valueProperty());
-        return new HBox(slider, decBtn, incBtn, textField);
-    }
-
-    private static int getNumDigitsUnderPoint(String str) {
-        int point = str.indexOf('.');
-        if (point == -1) {
-            return 0;
-        } else {
-            return str.length() - point - 1;
-        }
-    }
-
-    private static String drop(String string, int num) {
-        if (num <= 0) return string;
-        return string.substring(0, string.length() - num);
-    }
-
-    private static abstract class ConcreteVisitor<E extends LayerObject> implements BiConsumer<Pane, LayerObject> {
-        @SuppressWarnings("unchecked")
+    private static class Null extends Layer<LayerObject> {
         @Override
-        public void accept(Pane container, LayerObject layer) {
-            visit(container, (E) layer);
+        public void configure(Pane container, LayerObject layerObject) {
         }
-
-        public abstract void visit(Pane container, E e);
     }
 
-    private static class Drawable extends ConcreteVisitor<DrawableLayer> {
+    private static class Drawable extends Layer<DrawableLayer> {
         public static final Class<?> KEY = DrawableLayer.class;
 
         @Override
-        public void visit(Pane container, DrawableLayer drawable) {
+        public void configure(Pane container, DrawableLayer drawable) {
             CheckBox opacityProtect = new CheckBox("透明度保護※不具合あり");
             opacityProtect.setSelected(drawable.isOpacityProtected());
             opacityProtect.selectedProperty().addListener((observable, oldValue, newValue) -> drawable.setOpacityProtected(newValue));
@@ -299,10 +249,10 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
         }
     }
 
-    private static class Image extends ConcreteVisitor<ImageLayer> {
+    private static class Image extends Layer<ImageLayer> {
         public static final Class<?> KEY = ImageLayer.class;
         @Override
-        public void visit(Pane container, ImageLayer image) {
+        public void configure(Pane container, ImageLayer image) {
             Button button = new Button("画像を選択");
             button.setOnAction(event -> {
                 FileChooser fc = new FileChooser();
@@ -315,24 +265,24 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
         }
     }
 
-    private static abstract class Shape<S extends ShapeLayer> extends ConcreteVisitor<S> {
+    private static abstract class Shape<S extends ShapeLayer> extends Layer<S> {
         @Override
-        public final void visit(Pane container, S shape) {
-            doVisit(container, shape);
+        public final void configure(Pane container, S shape) {
+            doConfigure(container, shape);
             ColorPicker fillPicker = new ColorPicker(toFxColor(shape.getFill()));
             fillPicker.valueProperty().addListener((observable, oldValue, newValue) -> shape.setFill(toAwtColor(newValue)));
             var label = label("色");
             container.getChildren().add(new HBox(label, fillPicker));
         }
 
-        protected abstract void doVisit(Pane container, S s);
+        protected abstract void doConfigure(Pane container, S s);
     }
 
     private static class Rect extends Shape<Rectangle> {
         public static final Class<?> KEY = Rectangle.class;
 
         @Override
-        protected void doVisit(Pane container, Rectangle rectangle) {
+        protected void doConfigure(Pane container, Rectangle rectangle) {
             var widthLabel = label("幅");
             var heightLabel = label("高さ");
 
@@ -360,7 +310,7 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
     private static class EllipseVisit extends Shape<Ellipse> {
         public static final Class<?> KEY = Ellipse.class;
         @Override
-        protected void doVisit(Pane container, Ellipse ellipse) {
+        protected void doConfigure(Pane container, Ellipse ellipse) {
             var widthLabel = label("幅");
             var heightLabel = label("高さ");
 
@@ -388,7 +338,7 @@ public class DefaultLayerEditorGraphicVisitor implements GraphicManager.LayerEdi
     private static class TextVisit extends Shape<Text> {
         public static final Class<?> KEY = Text.class;
         @Override
-        protected void doVisit(Pane container, Text text) {
+        protected void doConfigure(Pane container, Text text) {
             var inputLabel = label("入力");
             TextField input = new TextField(text.getText());
             input.textProperty().addListener((observable, oldValue, newValue) -> text.setText(newValue));

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jp.gr.java_conf.alpius.pino.gui.widget;
+package jp.gr.java_conf.alpius.pino.gui.widget.visitor;
 
 import com.google.common.flogger.FluentLogger;
 import javafx.embed.swing.SwingFXUtils;
@@ -29,6 +29,7 @@ import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
 import jp.gr.java_conf.alpius.pino.graphics.layer.Parent;
+import jp.gr.java_conf.alpius.pino.gui.widget.util.WeakPropertyChangeListener;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

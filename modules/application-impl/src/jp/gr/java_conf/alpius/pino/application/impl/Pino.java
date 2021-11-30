@@ -112,6 +112,8 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         Thread.currentThread().setUncaughtExceptionHandler(new ErrorHandler());
         services.register(OptionScreen.class, OptionScreen.create());
         eventDistributor.activate(eventDistributor.getActiveTool());
+        eventDistributor.addListener((oldTool, newTool) -> container.getToolEditor().setItem(newTool));
+        container.getToolEditor().setItem(eventDistributor.getActiveTool());
 
         log.atInfo().log("Application started at %s", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(Main.startUp));
     }

@@ -15,14 +15,11 @@
  */
 
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
+import jp.gr.java_conf.alpius.pino.gui.widget.visitor.*;
 import jp.gr.java_conf.alpius.pino.io.serializable.action.DeserializeProject;
 import jp.gr.java_conf.alpius.pino.io.serializable.action.SerializeProject;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.Action;
 import jp.gr.java_conf.alpius.pino.ui.actionSystem.plugin.*;
-import jp.gr.java_conf.alpius.pino.gui.widget.DefaultBrushEditorGraphicVisitor;
-import jp.gr.java_conf.alpius.pino.gui.widget.DefaultBrushViewGraphicVisitor;
-import jp.gr.java_conf.alpius.pino.gui.widget.DefaultLayerEditorGraphicVisitor;
-import jp.gr.java_conf.alpius.pino.gui.widget.DefaultLayerViewGraphicVisitor;
 
 module pino.application.impl {
     exports jp.gr.java_conf.alpius.pino.application.impl;
@@ -54,6 +51,8 @@ module pino.application.impl {
     opens jp.gr.java_conf.alpius.pino.gui.widget to javafx.fxml, javafx.graphics;
     exports jp.gr.java_conf.alpius.pino.bootstrap;
     opens jp.gr.java_conf.alpius.pino.bootstrap to javafx.fxml, javafx.graphics;
+    exports jp.gr.java_conf.alpius.pino.gui.widget.visitor;
+    opens jp.gr.java_conf.alpius.pino.gui.widget.visitor to javafx.fxml, javafx.graphics;
 
     uses jp.gr.java_conf.alpius.pino.application.impl.GraphicManager.LayerEditorGraphicVisitor;
     uses jp.gr.java_conf.alpius.pino.application.impl.GraphicManager.LayerViewGraphicVisitor;
@@ -61,11 +60,13 @@ module pino.application.impl {
     uses jp.gr.java_conf.alpius.pino.application.impl.GraphicManager.BrushViewGraphicVisitor;
     uses jp.gr.java_conf.alpius.pino.ui.actionSystem.Action;
     uses jp.gr.java_conf.alpius.pino.tool.Tool;
+    uses GraphicManager.ToolEditorGraphicVisitor;
 
     provides GraphicManager.LayerEditorGraphicVisitor with DefaultLayerEditorGraphicVisitor;
     provides GraphicManager.LayerViewGraphicVisitor with DefaultLayerViewGraphicVisitor;
     provides GraphicManager.BrushEditorGraphicVisitor with DefaultBrushEditorGraphicVisitor;
     provides GraphicManager.BrushViewGraphicVisitor with DefaultBrushViewGraphicVisitor;
+    provides GraphicManager.ToolEditorGraphicVisitor with DefaultToolEditorGraphicVisitor;
     provides Action
             with    ActivateDrawTool, ActivateHandTool, ActivateLassoTool, ActivateRectangleLassoTool, ActivateMoveLayerTool, ActivateEyedropperTool,
                     MakeProject, DeserializeProject, CloseProject, Output, SerializeProject, ShowOptionsAction, Exit,
