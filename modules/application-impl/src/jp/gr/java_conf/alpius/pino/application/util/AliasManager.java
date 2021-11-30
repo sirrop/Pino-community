@@ -18,6 +18,7 @@ package jp.gr.java_conf.alpius.pino.application.util;
 
 import jp.gr.java_conf.alpius.pino.graphics.AlphaBlend;
 import jp.gr.java_conf.alpius.pino.tool.plugin.DrawTool;
+import jp.gr.java_conf.alpius.pino.tool.plugin.EyedropperTool;
 import jp.gr.java_conf.alpius.pino.tool.plugin.HandTool;
 import jp.gr.java_conf.alpius.pino.tool.plugin.Ruler;
 
@@ -32,6 +33,7 @@ public final class AliasManager implements IAliasManager{
 
         /* Tools */
         res.register(DrawTool.class.getName()).as("描画ツール");
+        res.register(EyedropperTool.class.getName()).as("スポイト");
         res.register(HandTool.class.getName()).as("移動");
         res.register(Ruler.class.getName()).as("定規");
 
