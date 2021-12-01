@@ -216,10 +216,10 @@ public class DrawTool implements Tool {
 
     @Override
     public void dispose() {
-        engine.dispose();
+        engine.cancel();
     }
 
-    private static class RenderEngine implements Disposable {
+    private static class RenderEngine {
         private Thread runner;
         public final BlockingDeque<Command> queue;
         private RenderContext renderingContext;
@@ -276,7 +276,7 @@ public class DrawTool implements Tool {
             }
         }
 
-        private void cancel() {
+        public void cancel() {
             finish();
             if (runner != null) {
                 runner.interrupt();
@@ -284,10 +284,6 @@ public class DrawTool implements Tool {
             if (renderingContext != null) {
                 renderingContext.dispose();
             }
-        }
-
-        public void dispose() {
-            cancel();
         }
     }
 
