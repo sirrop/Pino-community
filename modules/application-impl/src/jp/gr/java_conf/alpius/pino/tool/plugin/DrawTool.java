@@ -20,7 +20,6 @@ import com.google.common.flogger.FluentLogger;
 import javafx.scene.canvas.Canvas;
 import jp.gr.java_conf.alpius.pino.application.impl.BrushManager;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
-import jp.gr.java_conf.alpius.pino.disposable.Disposable;
 import jp.gr.java_conf.alpius.pino.graphics.brush.BrushContext;
 import jp.gr.java_conf.alpius.pino.graphics.brush.event.DrawEvent;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
@@ -33,12 +32,6 @@ import jp.gr.java_conf.alpius.pino.notification.Publisher;
 import jp.gr.java_conf.alpius.pino.project.impl.SelectionManager;
 import jp.gr.java_conf.alpius.pino.tool.Tool;
 
-import java.awt.*;
-import java.util.Objects;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public class DrawTool implements Tool {
     private static final FluentLogger log = FluentLogger.forEnclosingClass();
     private static final DrawTool instance = new DrawTool();
@@ -49,9 +42,10 @@ public class DrawTool implements Tool {
 
     private static final double DEFAULT_ZOOM_RATE = 0.0025;
 
-    private final RenderEngine engine = new RenderEngine();
     private final Canvas canvas = Pino.getApp().getWindow().getRootContainer().getCanvas();
     private final double zoomRate = DEFAULT_ZOOM_RATE;
+    private DrawableLayer target;
+    private BrushContext context;
 
     /** 最後に描画されたスクリーン上の点 */
     private final double[] vec2 = new double[2];
@@ -73,10 +67,6 @@ public class DrawTool implements Tool {
     private MementoElementBuilder<DrawableLayer> builder;
 
     public DrawTool() {
-        engine.setOnFinishing(() -> {
-            Pino.getApp().getService(History.class).add(builder.saveNextState().build());
-            repaint();
-        });
     }
 
     private boolean isInvisible() {
@@ -113,6 +103,10 @@ public class DrawTool implements Tool {
             Pino.getApp().getService(Publisher.class).publish(notification);
             return;
         }
+        if (context != null) {
+            context.dispose();
+            context = null;
+        }
 
         var layer = Pino.getApp()
                                     .getProject()
@@ -122,22 +116,22 @@ public class DrawTool implements Tool {
         if (layer instanceof DrawableLayer drawable) {
             if (drawable.isLocked()) notifyLocked();
             setPoint(e.getScreenX(), e.getScreenY());
-            var context = BrushManager.getInstance()
+            var context = this.context = BrushManager.getInstance()
                                     .getActiveModel()
                                     .getActivatedItem()
                                     .createContext(drawable);
             var selection = Pino.getApp().getProject().getService(SelectionManager.class).get();
             context.clip(selection);
             builder = MementoElementBuilder.builder(drawable).savePreviousState();
-            engine.start(new RenderContext(context, drawable));
-            engine.queue.addLast(new Command(DrawEvent.Type.ON_START, e.getX(), e.getY()));
+            runAsync(() -> context.onStart(new DrawEvent(drawable, DrawEvent.Type.ON_START, e.getX(), e.getY())));
+            target = drawable;
         }
 
     }
 
     /* FIXME:
-     * この補間は線形です。急な方向転換には対応できません。
-     * また、まれに補間が完全でなく、線が途切れる不具合があるようです。
+     * この補完は線形です。急な方向転換には対応できません。
+     * また、まれに補完が完全でなく、線が途切れる不具合があるようです。
      * この不具合はアプリの動作が重くなった場合に顕著であり、プロジェクトのサイズを大きくすると頻度が多くなる傾向があります
      */
     private void complementIfNeed(MouseEvent e) {
@@ -156,7 +150,7 @@ public class DrawTool implements Tool {
         while ((d = getDistance(screenX, screenY)) >= threshold) {
             var coeff = distance / d;
 
-            /* 補間された座標 */
+            /* 補完された座標 */
             double[] vec = {
                     (screenX - vec2[0]) * coeff + vec2[0],
                     (screenY - vec2[1]) * coeff + vec2[1]
@@ -164,19 +158,37 @@ public class DrawTool implements Tool {
 
             System.arraycopy(vec, 0, vec2, 0, 2);
 
-            engine.queue.addLast(new Command(DrawEvent.Type.ON_DRAWING, localX - screenX + vec[0], localY - screenY + vec[1]));
+            var context = this.context;
+            var target = this.target;
+
+            var drawEvent = new DrawEvent(target, DrawEvent.Type.ON_DRAWING, localX - screenX + vec[0], localY - screenY + vec[1]);
+            runAsync(() -> context.onDrawing(drawEvent));
         }
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        complementIfNeed(e);
+        if (context != null && target != null) {
+            complementIfNeed(e);
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        complementIfNeed(e);
-        engine.queue.addLast(new Command(DrawEvent.Type.ON_FINISHED, e.getX(), e.getY()));
+        if (context != null && target != null) {
+            complementIfNeed(e);
+            var context = this.context;
+            var builder = this.builder;
+            var target = this.target;
+            runAsync(() -> {
+                context.onFinished(new DrawEvent(target, DrawEvent.Type.ON_FINISHED, e.getX(), e.getY()));
+                context.dispose();
+                Pino.getApp().getService(History.class).add(builder.saveNextState().build());
+                repaint();
+            });
+            this.context = null;
+            this.builder = null;
+        }
     }
 
     @Override
@@ -193,6 +205,10 @@ public class DrawTool implements Tool {
                 canvas.setTranslateY(canvas.getTranslateY() + y);
             }
         }
+    }
+
+    private void runAsync(Runnable command) {
+        Pino.getApp().runLater(command);
     }
 
     private static void repaint() {
@@ -216,137 +232,5 @@ public class DrawTool implements Tool {
 
     @Override
     public void dispose() {
-        engine.cancel();
-    }
-
-    private static class RenderEngine {
-        private Thread runner;
-        public final BlockingDeque<Command> queue;
-        private RenderContext renderingContext;
-        private final AtomicBoolean running = new AtomicBoolean(false);
-        private Runnable onFinishing;
-
-        public RenderEngine() {
-            queue = new LinkedBlockingDeque<>();
-        }
-
-        public void start(RenderContext context) {
-            Objects.requireNonNull(context, "context == null");
-            cancel();
-            renderingContext = context;
-            runner = new Thread(() -> {
-                running.set(true);
-                boolean started = false;
-                loop:
-                while (true) {
-                    try {
-                        var e  = queue.takeFirst().newEvent(context.drawable);
-                        switch (e.getEventType()) {
-                            case ON_START -> {
-                                if (started) {
-                                    break loop;
-                                }
-                                started = true;
-                                context.brush.onStart(e);
-                            }
-                            case ON_DRAWING -> context.brush.onDrawing(e);
-                            case ON_FINISHED -> {
-                                context.brush.onFinished(e);
-                                context.dispose();
-                                break loop;
-                            }
-                        }
-                    } catch (InterruptedException ignored) {
-                    }
-                }
-                context.dispose();
-                finish();
-            });
-            runner.start();
-        }
-
-        public void setOnFinishing(Runnable action) {
-            onFinishing = action;
-        }
-
-        public void finish() {
-            var action = onFinishing;
-            if (action != null && running.getAndSet(false)) {
-                action.run();
-            }
-        }
-
-        public void cancel() {
-            finish();
-            if (runner != null) {
-                runner.interrupt();
-            }
-            if (renderingContext != null) {
-                renderingContext.dispose();
-            }
-        }
-    }
-
-    private static class RenderContext implements Disposable {
-        private static final BrushContext NOP = new BrushContext() {
-            @Override
-            public void clip(Shape shape) {
-
-            }
-
-            @Override
-            public void setClip(Shape shape) {
-
-            }
-
-            @Override
-            public Shape getClip() {
-                return null;
-            }
-
-            @Override
-            public void onStart(DrawEvent e) {
-
-            }
-
-            @Override
-            public void onDrawing(DrawEvent e) {
-
-            }
-
-            @Override
-            public void onFinished(DrawEvent e) {
-
-            }
-
-            @Override
-            public void dispose() {
-
-            }
-        };
-        private BrushContext brush;
-        private final DrawableLayer drawable;
-
-        public RenderContext(BrushContext brush, DrawableLayer drawable) {
-            this.brush = Objects.requireNonNull(brush);
-            this.drawable = Objects.requireNonNull(drawable);
-        }
-
-        public void dispose() {
-            brush.dispose();
-            brush = NOP;
-        }
-    }
-
-    private static record Command(DrawEvent.Type type, double x, double y) {
-        public Command(DrawEvent.Type type, double x, double y) {
-            this.type = Objects.requireNonNull(type);
-            this.x = x;
-            this.y = y;
-        }
-
-        public DrawEvent newEvent(DrawableLayer layer) {
-            return new DrawEvent(layer, type, x, y);
-        }
     }
 }
