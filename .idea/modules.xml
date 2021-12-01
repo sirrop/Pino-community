@@ -7,6 +7,8 @@
       <module fileurl="file://$PROJECT_DIR$/modules/application-impl/application-impl.iml" filepath="$PROJECT_DIR$/modules/application-impl/application-impl.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/core/core.iml" filepath="$PROJECT_DIR$/modules/core/core.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/graphics/graphics.iml" filepath="$PROJECT_DIR$/modules/graphics/graphics.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/pinogl/pinogl.iml" filepath="$PROJECT_DIR$/modules/pinogl/pinogl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/pinogl-backend-java2d/pinogl-backend-java2d.iml" filepath="$PROJECT_DIR$/modules/pinogl-backend-java2d/pinogl-backend-java2d.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/ui/ui.iml" filepath="$PROJECT_DIR$/modules/ui/ui.iml" />
     </modules>
   </component>

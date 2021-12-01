@@ -24,4 +24,27 @@ public record Notification(
         Image icon,
         NotificationType type
 ) {
+    public static NotificationBuilder builder() {
+        return new NotificationBuilder();
+    }
+
+    public static NotificationBuilder error() {
+        return builder().setType(NotificationType.ERROR);
+    }
+
+    public static NotificationBuilder info() {
+        return builder().setType(NotificationType.INFO);
+    }
+
+    public static NotificationBuilder warn() {
+        return builder().setType(NotificationType.WARN);
+    }
+
+    public static NotificationBuilder update() {
+        return builder().setType(NotificationType.UPDATE);
+    }
+
+    public static NotificationBuilder confirm() {
+        return builder().setType(NotificationType.CONFIRM);
+    }
 }

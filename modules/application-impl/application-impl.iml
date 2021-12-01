@@ -16,5 +16,8 @@
     <orderEntry type="module" module-name="ui" />
     <orderEntry type="module" module-name="graphics" />
     <orderEntry type="library" name="javafx16" level="application" />
+    <orderEntry type="library" name="google.flogger" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="google.flogger.system.backend" level="project" />
+    <orderEntry type="library" name="com.google.guava:guava:30.1.1-jre" level="project" />
   </component>
 </module>

@@ -11,15 +11,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.20/lombok-1.18.20.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module" module-name="core" />
     <orderEntry type="module-library" scope="TEST">
       <library name="JUnit5.7.0">
@@ -47,25 +38,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="javafx16" level="application" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/ダウンロード/jogamp-all-platforms/jar/gluegen-rt.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/ダウンロード/jogamp-all-platforms/jar/jogl-all.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/ダウンロード/jogamp-all-platforms/jogl-java-src.zip!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
+    <orderEntry type="library" name="google.flogger" level="project" />
+    <orderEntry type="library" scope="TEST" name="google.flogger.system.backend" level="project" />
   </component>
 </module>

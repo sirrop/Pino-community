@@ -16,6 +16,7 @@
 
 package jp.gr.java_conf.alpius.pino.graphics.layer;
 
+import com.google.common.flogger.FluentLogger;
 import jp.gr.java_conf.alpius.pino.beans.Bind;
 import jp.gr.java_conf.alpius.pino.graphics.DelegatingGraphics2D;
 import jp.gr.java_conf.alpius.pino.graphics.Graphics2DNoOp;
@@ -32,10 +33,22 @@ import java.awt.image.BufferedImageOp;
 import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
 import java.awt.image.renderable.RenderableImage;
+import java.nio.ByteBuffer;
 import java.text.AttributedCharacterIterator;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 public class DrawableLayer extends LayerObject {
+    private static final FluentLogger log = FluentLogger.forEnclosingClass();
+
+    public DrawableLayer(Canvas canvas) {
+        this.canvas = Objects.requireNonNull(canvas, "canvas == null");
+    }
+
     @Bind
     private boolean opacityProtected = false;
 
@@ -67,9 +80,10 @@ public class DrawableLayer extends LayerObject {
         }
     }
 
-    @Override
+    private final Canvas canvas;
+
     public final Canvas getCanvas() {
-        return super.getCanvas();
+        return canvas;
     }
 
     @Override
@@ -99,15 +113,21 @@ public class DrawableLayer extends LayerObject {
     }
 
     public Memento<?> createMemento() {
+        log.atFine().log("name=%s", getName());
         return new MyMemento(this, super.createMemento());
     }
 
     public void restore(Memento<?> memento) {
+        log.atFine().log("name=%s", getName());
         if (memento instanceof MyMemento m) {
             super.restore(m.getParent());
             var g = createGraphics();
             g.setComposite(AlphaComposite.Src);
-            g.drawImage(m.offscreenImage, 0, 0, null);
+            try {
+                g.drawImage(m.getData(), 0, 0, null);
+            } catch (DataFormatException e) {
+                log.atWarning().withCause(e).log();
+            }
             g.dispose();
         } else {
             throw new IncompatibleMementoException();
@@ -115,11 +135,54 @@ public class DrawableLayer extends LayerObject {
     }
 
     private static class MyMemento extends MementoBase<DrawableLayer> {
-        private final BufferedImage offscreenImage;
+        private final int width;
+        private final int height;
+        private final byte[] data;
 
         public MyMemento(DrawableLayer layer, Memento<?> superMemento) {
             super(layer, superMemento);
-            offscreenImage = layer.getCanvas().snapshot();
+            var offscreenImage = layer.getCanvas().snapshot();
+            width = offscreenImage.getWidth();
+            height = offscreenImage.getHeight();
+            var array = offscreenImage.getRGB(0, 0, width, height, null, 0, width);
+            var buffer = ByteBuffer.allocate(array.length * 4);
+            for (int pixel: array) {
+                buffer.putInt(pixel);
+            }
+            var data = buffer.array();
+            this.data = compress(data);
+        }
+
+
+        private static byte[] compress(byte[] data) {
+            byte[] res = new byte[data.length];
+            Deflater compressor = new Deflater();
+            compressor.setInput(data);
+            compressor.finish();
+            int len = compressor.deflate(res);
+            compressor.end();
+            return Arrays.copyOf(res, len);
+        }
+
+        private static byte[] decompress(byte[] data, int size) throws DataFormatException {
+            var res = new byte[size];
+            Inflater decompressor = new Inflater();
+            decompressor.setInput(data, 0, data.length);
+            decompressor.inflate(res);
+            decompressor.end();
+            return res;
+        }
+
+        public BufferedImage getData() throws DataFormatException {
+            int size = width * height;
+            int[] pixels = new int[size];
+            var buffer = ByteBuffer.wrap(decompress(data, size * 4)).rewind();
+            for (int i = 0; i < size; ++i) {
+                pixels[i] = buffer.getInt();
+            }
+            var res = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
+            res.setRGB(0, 0, width, height, pixels, 0, width);
+            return res;
         }
     }
 

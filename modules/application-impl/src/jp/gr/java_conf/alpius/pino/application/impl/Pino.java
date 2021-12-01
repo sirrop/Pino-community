@@ -16,6 +16,7 @@
 
 package jp.gr.java_conf.alpius.pino.application.impl;
 
+import com.google.common.flogger.FluentLogger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -25,6 +26,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import jp.gr.java_conf.alpius.pino.application.util.AliasManager;
 import jp.gr.java_conf.alpius.pino.application.util.IAliasManager;
+import jp.gr.java_conf.alpius.pino.bootstrap.Main;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
 import jp.gr.java_conf.alpius.pino.disposable.Disposer;
 import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
@@ -47,16 +49,17 @@ import jp.gr.java_conf.alpius.pino.util.ActiveModel;
 import jp.gr.java_conf.alpius.pino.util.Key;
 
 import java.awt.*;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Pino extends Application implements jp.gr.java_conf.alpius.pino.application.Application {
+    private static final FluentLogger log = FluentLogger.forEnclosingClass();
     private static Pino app;
 
     private final Disposable lastDisposable = Disposer.newDisposable("Application Internal Disposable");
@@ -85,6 +88,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        log.atInfo().log();
         window = new JFxWindow(primaryStage);
         timer = new RepaintTimer(fps, this);
         RootContainer container = PinoRootContainer.load();
@@ -95,8 +99,11 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         container.getBrushView().setItems((ObservableList<Brush>) BrushManager.getInstance().getBrushList());
 
         window.setRootContainer(container);
-        Optional.ofNullable(RootContainer.class.getResource("style.css"))
-                        .ifPresent(url -> window.getScene().getStylesheets().add(url.toExternalForm()));
+        Main.getStyle().ifPresentOrElse(style -> {
+            window.getScene().getStylesheets().add(style);
+            log.atInfo().log("stylesheet is set.");
+        }, () -> log.atInfo().log("No stylesheet was found."));
+
         window.getScene().addEventHandler(KeyEvent.KEY_PRESSED, this::searchActionAndPerform);
         window.setTitle("Pino Paint");
         primaryStage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> exit());
@@ -107,6 +114,10 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         Thread.currentThread().setUncaughtExceptionHandler(new ErrorHandler());
         services.register(OptionScreen.class, OptionScreen.create());
         eventDistributor.activate(eventDistributor.getActiveTool());
+        eventDistributor.addListener((oldTool, newTool) -> container.getToolEditor().setItem(newTool));
+        container.getToolEditor().setItem(eventDistributor.getActiveTool());
+
+        log.atInfo().log("Application started at %s", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(Main.startUp));
     }
 
     private void searchActionAndPerform(KeyEvent e) {
@@ -130,6 +141,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
     @Override
     public void init() {
         app = this;
+        log.atInfo().log("initialization completed");
     }
 
     @Override
@@ -158,6 +170,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
     @Override
     public void exit() {
         Disposer.dispose(this);
+        log.atInfo().log("All children were disposed.");
         Platform.exit();
     }
 
@@ -198,6 +211,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         return getService(ProjectManager.class).get();
     }
 
+    @SuppressWarnings("unchecked")
     private void initProject(Project project) {
         if (project == null) {
             window.getRootContainer()
@@ -214,7 +228,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
                 .setItem(activeModel.getActivatedItem());
         window.getRootContainer()
                 .getLayerView()
-                .setItems((ObservableList<LayerObject>) project.getLayers());
+                .setItems((ObservableList<LayerObject>) project.getChildren());  // PinoProjectがgetChildren()で返すListはObservableListです
     }
 
     private void layerChanged(ActiveModel<LayerObject> activeModel) {
@@ -233,6 +247,11 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
     private void updateCanvas(Project project) {
         var container = window.getRootContainer();
         var canvas = container.getCanvas();
+        canvas.setScaleX(1);
+        canvas.setScaleY(1);
+        canvas.setTranslateX(0);
+        canvas.setTranslateY(0);
+        canvas.setRotate(0);
         if (project == null) {
             canvas.setWidth(0);
             canvas.setHeight(0);
@@ -249,7 +268,7 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
     void repaint() {
         var project = getService(ProjectManager.class).get();
         var canvas = project.getCanvas();
-        var layers = project.getLayers();
+        var layers = project.getChildren();
         var g = canvas.createGraphics();
         var aoi = new Rectangle(canvas.getWidth(), canvas.getHeight());
         g.setComposite(AlphaComposite.Src);

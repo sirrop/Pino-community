@@ -30,7 +30,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.converter.NumberStringConverter;
 import jp.gr.java_conf.alpius.pino.application.impl.BrushManager;
+import jp.gr.java_conf.alpius.pino.application.impl.Pino;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
+import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 import jp.gr.java_conf.alpius.pino.gui.screen.options.CursorOptions;
 import jp.gr.java_conf.alpius.pino.util.Result;
 
@@ -46,7 +48,7 @@ public final class DrawToolCursor {
 
     public static CursorOptions.Cursor create() {
         CursorOptions.Pointer[] pointer = new CursorOptions.Pointer[1];
-        Result.tryToRun(() -> Files.newInputStream(Paths.get("resources", "cursor.png")))
+        Result.tryToRun(() -> Files.newInputStream(Paths.get("resources", "images", "cursor.png")))
                 .map(Image::new)
                 .onSuccess(image -> pointer[0] = new CursorOptions.ImagePointer(image, image.getWidth() / 2, image.getHeight() / 2))
                 .onFailed(image -> pointer[0] = CursorOptions.Pointer.NONE)
@@ -79,7 +81,12 @@ public final class DrawToolCursor {
             }
         };
 
+        // canvasの拡大率
+        private final DoubleProperty scale;
+
         public DrawToolSubPointer() {
+            scale = Pino.getApp().getWindow().getRootContainer().getCanvas().scaleXProperty();
+
             // ブラシが変更されたときにリスナーを更新する
             IntConsumer updateListener = i -> {
                 if (listenerDisposable != null) {
@@ -89,6 +96,8 @@ public final class DrawToolCursor {
                 var activeBrush = BrushManager.getInstance().getActiveModel().getActivatedItem();
                 activeBrush.addListener(widthListener);
 
+                updateBrushWidth(activeBrush);
+
                 listenerDisposable = () -> activeBrush.removeListener(widthListener);
             };
             BrushManager.getInstance()
@@ -96,16 +105,27 @@ public final class DrawToolCursor {
                     .addListener(updateListener);
             updateListener.accept(BrushManager.getInstance().getActiveModel().getActivatedIndex());
             var brush = BrushManager.getInstance().getActiveModel().getActivatedItem();
+            updateBrushWidth(brush);
+
+            brushWidthIndicator.setStroke(Color.GRAY);
+
+            scale.addListener((observable, oldValue, newValue) -> {
+                var b = BrushManager.getInstance().getActiveModel().getActivatedItem();
+                updateBrushWidth(b);
+            });
+        }
+
+        private void updateBrushWidth(Brush brush) {
             for (var desc: brush.getUnmodifiablePropertyList()) {
                 if (desc.getName().equals("width")) {
                     Result.tryToRun(desc::getReadMethod)
-                          .map(getter -> getter.invoke(brush))
-                          .map(value -> Double.parseDouble(value.toString()) / 2)
-                          .onSuccess(brushWidthIndicator::setBrushWidth)
-                          .printStackTrace();
+                            .map(getter -> getter.invoke(brush))
+                            .map(value -> Double.parseDouble(value.toString()) / 2)
+                            .map(value -> value * scale.get())
+                            .onSuccess(brushWidthIndicator::setBrushWidth)
+                            .printStackTrace();
                 }
             }
-            brushWidthIndicator.setStroke(Color.GRAY);
         }
 
         @Override

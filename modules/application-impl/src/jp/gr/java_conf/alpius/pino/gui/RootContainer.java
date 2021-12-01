@@ -24,13 +24,17 @@ import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
 import jp.gr.java_conf.alpius.pino.gui.widget.BrushEditor;
 import jp.gr.java_conf.alpius.pino.gui.widget.LayerEditor;
+import jp.gr.java_conf.alpius.pino.gui.widget.ToolEditor;
+import org.controlsfx.control.StatusBar;
 
 public interface RootContainer {
     Parent getContent();
     Canvas getCanvas();
     Pane getCanvasPane();
+    ToolEditor getToolEditor();
     LayerEditor getLayerEditor();
     BrushEditor getBrushEditor();
     ListView<LayerObject> getLayerView();
     ListView<Brush> getBrushView();
+    StatusBar getStatusBar();
 }

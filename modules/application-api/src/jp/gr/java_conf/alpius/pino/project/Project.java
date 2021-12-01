@@ -19,6 +19,7 @@ package jp.gr.java_conf.alpius.pino.project;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
 import jp.gr.java_conf.alpius.pino.graphics.canvas.Canvas;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
+import jp.gr.java_conf.alpius.pino.graphics.layer.Parent;
 import jp.gr.java_conf.alpius.pino.service.ServiceContainer;
 import jp.gr.java_conf.alpius.pino.util.ActiveModel;
 import jp.gr.java_conf.alpius.pino.util.UserDataHolder;
@@ -26,11 +27,39 @@ import jp.gr.java_conf.alpius.pino.util.UserDataHolder;
 import java.awt.color.ICC_Profile;
 import java.util.List;
 
-public interface Project extends Disposable, ServiceContainer, UserDataHolder {
+public interface Project extends Disposable, ServiceContainer, UserDataHolder, Parent {
     int getWidth();
     int getHeight();
     ICC_Profile getProfile();
     Canvas getCanvas();
-    List<LayerObject> getLayers();
+    @Deprecated
+    default List<LayerObject> getLayers() {
+        return getChildren();
+    }
     ActiveModel<LayerObject> getActiveModel();
+
+    /**
+     * @return 通常、常に-1が返されます
+     */
+    @Override
+    default int getDepth() {
+        return -1;
+    }
+
+    /**
+     * @return 通常、常に0が返されます
+     */
+    @Override
+    default double getX() {
+        return 0;
+    }
+
+    /**
+     * @return 通樹、常に0が返されます
+     */
+    @Override
+    default double getY() {
+        return 0;
+    }
+
 }

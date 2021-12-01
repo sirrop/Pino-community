@@ -27,6 +27,14 @@ public final class ImageLayer extends LayerObject {
     private Image image;
     private boolean keepReference = true;
 
+    public ImageLayer(Image image) {
+        this.image = image;
+    }
+
+    public ImageLayer() {
+        this(null);
+    }
+
     public void setImage(Image image) {
         this.image = image;
     }

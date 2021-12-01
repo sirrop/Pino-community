@@ -16,15 +16,12 @@
 
 package jp.gr.java_conf.alpius.pino.project.impl;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import jp.gr.java_conf.alpius.pino.disposable.Disposable;
 import jp.gr.java_conf.alpius.pino.disposable.Disposer;
 import jp.gr.java_conf.alpius.pino.graphics.canvas.Canvas;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
-import jp.gr.java_conf.alpius.pino.graphics.layer.Layers;
 import jp.gr.java_conf.alpius.pino.project.Project;
 import jp.gr.java_conf.alpius.pino.service.MutableServiceContainer;
 import jp.gr.java_conf.alpius.pino.service.SimpleServiceContainer;
@@ -41,7 +38,7 @@ public class PinoProject implements Project {
     private static final ICC_Profile DEFAULT_PROFILE = ICC_Profile.getInstance(ColorSpace.CS_sRGB);
 
     private final Canvas canvas;
-    private final ObservableList<LayerObject> children = FXCollections.observableArrayList();
+    private final PinoProjectLayerList children = new PinoProjectLayerList();
     private final ICC_Profile profile;
 
     private MutableServiceContainer container;
@@ -84,7 +81,7 @@ public class PinoProject implements Project {
         activeModel = new ProjectActiveModel(this);
         this.profile = Objects.requireNonNull(profile);
         activeModel.activate(0);
-        getChildren().addAll(Layers.create(DrawableLayer::new, getWidth(), getHeight()));
+        getChildren().add(new DrawableLayer(Canvas.createGeneral(getWidth(), getHeight())));
         SelectionManagerImpl selectionManager = new SelectionManagerImpl();
         getContainer().register(SelectionManager.class, selectionManager);
         Disposer.registerDisposable(lastDisposable, selectionManager);
@@ -111,11 +108,7 @@ public class PinoProject implements Project {
     }
 
     @Override
-    public List<LayerObject> getLayers() {
-        return children;
-    }
-
-    protected ObservableList<LayerObject> getChildren() {
+    public PinoProjectLayerList getChildren() {
         return children;
     }
 

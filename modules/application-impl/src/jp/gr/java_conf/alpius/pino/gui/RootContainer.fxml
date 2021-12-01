@@ -19,11 +19,12 @@
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import jp.gr.java_conf.alpius.pino.ui.actionSystem.*?>
 <?import jp.gr.java_conf.alpius.pino.gui.widget.BrushEditor?>
 <?import jp.gr.java_conf.alpius.pino.gui.widget.LayerEditor?>
+<?import jp.gr.java_conf.alpius.pino.gui.widget.ToolEditor?>
+<?import jp.gr.java_conf.alpius.pino.ui.actionSystem.*?>
 <?import org.controlsfx.control.StatusBar?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import org.kordamp.ikonli.javafx.*?>
 <VBox fx:id="content" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="jp.gr.java_conf.alpius.pino.gui.PinoRootContainer" prefHeight="800" prefWidth="1200.0">
     <!-- メニューバー -->
     <MenuBar fx:id="menuBar" id="menu-bar">
@@ -95,7 +96,8 @@
 
     <HBox fx:id="contentPane" VBox.vgrow="ALWAYS">
         <SplitPane HBox.hgrow="ALWAYS" dividerPositions="0.25,0.75">
-            <SplitPane orientation="VERTICAL" dividerPositions="0.4">
+            <SplitPane orientation="VERTICAL" dividerPositions="0.1,0.6">
+                <ToolEditor fx:id="toolEditor" id="tool-editor" />
                 <BrushEditor fx:id="brushEditor" id="brush-editor">
                     <placeholder>
                         <Label text="No brush is selected" />
@@ -126,5 +128,5 @@
     </HBox>
 
     <!-- ステータスバー -->
-    <StatusBar visible="false" managed="false" />
+    <StatusBar fx:id="statusBar" managed="false" />
 </VBox>

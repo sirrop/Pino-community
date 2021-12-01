@@ -17,6 +17,8 @@
 package jp.gr.java_conf.alpius.pino.bootstrap;
 
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
+import jp.gr.java_conf.alpius.pino.application.impl.Version;
+import jp.gr.java_conf.alpius.pino.logging.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,6 +26,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 
 public class Main {
     private Main() {
@@ -31,10 +34,18 @@ public class Main {
 
     private static final int STARTUP_FAILED = 1;
 
-    private static LocalDateTime startUp;
+    public static LocalDateTime startUp;
+    private static String style;
 
     public static void main(String[] args) {
         startUp = LocalDateTime.now(ZoneId.of("Asia/Tokyo"));
+
+        var flags = Flags.parse(args);
+
+        if (flags.showVersion()) {
+            System.out.println("Pino for Desktop: " + Version.CURRENT_VERSION);
+            System.exit(0);
+        }
 
         try {
             bootstrap(args);
@@ -45,8 +56,16 @@ public class Main {
         }
     }
 
-    private static void bootstrap(String[] args) {
+    public static Optional<String> getStyle() {
+        return Optional.ofNullable(style);
+    }
 
+    private static void bootstrap(String[] args) throws Exception {
+        Logger.initLogger();
+        var css = Main.class.getResource("white.css");
+        if (css != null) {
+            style = css.toExternalForm();
+        }
     }
 
     private static void showMessage(String title, Throwable cause) {

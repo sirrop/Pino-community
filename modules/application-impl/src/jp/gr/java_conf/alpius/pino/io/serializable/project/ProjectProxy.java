@@ -16,9 +16,7 @@
 
 package jp.gr.java_conf.alpius.pino.io.serializable.project;
 
-import javafx.collections.ObservableList;
 import jp.gr.java_conf.alpius.pino.annotation.Beta;
-import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
 import jp.gr.java_conf.alpius.pino.io.serializable.layer.LayerProxy;
 import jp.gr.java_conf.alpius.pino.project.Project;
 import jp.gr.java_conf.alpius.pino.project.impl.PinoProject;
@@ -39,7 +37,7 @@ public class ProjectProxy implements Serializable {
     private transient List<LayerProxy> layers;
 
     public ProjectProxy(Project project) {
-        var children = project.getLayers()
+        var children = project.getChildren()
                 .stream()
                 .map(LayerProxy::create)
                 .collect(Collectors.toList());
@@ -70,7 +68,7 @@ public class ProjectProxy implements Serializable {
                 .map(proxy -> proxy.createLayer(width, height))
                 .collect(Collectors.toList());
         var project = new PinoProject(width, height, iccProfile);
-        ((ObservableList<LayerObject>) project.getLayers()).setAll(children);
+        project.getChildren().addAll(children);
         return project;
     }
 

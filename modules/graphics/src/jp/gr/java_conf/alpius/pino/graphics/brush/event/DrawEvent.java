@@ -30,12 +30,18 @@ public class DrawEvent extends EventObject {
     private final DrawEvent.Type type;
     private final double x;
     private final double y;
+    private final double pressure;
 
-    public DrawEvent(DrawableLayer layer, Type type, double x, double y) {
+    public DrawEvent(DrawableLayer layer, Type type, double x, double y, double pressure) {
         super(layer);
         this.type = type;
         this.x = x;
         this.y = y;
+        this.pressure = pressure;
+    }
+
+    public DrawEvent(DrawableLayer layer, Type type, double x, double y) {
+        this(layer, type, x, y, 1);
     }
 
     public Type getEventType() {

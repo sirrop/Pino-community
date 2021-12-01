@@ -101,7 +101,8 @@ public final class EventDistributor implements Disposable, ToolManager {
     }
 
     private static jp.gr.java_conf.alpius.pino.input.ScrollEvent asPinoEvent(ScrollEvent e) {
-        return new jp.gr.java_conf.alpius.pino.input.ScrollEvent(e.getSource(), e.getDeltaY());
+        return new jp.gr.java_conf.alpius.pino.input.ScrollEvent(e.getSource(), e.getX(), e.getY(), e.getDeltaX(), e.getDeltaY(),
+                e.isShiftDown(), e.isControlDown(), e.isAltDown(), e.isMetaDown());
     }
 
     @Override

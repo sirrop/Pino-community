@@ -21,14 +21,11 @@ import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import jp.gr.java_conf.alpius.pino.application.impl.BrushManager;
 import jp.gr.java_conf.alpius.pino.application.impl.Pino;
-import jp.gr.java_conf.alpius.pino.graphics.brush.Eraser;
-import jp.gr.java_conf.alpius.pino.graphics.brush.GaussianBlur;
-import jp.gr.java_conf.alpius.pino.graphics.brush.MeanBlur;
-import jp.gr.java_conf.alpius.pino.graphics.brush.Pencil;
+import jp.gr.java_conf.alpius.pino.graphics.brush.*;
+import jp.gr.java_conf.alpius.pino.graphics.canvas.Canvas;
 import jp.gr.java_conf.alpius.pino.graphics.layer.DrawableLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.ImageLayer;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
-import jp.gr.java_conf.alpius.pino.graphics.layer.Layers;
 import jp.gr.java_conf.alpius.pino.graphics.layer.geom.Ellipse;
 import jp.gr.java_conf.alpius.pino.graphics.layer.geom.Rectangle;
 import jp.gr.java_conf.alpius.pino.graphics.layer.geom.Text;
@@ -86,7 +83,7 @@ public final class MenuManager {
             var activeModel = p.getActiveModel();
             var index = activeModel.getActivatedIndex();
             var original = activeModel.getActivatedItem();
-            p.getLayers().set(index, original.toDrawable());
+            p.getChildren().set(index, original.toDrawable(Canvas.createGeneral(p.getWidth(), p.getHeight())));
         });
         layerEditor.getItems().setAll(rename, convertLayer);
     }
@@ -105,7 +102,7 @@ public final class MenuManager {
                 shape.getItems().addAll(rect, ellipse);
             }
             var text = new MenuItem("テキスト");
-            drawable.setOnAction(addAction(DrawableLayer::new));
+            drawable.setOnAction(addAction(() -> new DrawableLayer(createCanvas())));
             image.setOnAction(addAction(ImageLayer::new));
             text.setOnAction(addAction(Text::new));
             add.getItems().addAll(drawable, image, shape, text);
@@ -115,11 +112,11 @@ public final class MenuManager {
         delete.setOnAction(e -> {
             var p = Pino.getApp().getProject();
             var index = p.getActiveModel().getActivatedIndex();
-            p.getLayers().remove(index);
+            p.getChildren().remove(index);
             if (index > 0) {
                 --index;
             } else {
-                if (p.getLayers().size() == 0) {
+                if (p.getChildren().size() == 0) {
                     index = -1;
                 }
             }
@@ -131,8 +128,8 @@ public final class MenuManager {
             var p = Pino.getApp().getProject();
             var index = p.getActiveModel().getActivatedIndex();
             if (index != 0) {
-                var layer = p.getLayers().remove(index);
-                p.getLayers().add(index - 1, layer);
+                var layer = p.getChildren().remove(index);
+                p.getChildren().add(index - 1, layer);
                 syncLayerSelection(index - 1);
             }
         });
@@ -141,9 +138,9 @@ public final class MenuManager {
         down.setOnAction(e -> {
             var p = Pino.getApp().getProject();
             var index = p.getActiveModel().getActivatedIndex();
-            if (index != p.getLayers().size() - 1) {
-                var layer = p.getLayers().remove(index);
-                p.getLayers().add(index + 1, layer);
+            if (index != p.getChildren().size() - 1) {
+                var layer = p.getChildren().remove(index);
+                p.getChildren().add(index + 1, layer);
                 syncLayerSelection(index + 1);
             }
         });
@@ -154,7 +151,7 @@ public final class MenuManager {
         return e -> {
             var p = Pino.getApp().getProject();
             var index = p.getActiveModel().getActivatedIndex();
-            p.getLayers().add(index, Layers.create(constructor, p.getWidth(), p.getHeight()));
+            p.getChildren().add(index, constructor.get());
             syncLayerSelection(index);
         };
     }
@@ -162,6 +159,14 @@ public final class MenuManager {
     private static void syncLayerSelection(int index) {
         Pino.getApp().getProject().getActiveModel().activate(index);
         Pino.getApp().getWindow().getRootContainer().getLayerView().getSelectionModel().clearAndSelect(index);
+    }
+
+    private static Canvas createCanvas() {
+        var p = Pino.getApp().getProject();
+        if (p == null) {
+            throw new IllegalStateException("project == null");
+        }
+        return Canvas.createGeneral(p.getWidth(), p.getHeight());
     }
 
     private void initBrushEditor() {
@@ -196,8 +201,10 @@ public final class MenuManager {
         {
             var pencil = new MenuItem("鉛筆");
             var eraser = new MenuItem("消しゴム");
+            var marker = new MenuItem("マーカー");
             var blur = new MenuItem("平均化ブラシ");
             var gaussianBlur = new MenuItem("ガウスぼかしブラシ");
+            var airbrush = new MenuItem("エアブラシ");
             pencil.setOnAction(e -> {
                 var mgr = BrushManager.getInstance();
                 int index = mgr.getActiveModel().getActivatedIndex();
@@ -208,6 +215,12 @@ public final class MenuManager {
                 var mgr = BrushManager.getInstance();
                 int index = mgr.getActiveModel().getActivatedIndex();
                 mgr.getBrushList().add(index, new Eraser());
+                syncBrushSelection(index);
+            });
+            marker.setOnAction(e -> {
+                var mgr = BrushManager.getInstance();
+                int index = mgr.getActiveModel().getActivatedIndex();
+                mgr.getBrushList().add(index, new Marker());
                 syncBrushSelection(index);
             });
             blur.setOnAction(e -> {
@@ -222,7 +235,13 @@ public final class MenuManager {
                 mgr.getBrushList().add(index, new GaussianBlur());
                 syncBrushSelection(index);
             });
-            add.getItems().addAll(pencil, eraser, blur, gaussianBlur);
+            airbrush.setOnAction(e -> {
+                var mgr = BrushManager.getInstance();
+                int index = mgr.getActiveModel().getActivatedIndex();
+                mgr.getBrushList().add(index, new Airbrush());
+                syncBrushSelection(index);
+            });
+            add.getItems().addAll(airbrush, pencil, eraser, marker, blur, gaussianBlur);
         }
 
         var delete = new MenuItem("削除");

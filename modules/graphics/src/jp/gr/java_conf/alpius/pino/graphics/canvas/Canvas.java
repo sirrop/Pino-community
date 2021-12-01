@@ -34,6 +34,12 @@ public interface Canvas extends Disposable {
         return new GeneralCanvas();
     }
 
+    static Canvas createGeneral(int w, int h) {
+        Canvas res = createGeneral();
+        res.setSize(w, h);
+        return res;
+    }
+
     @Beta
     static Canvas createAccelerated() {
         System.err.println("Accelerated canvas is unstable.");

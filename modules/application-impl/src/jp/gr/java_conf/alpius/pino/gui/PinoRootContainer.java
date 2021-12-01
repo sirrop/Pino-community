@@ -36,10 +36,15 @@ import jp.gr.java_conf.alpius.pino.graphics.brush.Brush;
 import jp.gr.java_conf.alpius.pino.graphics.layer.LayerObject;
 import jp.gr.java_conf.alpius.pino.gui.widget.*;
 import jp.gr.java_conf.alpius.pino.project.impl.SelectionManager;
+import org.controlsfx.control.StatusBar;
 
 import java.io.IOException;
 
 public class PinoRootContainer implements RootContainer {
+    @FXML
+    private ToolEditor toolEditor;
+    @FXML
+    private StatusBar statusBar;
     @FXML
     private BrushEditor brushEditor;
     @FXML
@@ -80,7 +85,8 @@ public class PinoRootContainer implements RootContainer {
         Pino.getApp().getService(ProjectManager.class)
                 .addOnChanged(project -> {
                     if (project != null) {
-                        selectionIndicator = new SelectionIndicator(project.getService(SelectionManager.class));
+                        var selectionMgr = project.getService(SelectionManager.class);
+                        selectionIndicator = new SelectionIndicator(selectionMgr);
                         selectionIndicator.prefWidthProperty().bind(canvasPane.widthProperty());
                         selectionIndicator.prefHeightProperty().bind(canvasPane.heightProperty());
                         canvasPane.getChildren().add(selectionIndicator);
@@ -121,6 +127,11 @@ public class PinoRootContainer implements RootContainer {
     }
 
     @Override
+    public ToolEditor getToolEditor() {
+        return toolEditor;
+    }
+
+    @Override
     public LayerEditor getLayerEditor() {
         return layerEditor;
     }
@@ -138,6 +149,11 @@ public class PinoRootContainer implements RootContainer {
     @Override
     public ListView<Brush> getBrushView() {
         return brushView;
+    }
+
+    @Override
+    public StatusBar getStatusBar() {
+        return statusBar;
     }
 
     private static Color toFxColor(java.awt.Color c) {
