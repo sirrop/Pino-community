@@ -26,6 +26,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 
 public class Main {
     private Main() {
@@ -34,6 +35,7 @@ public class Main {
     private static final int STARTUP_FAILED = 1;
 
     public static LocalDateTime startUp;
+    private static String style;
 
     public static void main(String[] args) {
         startUp = LocalDateTime.now(ZoneId.of("Asia/Tokyo"));
@@ -54,8 +56,16 @@ public class Main {
         }
     }
 
+    public static Optional<String> getStyle() {
+        return Optional.ofNullable(style);
+    }
+
     private static void bootstrap(String[] args) throws Exception {
         Logger.initLogger();
+        var css = Main.class.getResource("white.css");
+        if (css != null) {
+            style = css.toExternalForm();
+        }
     }
 
     private static void showMessage(String title, Throwable cause) {

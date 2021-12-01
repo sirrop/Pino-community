@@ -19,7 +19,6 @@ package jp.gr.java_conf.alpius.pino.gui.widget.visitor;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import jp.gr.java_conf.alpius.pino.application.impl.GraphicManager;
@@ -30,6 +29,7 @@ import jp.gr.java_conf.alpius.pino.tool.plugin.DrawTool;
 
 import java.util.Map;
 
+import static jp.gr.java_conf.alpius.pino.gui.widget.util.Nodes.labeled;
 import static jp.gr.java_conf.alpius.pino.gui.widget.util.Nodes.slider;
 
 public class DefaultToolEditorGraphicVisitor implements GraphicManager.ToolEditorGraphicVisitor {
@@ -74,7 +74,7 @@ public class DefaultToolEditorGraphicVisitor implements GraphicManager.ToolEdito
                 it.setValue(getTool().getDistance());
                 it.valueProperty().addListener((observable, oldValue, newValue) -> getTool().setDistance(newValue.doubleValue()));
             });
-            pane.getChildren().add(new HBox(new Label("間隔"), distance));
+            pane.getChildren().add(labeled("間隔", distance));
         }
 
         private static DrawTool getTool() {

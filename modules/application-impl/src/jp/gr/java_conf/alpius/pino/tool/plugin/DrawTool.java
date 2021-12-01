@@ -130,8 +130,8 @@ public class DrawTool implements Tool {
     }
 
     /* FIXME:
-     * この補完は線形です。急な方向転換には対応できません。
-     * また、まれに補完が完全でなく、線が途切れる不具合があるようです。
+     * この補間は線形です。急な方向転換には対応できません。
+     * また、まれに補間が完全でなく、線が途切れる不具合があるようです。
      * この不具合はアプリの動作が重くなった場合に顕著であり、プロジェクトのサイズを大きくすると頻度が多くなる傾向があります
      */
     private void complementIfNeed(MouseEvent e) {
@@ -150,7 +150,7 @@ public class DrawTool implements Tool {
         while ((d = getDistance(screenX, screenY)) >= threshold) {
             var coeff = distance / d;
 
-            /* 補完された座標 */
+            /* 補間された座標 */
             double[] vec = {
                     (screenX - vec2[0]) * coeff + vec2[0],
                     (screenY - vec2[1]) * coeff + vec2[1]

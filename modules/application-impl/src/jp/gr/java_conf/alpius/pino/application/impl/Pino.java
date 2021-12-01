@@ -53,7 +53,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -100,8 +99,11 @@ public class Pino extends Application implements jp.gr.java_conf.alpius.pino.app
         container.getBrushView().setItems((ObservableList<Brush>) BrushManager.getInstance().getBrushList());
 
         window.setRootContainer(container);
-        Optional.ofNullable(RootContainer.class.getResource("style.css"))
-                        .ifPresent(url -> window.getScene().getStylesheets().add(url.toExternalForm()));
+        Main.getStyle().ifPresentOrElse(style -> {
+            window.getScene().getStylesheets().add(style);
+            log.atInfo().log("stylesheet is set.");
+        }, () -> log.atInfo().log("No stylesheet was found."));
+
         window.getScene().addEventHandler(KeyEvent.KEY_PRESSED, this::searchActionAndPerform);
         window.setTitle("Pino Paint");
         primaryStage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, e -> exit());
